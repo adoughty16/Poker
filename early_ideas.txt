@@ -1,0 +1,55 @@
+GAME:
+- players[]
+- deck
+- pot
+- dealer (index of Player[] to keep track of dealer/blinds)
+- community_cards
+host_main()
+guest_main()
+find_best_hand() - calls each player's evaluate_hand() and determines winner. If there is a tie, it can systematically search through individual hands for highest card.
+upload_game_state() - uploads game-state to server
+fetch_game_state() - fetches game-state from server
+upload_turn() - guest uploads turn
+fetch_turn(player) - host fetches guest turn
+
+
+PLAYER:
+- hand (two Card objects)
+- stack (money value)
+- is_computer_player (boolean)
+turn() returns decision (bet/check/fold)
+evaluate_strength() takes community_cards, combines with self.hand, returns strength evaluation (TBD) to turn() function for decision process 
+evaluate_hand() takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
+
+DECK:
+-Cards[]
+get_deck()
+deal() returns 4-tuple of lists of 2 cards each and removes them from Cards[]
+flop() returns list of 3 cards and removes them from Cards[]
+turn() returns 1 card and removes it from Cards[]
+river() returns 1 card and removes it from Cards[]
+
+CARD:
+-Suit (ENUM)
+-Value (ENUM?)
+-GUI Asset
+get_suit()
+get_value()
+get_image()
+
+ENUM TYPE FOR ALL POSSIBLE HANDS:
+{ROYALFLUSH, STRAIGHTFLUSH, FOURKIND, FULLHOUSE, FLUSH, STRAIGHT, THREEKIND, TWOPAIR, PAIR, HIGHCARD}
+
+
+To implement online multiplayer:
+Only one user computer can perform the main game loop. The other users must wait for their turn and then post their decisions to the server.
+
+All game info will be downloaded each turn from the server after being provided by the host user.
+
+This functionality can be accomplished by a check at the begining of the program "Host Game" or "Join Game"
+
+This will determine the loop the user enters into on their own end. If they select Host, they will have to wait for users to join, and fill empty spots with AI-players. Once the game loop starts this computer will execute the main game loop and AI computation and then update the game-state each turn on the server for other users to fetch.
+
+If the user selects join, their computer will periodically download the game-state for display, and if it is their turn, they make their decision and upload it for processing by the host.
+
+We will have to come up with a format for game-state that holds all of the important information about the game in a class so that it can be reacreated and acted on appropriately by each user.
