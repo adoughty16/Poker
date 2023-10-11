@@ -1,8 +1,24 @@
-import Game
+#import Game
 import threading
 import time
+import db_connect as database
 
-def main()
+#sample class to check DB upload
+class Apple():
+	def __init__(self, name, color, sweetness):
+		self.name = name
+		self.color = color
+		self.sweetness = sweetness
+
+	def to_dict(self):
+		return {
+            'name': self.name,
+            'color': self.color,
+            'sweetness' : self.sweetness
+        }
+
+
+def main():
 	#Boots up graphics window
 
 	# establish what values might change during the course of the game that must be drawn
@@ -18,3 +34,17 @@ def main()
 			#draw
 		#wait
 
+
+
+
+
+
+
+	#THIS IS JUST A SAMPLE OF HOW TO DO THIS
+	db = database.init()
+	apple = Apple('granny-smith','green','sour')
+	doc_ref = db.collection('apple').document('my_document')
+	doc_ref.set(apple.to_dict())
+	db.close()
+
+main()
