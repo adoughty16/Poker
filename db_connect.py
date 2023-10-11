@@ -13,3 +13,7 @@ def init():
     # Connects to the database using the credentials
     firebase_admin.initialize_app(cred)
     return firestore.client()
+
+def main():
+	init()
+	print("Good job connecting to the database!")
