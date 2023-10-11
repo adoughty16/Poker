@@ -12,6 +12,7 @@ def main()
 
 	#Calls Game thread and passes it game_state_values to update
 
+
 	#while gaming:
 		#ask for permision to check game_state
 			#draw
