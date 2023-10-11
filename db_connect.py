@@ -17,3 +17,4 @@ def init():
 def main():
 	init()
 	print("Good job connecting to the database!")
+main()
