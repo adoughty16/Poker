@@ -5,3 +5,6 @@
 # flop() returns list of 3 cards and removes them from Cards[]
 # turn() returns 1 card and removes it from Cards[]
 # river() returns 1 card and removes it from Cards[]
+
+class Cards:
+    cards = Cards[]
