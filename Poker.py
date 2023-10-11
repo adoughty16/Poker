@@ -19,7 +19,7 @@ class Apple():
 
 
 def main():
-	#Boots up graphics window
+	# Boots up graphics window
 
 	# establish what values might change during the course of the game that must be drawn
 	# these values need to be mutable objects so that we can pass them into a thread and then the
