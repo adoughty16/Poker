@@ -27,6 +27,7 @@ class Deck:
     def get_deck():
         return self.deck
     def deal():
+        
         pass
     def flop():
         pass
