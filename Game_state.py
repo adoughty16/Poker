@@ -15,7 +15,7 @@ turn:At the start of the Turn Round, or Fourth Street, the Dealer places
 a fourth card in the community.
 
 river:At the start of the River Round, the Dealer places a fifth 
-and final card in the community.
+and final card in the community. (this reuses turn())
 
 showdown: If there are still players in the game after the River Round, 
 players must over turn their cards for 
