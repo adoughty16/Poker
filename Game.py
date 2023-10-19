@@ -1,20 +1,24 @@
 import Deck
 import Card
 import Game_state
+import time
 
 
 
 class Game:
 
-	def __init__ (self, players, game_state):
+	def __init__ (self, players, game_state, host, db):
 		self.game_state = game_state
 		self.players = players
 		self.deck = Deck()
 		self.pot = 0
 		self.dealer = 0
+		self.host = host
+		self.db = db
+
 
 	def initial_main(): #determines which game loop to call
-		if (???):
+		if (host):
 			host_main()
 		else:
 			guest_main()
@@ -33,7 +37,15 @@ class Game:
 		pass
 		#Needs to establish and confirm connection to host VIA firestore before game loop
 
-		#periodically checks firestore for host connection upload.
+		connected = False
+
+		while not connected:
+			#check firestore for host's flag
+
+			if (flag_found):
+				connected = True
+			
+			time.sleep(3)
 		#when host is connected, flips the first available bit to 1.
 		#periodically checks for confirmation bit. When confirmation bit flips, enter game loop
 

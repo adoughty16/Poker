@@ -3,21 +3,6 @@ import threading
 import time
 import db_connect as database
 
-#sample class to check DB upload
-class Apple():
-	def __init__(self, name, color, sweetness):
-		self.name = name
-		self.color = color
-		self.sweetness = sweetness
-
-	def to_dict(self):
-		return {
-            'name': self.name,
-            'color': self.color,
-            'sweetness' : self.sweetness
-        }
-
-
 def main():
 	# Boots up graphics window
 
@@ -27,6 +12,10 @@ def main():
 	# drawing any values that have been updated in the threads)
 
 	#Calls Game thread and passes it game_state_values to update
+	db = database.init()
+
+	
+	Game(players, gamestate, host, db)
 
 
 	#while gaming:
@@ -36,15 +25,7 @@ def main():
 
 
 
+db.close()
 
-
-
-
-	#THIS IS JUST A SAMPLE OF HOW TO DO THIS
-	db = database.init()
-	apple = Apple('granny-smith','green','sour')
-	doc_ref = db.collection('apple').document('my_document')
-	doc_ref.set(apple.to_dict())
-	db.close()
 
 main()
