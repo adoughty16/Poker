@@ -45,6 +45,10 @@ class Game_state:
 
     #where should we track who is the dealer, blind, and double blind?
 
+    #ANSWER/IDEA: dealer can maybe just be an integer mod 4 that keeps track of their index in the player list?
+    #blind is the next player after the dealer
+    #double blind is the next player after that
+
     def __init__(self):
         #populate variables
 

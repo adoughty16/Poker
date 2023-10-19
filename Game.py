@@ -51,12 +51,22 @@ class Game(threading.Thread):
 				#update and upload confirmation bit
 				flags[self.players] = 1
 				self.db.collection("flags").document("flag_document").set({"values": flags})
+		
+		#NOTE: game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
+		while playing:
+			if self.game_state.fetch_game_state() == 'dealing':
+				self.deck.deal()
+			if self.game_state.fetch_game_state() == 'pre-flop':
+				pass
+			if self.game_state.fetch_game_state() == 'flop':
+				pass
+			if self.game_state.fetch_game_state() == 'turn':
+				pass
+			if self.game_state.fetch_game_state() == 'river':
+				pass
+			if self.game_state.fetch_game_state() == 'showdown':
+				pass
 
-
-		#uploads to firestore indicating how many live players are expected (these can just be bits set to zero)
-
-		#periodically checks until all bits are set to 1, indicating lives players are connected and ready.
-		#uploads confirmation bit so that lives players can enter game loop.
 
 	def guest_main(self):
 		playing = True
@@ -93,7 +103,19 @@ class Game(threading.Thread):
 
 		#while playing is true:
 		while (playing):
-			pass
+			
+			if self.game_state.fetch_game_state() == 'dealing':
+				pass
+			if self.game_state.fetch_game_state() == 'pre-flop':
+				pass
+			if self.game_state.fetch_game_state() == 'flop':
+				pass
+			if self.game_state.fetch_game_state() == 'turn':
+				pass
+			if self.game_state.fetch_game_state() == 'river':
+				pass
+			if self.game_state.fetch_game_state() == 'showdown':
+				pass
 
 			#fetch_game_state() until it is your turn
 

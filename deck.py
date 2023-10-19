@@ -28,15 +28,14 @@ class Deck:
     def get_deck(self):
         return self.deck
     
-    #returns 4-tuple of lists of 2 cards each and removes them from cards
-    def deal():
-        dealing=[]
-        this_dealing=[]
-        for i in range(4):
-            this_dealing.append(deck.pop())
-            this_dealing.append(deck.pop())
-            dealing.append(this_dealing)
-        pass
+    #returns 4-tuple of lists of 2 cards for each hand (h) and removes them from cards
+    def deal(self):
+        h1 = [self.deck.pop() for _ in range(2)]
+        h2 = [self.deck.pop() for _ in range(2)]
+        h3 = [self.deck.pop() for _ in range(2)]
+        h4 = [self.deck.pop() for _ in range(2)]
+
+        return (h1, h2, h3, h4)
 
     #returns list of 3 cards and removes them from Cards
     def flop():
