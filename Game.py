@@ -24,33 +24,53 @@ class Game:
 			guest_main()
 		pass
 
-	def host_main():
+	def host_main(self):
 		pass
 		# Needs to establish and confirm connection with guests VIA firestore before game loop
+		flags = [0 for _ in range(self.players + 1)]
+		self.db.collection("flags").document("flag_document").set({"values": flags})
+		
+
+
 
 		#uploads to firestore indicating how many live players are expected (these can just be bits set to zero)
 
 		#periodically checks until all bits are set to 1, indicating lives players are connected and ready.
 		#uploads confirmation bit so that lives players can enter game loop.
 
-	def guest_main():
-		pass
-		#Needs to establish and confirm connection to host VIA firestore before game loop
-
+	def guest_main(self):
+		playing = True
 		connected = False
+		waiting_for_host = False
+		#Needs to establish and confirm connection to host VIA firestore before game loop
 
 		while not connected:
 			#check firestore for host's flag
-
-			if (flag_found):
-				connected = True
-			
-			time.sleep(3)
-		#when host is connected, flips the first available bit to 1.
-		#periodically checks for confirmation bit. When confirmation bit flips, enter game loop
+			flag_document = self.db.collection("flags").document("flag_document").get()
+			if flag_document.exists:
+				#grab flags from db
+				flags = flag_document.to_dict()["values"]
+				#if we haven't reserved a spot in the game
+				if not waiting_for_host:
+					#look through flags until we find an opening
+					for i in range(self.players - 1):
+						if flags[i] == 0:
+							#reserve the opening
+							flags[i] = 1
+						#break out so we only reserve one spot
+						break
+					#now we just need to check for the host's confirmation bit
+					waiting_for_host = True
+				#if we are awaiting confirmation
+				if waiting_for_host:
+					#check the confirmation bit
+					if flags[self.players] == 1:
+						connected = True
+			#sleeping might not be necessary but it keeps us from making maybe 100s of queries while connecting
+			time.sleep(1)
 
 		#while playing is true:
-		while (Game_state==)
+		while (playing):
 
 			#fetch_game_state() until it is your turn
 
