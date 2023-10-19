@@ -28,11 +28,12 @@ def main():
 	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, lock)
 	graphicsThread.start()
 
+	lock.acquire()
 	game = Game(num_players, game_state, host, db)
+	lock.release()
 
 	gameThread = threading.Thread(game.initial_main(), lock)
 	gameThread.start()
-
 
 	graphicsThread.join()
 	gameThread.join()

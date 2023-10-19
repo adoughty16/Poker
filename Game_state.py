@@ -23,7 +23,7 @@ all to see with the highest hand taking the pot.
 
 source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 """
-game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
+round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 
 class Game_state:
     
@@ -63,8 +63,8 @@ class Game_state:
         # players left: array of int indexes (important for showdown round)
         self.actives = [0, 1, 2, 3]
 
-        #start the game dealing
-        self.game_state = 'dealing'
+        #first round is dealing
+        self.round = 'dealing'
 
     def set_players(self, players):
         for player in players:
@@ -74,7 +74,8 @@ class Game_state:
         # add to the community cards
         # self.community_cards.append()
         # based on where these are decided, maybe add makes more sense and call twice in flop
-        return
+        pass
+    
 
     def set_pot(self, pot):
         self.pot = pot
@@ -99,13 +100,12 @@ class Game_state:
         self.round = round
 
 
-    def upload(self):
-        return
+    def upload(self, db): #uploads game_state to db
+        pass
     
     def fetch(self):
         return self.game_state
     
-
     def upload_turn():
         #data = {"players": players, "community_cards": community_cards, "pot": self.pot, "bet": self.bet , "dealer": , "actives": , "round": }
         #db.collection("").document("").set(data)
