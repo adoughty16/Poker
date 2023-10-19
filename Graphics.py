@@ -1,5 +1,6 @@
 
 import arcade
+import threading
 
 # Screen title and size
 SCREEN_WIDTH = 1024

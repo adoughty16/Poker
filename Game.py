@@ -2,12 +2,14 @@ import deck
 import cards
 import Game_state
 import time
+import threading
 
 
 
-class Game:
+class Game(threading.Thread):
 
-	def __init__ (self, players, game_state, host, db):
+	def __init__ (self, players, game_state, host, db, c):
+		threading.Thread.__init__(self)
 		self.game_state = game_state
 		self.players = players
 		self.deck = Deck()
@@ -15,6 +17,8 @@ class Game:
 		self.dealer = 0
 		self.host = host
 		self.db = db
+		#c is the lock condition
+		self.c = c
 
 	def initial_main(self): #determines which game loop to call
 		if (self.host):
