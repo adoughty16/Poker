@@ -56,10 +56,10 @@ class Game_state:
         self.game_state = 'dealing'
         return
 
-    def upload_game_state(self):
+    def upload(self):
         return
     
-    def fetch_game_state(self):
+    def fetch(self):
         return self.game_state
     
     def upload_turn():

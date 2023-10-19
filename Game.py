@@ -26,7 +26,7 @@ class Game():
 			self.guest_main(lock)
 		pass
 
-	def host_main(self):
+	def host_main(self, lock):
 		# Needs to establish and confirm connection with guests VIA firestore before game loop
 		playing = True
 		connected = False
@@ -60,7 +60,11 @@ class Game():
 					player.set_hand(hand)
 
 				#update game_state locally, then on db
-				self.game_state
+				lock.aquire() 
+				for player, hand in zip(self.game_state.players, hands):
+					player.set_hand(hand)
+					self.game_state.upload()
+				lock.release()
 
 			if self.game_state.fetch_game_state() == 'pre-flop':
 				pass
@@ -74,7 +78,7 @@ class Game():
 				pass
 
 
-	def guest_main(self):
+	def guest_main(self, lock):
 		playing = True
 		connected = False
 		waiting_for_host = False

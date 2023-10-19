@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
         pass
 
 
-def main():
+def main(self, num_players, host, game_state, lock):
     """ Main function """
     window = MyGame()
     window.setup()
