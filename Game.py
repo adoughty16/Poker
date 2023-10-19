@@ -53,7 +53,7 @@ class Game():
 		
 		#NOTE: game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 		while playing:
-			if self.game_state.fetch_game_state() == 'dealing':
+			if self.game_state.get_round() == 'dealing':
 				#deal
 				hands = self.deck.deal()
 				for player, hand in zip(self.players, hands):
@@ -63,18 +63,25 @@ class Game():
 				lock.aquire() 
 				for player, hand in zip(self.game_state.players, hands):
 					player.set_hand(hand)
-					self.game_state.upload()
+				self.game_state.s
+				self.game_state.upload()
 				lock.release()
 
-			if self.game_state.fetch_game_state() == 'pre-flop':
+			if self.game_state.get_round() == 'pre-flop':
+				all_called = False
+
+				while not all_called:
+				#establish dealer/blinds
+				self.pot +=
+				#update state
+				#get bets one at a time and update state each time
+			if self.game_state.get_round() == 'flop':
 				pass
-			if self.game_state.fetch_game_state() == 'flop':
+			if self.game_state.get_round() == 'turn':
 				pass
-			if self.game_state.fetch_game_state() == 'turn':
+			if self.game_state.get_round() == 'river':
 				pass
-			if self.game_state.fetch_game_state() == 'river':
-				pass
-			if self.game_state.fetch_game_state() == 'showdown':
+			if self.game_state.get_round() == 'showdown':
 				pass
 
 
@@ -114,17 +121,17 @@ class Game():
 		#while playing is true:
 		while (playing):
 			
-			if self.game_state.fetch_game_state() == 'dealing':
+			if self.game_state.get_round() == 'dealing':
 				pass
-			if self.game_state.fetch_game_state() == 'pre-flop':
+			if self.game_state.get_round() == 'pre-flop':
 				pass
-			if self.game_state.fetch_game_state() == 'flop':
+			if self.game_state.get_round() == 'flop':
 				pass
-			if self.game_state.fetch_game_state() == 'turn':
+			if self.game_state.get_round() == 'turn':
 				pass
-			if self.game_state.fetch_game_state() == 'river':
+			if self.game_state.get_round() == 'river':
 				pass
-			if self.game_state.fetch_game_state() == 'showdown':
+			if self.game_state.get_round() == 'showdown':
 				pass
 
 			#fetch_game_state() until it is your turn

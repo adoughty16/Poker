@@ -56,12 +56,15 @@ class Game_state:
         self.game_state = 'dealing'
         return
 
-    def upload(self):
-        return
+    def upload(self, db): #uploads game_state to db
+        pass
     
-    def fetch(self):
-        return self.game_state
+    def fetch(self, db): #downloads game_state from db
+        pass
     
+    def get_round(self):
+        return game_state
+
     def upload_turn():
         return
     
