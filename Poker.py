@@ -24,7 +24,7 @@ def main():
 	host = None #boolean value for whether the user on this machine is the host
 	
 	game_state = Game_state()
-
+	
 	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, lock)
 	graphicsThread.start()
 
