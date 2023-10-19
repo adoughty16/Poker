@@ -40,6 +40,12 @@ class Game_state:
     #dealer: index integer of players (list of strings)
     dealer=[]
 
+    #NEED TO IMPLEMENT (Setters getters yada yada)
+    player_decision = #hold enum for bet/check/fold/call
+    bet_amount = #bet amount for most recent bet
+    minimum_call = #the current amount needed for a call (For graphics, check is only an option if this value is zero)
+    player_names = [] #list of player names
+
     #active players: list of indexes of players (list of strings)
     active_players=[]
 

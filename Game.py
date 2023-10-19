@@ -72,7 +72,7 @@ class Game():
 
 				while not all_called:
 				#establish dealer/blinds
-				self.pot
+				self.pot 
 				#update state
 				#get bets one at a time and update state each time
 			if self.game_state.get_round() == 'flop':
@@ -159,12 +159,6 @@ class Game():
 	def find_best_hand():
 		#calls each player's evaluate_hand() and determines the winner. If there is a tie, it can 
 		#systematically search through individual hands for the highest card.
-		pass
-
-	def upload_game_state(): #uploads game-state to server
-		pass
-		
-	def fetch_game_state(): #fetches game-state from server
 		pass
 
 	def upload_turn(): #guess uploads turn
