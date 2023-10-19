@@ -6,6 +6,7 @@ import time
 import db_connect as database
 
 def main():
+	db = database.init()
 	lock = threading.Lock()
 	# Boots up graphics window in one thread
 	# Calls game loop in another
@@ -17,21 +18,22 @@ def main():
 	# puppies += 1
 	# lock.release()
 
-	#graphics window needs to prompt and allow input for the following values	
+	#graphics window needs to prompt and allow input for the following 2 values:
 	num_players = None #the number of non computer players for this game
-	host = None #boolean value for wether the user on this machine is the host
-
+	host = None #boolean value for whether the user on this machine is the host
+	
 	game_state = Game_state()
-	db = database.init()
+
+	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state)
+	graphicsThread.start()
+
 	game = Game(num_players, game_state, host, db)
 
-	graphThread = threading.Thread(Graphics.main(), host, game_state)
 	gameThread = threading.Thread(game.initial_main(), lock)
-
-	graphThread.start()
 	gameThread.start()
 
-	graphThread.join()
+
+	graphicsThread.join()
 	gameThread.join()
 
 	db.close()
