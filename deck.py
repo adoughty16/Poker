@@ -35,7 +35,7 @@ class Deck:
         for i in range(4):
             this_dealing.append(deck.pop())
             this_dealing.append(deck.pop())
-            dealing.append(this.dealing)
+            dealing.append(this_dealing)
         pass
 
     #returns list of 3 cards and removes them from Cards

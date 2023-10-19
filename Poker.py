@@ -10,11 +10,13 @@ def main():
 	# Boots up graphics window in one thread
 	# Calls game loop in another
 	# all shared variables get passed to both
-	# NOTE: the classes must expect these variables and any time they are changed
+	# NOTE: the classes must expect these variables and they must aqquire the lock condition any time they are changed
 
 	#graphics window needs to prompt and allow input for the following values	
 	players = None #the number of non computer players for this game
 	host = None #boolean value for wether the user on this machine is the host
+
+
 
 	game_state = Game_state()
 	db = database.init()

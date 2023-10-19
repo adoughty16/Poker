@@ -12,7 +12,7 @@ class Game(threading.Thread):
 		threading.Thread.__init__(self)
 		self.game_state = game_state
 		self.players = players
-		self.deck = Deck()
+		self.deck = deck()
 		self.pot = 0
 		self.dealer = 0
 		self.host = host

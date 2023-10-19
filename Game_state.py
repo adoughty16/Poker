@@ -1,4 +1,4 @@
-#import
+from enum import Enum
 
 
 """
@@ -52,10 +52,10 @@ class Game_state:
         self.game_state = 'dealing'
         return
 
-    def upload_game_state():
+    def upload_game_state(self):
         return
     
-    def fetch_game_state():
+    def fetch_game_state(self):
         return self.game_state
     
     def upload_turn():

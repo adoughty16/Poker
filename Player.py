@@ -1,3 +1,4 @@
+from enum import Enum
 import cards
 
 player_turn = Enum('player_turn',['bet','check','fold'])
@@ -15,7 +16,7 @@ class player:
     #stack is an int (money value)
     stack = 0
 
-    def is_computer_player():
+    def is_computer_player(self):
         return self.is_computer_player
 
     def turn():
