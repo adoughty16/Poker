@@ -72,7 +72,7 @@ class Game():
 
 				while not all_called:
 				#establish dealer/blinds
-				self.pot +=
+				self.pot
 				#update state
 				#get bets one at a time and update state each time
 			if self.game_state.get_round() == 'flop':

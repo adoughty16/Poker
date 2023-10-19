@@ -23,7 +23,7 @@ all to see with the highest hand taking the pot.
 
 source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 """
-round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
+round = Enum('dealing','pre-flop','flop','turn','river','showdown')
 
 class Game_state:
     
