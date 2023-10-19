@@ -9,7 +9,7 @@ import threading
 
 class Game():
 
-	def __init__ (self, num_players, game_state, host, db, lock):
+	def __init__ (self, num_players, game_state, host, db):
 		self.game_state = game_state
 		self.num_players = num_players
 		self.players = [Player() for _ in range(num_players)]
@@ -18,14 +18,12 @@ class Game():
 		self.dealer = 0
 		self.host = host
 		self.db = db
-		#c is the lock condition
-		self.lock = lock
 
-	def initial_main(self): #determines which game loop to call
+	def initial_main(self, lock): #determines which game loop to call
 		if (self.host):
-			self.host_main()
+			self.host_main(lock)
 		else:
-			self.guest_main()
+			self.guest_main(lock)
 		pass
 
 	def host_main(self):

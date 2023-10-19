@@ -18,18 +18,15 @@ def main():
 	# lock.release()
 
 	#graphics window needs to prompt and allow input for the following values	
-	players = None #the number of non computer players for this game
+	num_players = None #the number of non computer players for this game
 	host = None #boolean value for wether the user on this machine is the host
-
-
 
 	game_state = Game_state()
 	db = database.init()
+	game = Game(num_players, game_state, host, db)
 
-	game = Game(players, game_state, host, db)
-
-	graphThread = threading.Thread(Graphics.main(), players, host)
-	gameThread = threading.Thread(game.initial_main(), None)
+	graphThread = threading.Thread(Graphics.main(), host, game_state)
+	gameThread = threading.Thread(game.initial_main(), lock)
 
 	graphThread.start()
 	gameThread.start()
