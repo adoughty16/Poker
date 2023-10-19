@@ -22,9 +22,9 @@ class Card:
         self.value=value
 
 
-    def get_suit():
+    def get_suit(self):
         return self.suit
-    def get_value():
+    def get_value(self):
         return self.value
-    def get_image():
+    def get_image(self):
         pass
