@@ -105,9 +105,12 @@ class Game_state:
     def fetch(self):
         return self.game_state
     
+
     def upload_turn():
-        return
-    
-    def fetch_turn(player):
+        #data = {"players": players, "community_cards": community_cards, "pot": self.pot, "bet": self.bet , "dealer": , "actives": , "round": }
+        #db.collection("").document("").set(data)
         return
 
+    # this will be the parser where we reset everything? 
+    def fetch_turn(player):
+        return
