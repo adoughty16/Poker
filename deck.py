@@ -1,4 +1,4 @@
-
+import random
 import cards
 # DECK:
 # -Cards[]
@@ -25,7 +25,7 @@ class Deck:
         return these_cards
 
 
-    def get_deck():
+    def get_deck(self):
         return self.deck
     
     #returns 4-tuple of lists of 2 cards each and removes them from cards
