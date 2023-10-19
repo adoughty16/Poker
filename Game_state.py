@@ -23,7 +23,7 @@ all to see with the highest hand taking the pot.
 
 source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 """
-game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
+round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 
 class Game_state:
     
@@ -63,8 +63,8 @@ class Game_state:
         # players left: array of int indexes (important for showdown round)
         self.actives = [0, 1, 2, 3]
 
-        #start the game dealing
-        self.game_state = 'dealing'
+        #first round is dealing
+        self.round = 'dealing'
 
     def set_players(self, players):
         for player in players:
