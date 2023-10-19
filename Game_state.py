@@ -74,6 +74,7 @@ class Game_state:
         # add to the community cards
         # self.community_cards.append()
         # based on where these are decided, maybe add makes more sense and call twice in flop
+        pass
     
 
     def set_pot(self, pot):
