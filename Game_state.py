@@ -33,7 +33,9 @@ class Game_state:
 
     community_cards=[]
 
-    pot=0
+    total_pot=0 #updates after every round from round_pot
+
+    round_pot = 0
 
     minimum_bet=10
 
@@ -42,7 +44,7 @@ class Game_state:
 
     #NEED TO IMPLEMENT (Setters getters yada yada)
     player_decision = #hold enum for bet/check/fold/call
-    bet_amount = #bet amount for most recent bet
+    bet_amount = #bet amount for most recent bet (needs to be set to zero in game loop unless a player bets)
     minimum_call = #the current amount needed for a call (For graphics, check is only an option if this value is zero)
     player_names = [] #list of player names
 
