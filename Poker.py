@@ -6,11 +6,16 @@ import time
 import db_connect as database
 
 def main():
-	c = threading.Condition()
+	lock = threading.Lock()
 	# Boots up graphics window in one thread
 	# Calls game loop in another
 	# all shared variables get passed to both
-	# NOTE: the classes must expect these variables and they must aqquire the lock condition any time they are changed
+	# NOTE: the classes must expect these variables and they must aqquire the lock any time they are changed
+
+	# say you want to increment shared variable puppies:
+	# lock.aquire()
+	# puppies += 1
+	# lock.release()
 
 	#graphics window needs to prompt and allow input for the following values	
 	players = None #the number of non computer players for this game

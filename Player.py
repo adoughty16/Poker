@@ -4,7 +4,7 @@ import cards
 player_turn = Enum('player_turn',['bet','check','fold'])
 
 
-class player:
+class Player:
 
     def __init__(self, name, is_computer_player):
         self.name=name
@@ -27,6 +27,18 @@ class player:
             #future: analyze hand and able and make turn accordingly
             #sprint 1: randomized
         return
+    
+    def set_hand(self, hand):
+        self.hand = hand
+
+    def get_hand(self):
+        return self.hand
+
+    def set_stack(self, value):
+        self.stack = value
+
+    def get_stack(self):
+        return self.stack
 
     def evaluate_strength(community_cards):
         return

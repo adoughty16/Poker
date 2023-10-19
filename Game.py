@@ -1,3 +1,4 @@
+import Player
 import deck
 import cards
 import Game_state
@@ -6,19 +7,19 @@ import threading
 
 
 
-class Game(threading.Thread):
+class Game():
 
-	def __init__ (self, players, game_state, host, db, c):
-		threading.Thread.__init__(self)
+	def __init__ (self, num_players, game_state, host, db, lock):
 		self.game_state = game_state
-		self.players = players
+		self.num_players = num_players
+		self.players = [Player() for _ in range(num_players)]
 		self.deck = deck()
 		self.pot = 0
 		self.dealer = 0
 		self.host = host
 		self.db = db
 		#c is the lock condition
-		self.c = c
+		self.lock = lock
 
 	def initial_main(self): #determines which game loop to call
 		if (self.host):
@@ -33,7 +34,7 @@ class Game(threading.Thread):
 		connected = False
 		#first spots in flags hold 0s for players to flip to 1s when they connect.
 		#last spot is host confirmation bit that host will flip when all player spots are filled
-		flags = [0 for _ in range(self.players + 1)]
+		flags = [0 for _ in range(self.num_players + 1)]
 		self.db.collection("flags").document("flag_document").set({"values": flags})
 		flag_document = self.db.collection("flags").document("flag_document").get()
 
@@ -41,7 +42,7 @@ class Game(threading.Thread):
 			#update local flags from database
 			flags = flag_document.to_dict()["values"]
 			connected = True
-			for i in range(self.players - 1):
+			for i in range(self.num_players - 1):
 				#if any are 0
 				if flags[i] == 0:
 					#not everyone is connected yet
@@ -49,13 +50,20 @@ class Game(threading.Thread):
 			#if all players have connected
 			if connected:
 				#update and upload confirmation bit
-				flags[self.players] = 1
+				flags[self.num_players] = 1
 				self.db.collection("flags").document("flag_document").set({"values": flags})
 		
 		#NOTE: game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 		while playing:
 			if self.game_state.fetch_game_state() == 'dealing':
-				self.deck.deal()
+				#deal
+				hands = self.deck.deal()
+				for player, hand in zip(self.players, hands):
+					player.set_hand(hand)
+
+				#update game_state locally, then on db
+				self.game_state
+
 			if self.game_state.fetch_game_state() == 'pre-flop':
 				pass
 			if self.game_state.fetch_game_state() == 'flop':
@@ -83,7 +91,7 @@ class Game(threading.Thread):
 				#if we haven't reserved a spot in the game
 				if not waiting_for_host:
 					#look through all flags except the confirmation bit at the end until we find an opening
-					for i in range(self.players - 1):
+					for i in range(self.num_players - 1):
 						if flags[i] == 0:
 							#reserve the opening
 							flags[i] = 1
@@ -96,7 +104,7 @@ class Game(threading.Thread):
 				#if we are awaiting confirmation
 				if waiting_for_host:
 					#check the confirmation bit
-					if flags[self.players] == 1:
+					if flags[self.num_players] == 1:
 						connected = True
 			#sleeping might not be necessary but it keeps us from making maybe 100s of queries while connecting
 			time.sleep(1)
