@@ -24,48 +24,21 @@ all to see with the highest hand taking the pot.
 source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 """
 round = Enum('dealing','pre-flop','flop','turn','river','showdown')
+play = Enum('bet', 'check', 'fold', 'call')
 
 class Game_state:
-    
-    #players: list of strings (need their hands at the end)
-    #should we consider dict?
-    players=[]
-
-    community_cards=[]
-
-    total_pot=0 #updates after every round from round_pot
-
-    round_pot = 0
-
-    minimum_bet=10
-
-    #dealer: index integer of players (list of strings)
-    dealer=[]
-
-    #NEED TO IMPLEMENT (Setters getters yada yada)
-    player_decision = #hold enum for bet/check/fold/call
-    bet_amount = #bet amount for most recent bet (needs to be set to zero in game loop unless a player bets)
-    minimum_call = #the current amount needed for a call (For graphics, check is only an option if this value is zero)
-    player_names = [] #list of player names
-
-    #active players: list of indexes of players (list of strings)
-    active_players=[]
-
-    #where should we track who is the dealer, blind, and double blind?
-
-    #ANSWER/IDEA: dealer can maybe just be an integer mod 4 that keeps track of their index in the player list?
-    #blind is the next player after the dealer
-    #double blind is the next player after that
-
     def __init__(self):
         #populate variables
-        self.players = []
+        self.player_names = []
         # store card objects (?)
         self.community_cards = []
         # to bet updated each time
-        self.pot = 0
+        self.total_pot = 0
+        self.round_pot = 0 
         # hard code first blind to be 10
         self.bet = 10
+        # the current amount needed for a call (For graphics, check is only an option if this value is zero)
+        self.minimum_call = 10 
         # index of the dealer
         self.dealer = 0
         # players left: array of int indexes (important for showdown round)
@@ -73,6 +46,9 @@ class Game_state:
 
         #first round is dealing
         self.round = 'dealing'
+
+        self.player_decision = 'check'
+
 
     def set_players(self, players):
         for player in players:
@@ -84,9 +60,21 @@ class Game_state:
         # based on where these are decided, maybe add makes more sense and call twice in flop
         pass
     
+    def set_total_pot(self, pot):
+        self.total_pot = pot
+    
+    def set_round_pot(self, round_pot)
+        self.round_pot = round_pot
 
-    def set_pot(self, pot):
-        self.pot = pot
+    def set_bet(self, new_bet):
+        # wherever this is called, only call if new_bet > bet
+        self.bet = new_bet
+    
+    def set_minimum_call(self, minimum_call):
+        self.minimum_call = minimum_call
+
+    def set_player_decision(self, player_decision):
+        self.player_decision = player_decision
 
     def set_bet(self, new_bet):
         # wherever this is called, only call if new_bet > bet
@@ -107,12 +95,50 @@ class Game_state:
         # do we need to check that this is "next in line"?
         self.round = round
 
+# getters 
+    def get_players(self):
+        return self.players
 
-    def upload(self, db): #uploads game_state to db
+    def get_community_cards(self):
+        # add to the community cards
+        # self.community_cards.append()
+        # based on where these are decided, maybe add makes more sense and call twice in flop
         pass
     
-    def fetch(self):
-        return self.game_state
+    def get_total_pot(self):
+        return self.total_pot 
+    
+    def get_round_pot(self)
+        return self.round_pot
+
+    def get_bet(self):
+        # wherever this is called, only call if new_bet > bet
+        return self.bet 
+    
+    def get_minimum_call(self):
+        return self.minimum_call 
+
+    def get_player_decision(self):
+        return self.player_decision
+
+    def get_bet(self):
+        return self.bet 
+
+    def get_dealer(self):
+        # dealer is the index of the dealer
+        # use this index and add (and mod) to get other players such as blind and double_blind
+        return self.dealer
+
+    # set_actives is really just removing anyone who folds
+    def get_actives(self):
+        return self.actives
+
+    def get_round(self):
+       return self.round
+
+# other funcitons 
+    def upload(self, db): #uploads game_state to db
+        pass
     
     def upload_turn():
         #data = {"players": players, "community_cards": community_cards, "pot": self.pot, "bet": self.bet , "dealer": , "actives": , "round": }
