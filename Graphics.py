@@ -37,12 +37,43 @@ CARD_SUITS = ["Clubs", "Hearts", "Spades", "Diamonds"]
 # Face down image
 FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
 
-class MyGame(arcade.Window):
+
+
+
+''' CREATE THE WELCOME SCREEN'''
+
+class WelcomeView(arcade.View):
+    def on_show_view(self):
+        """ This is run once when we switch to this view """
+        arcade.set_background_color(arcade.csscolor.BROWN)
+
+        # Reset the viewport, necessary if we have a scrolling game and we need
+        # to reset the viewport back to the start so we can see what we draw.
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
+    def on_draw(self):
+        """ Draw this view """
+        self.clear()
+        arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height / 2,
+                         arcade.color.WHITE, font_size=48, anchor_x="center")
+        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
+                         arcade.color.WHITE, font_size=20, anchor_x="center")
+
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        """ If the user presses the mouse button, start the game. """
+        game_view = GameView()
+        game_view.setup()
+        self.window.show_view(game_view)
+
+
+
+''' CREATE THE MAIN GAME '''
+
+class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-
+        super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
 
@@ -55,6 +86,8 @@ class MyGame(arcade.Window):
         # they have to go back.
         self.held_cards_original_position = None
 
+        # Don't show the mouse cursor
+        self.window.set_mouse_visible(False)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -161,9 +194,13 @@ class Card(arcade.Sprite):
 
 def main():
     """ Main function """
-    window = MyGame()
-    window.setup()
+
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    start_view = WelcomeView()
+    window.show_view(start_view)
     arcade.run()
+
+
 
 
 if __name__ == "__main__":
