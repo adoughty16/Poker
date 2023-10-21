@@ -27,7 +27,7 @@ round = Enum('dealing','pre-flop','flop','turn','river','showdown')
 play = Enum('bet', 'check', 'fold', 'call')
 
 class Game_state:
-    def __init__(self):
+    def __init__(self, doc_name):
         #populate variables
         self.player_names = []
         # added player hands to be set and "got" only in showdown (for built-in security)
@@ -49,18 +49,21 @@ class Game_state:
         self.round = 'dealing'
         self.player_decision = 'check'
 
+        self.doc_name = doc_name
+
         # create a document in the database for the game's gamestate
         # ultimately, we decided to make one document and update it as needed to theoretically support multiple games at once
         # NOTE: player_hands and comunity_cards means that the card class with need a to_dict and from_dict 
         data = {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, 
-        "total_pot": total_pot, "round_pot": round_pot, "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer,
+        "total_pot": self.total_pot, "round_pot": self.round_pot, "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer,
         "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
-        game_state_ref = db.collection("states").add(data)
+        game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
 
     def set_players(self, players):
         for player in players:
             self.players.append(player.name)
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"player_names": self.players})
 
     # takes in community cards and sets them for flop
@@ -71,43 +74,52 @@ class Game_state:
         for card in community_cards:
             self.community_cards.append(card)
         # NOTE: can firebase store an array of custom object types? 
-        game_state_ref.update("community_cards": self.community_cards)
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"community_cards": self.community_cards})
     
     # adds a community card in turn and river 
     def add_community_card(self, community_card):
         self.community_cards.append(community_card)
-        game_state_ref.udpate("community_cards": self.community_cards)
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"community_cards": self.community_cards})
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands):
         for player in self.players:
             self.player_hands.append(player.hand)
-        game_state_ref.update("player_hands": self.player_hands)
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"player_hands": self.player_hands})
     
     def set_total_pot(self, pot):
         self.total_pot = pot
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"total_pot": self.total_pot})
     
-    def set_round_pot(self, round_pot)
+    def set_round_pot(self, round_pot):
         self.round_pot = round_pot
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"round_pot": self.round_pot})
 
     def set_bet(self, new_bet):
         # wherever this is called, only call if new_bet > bet
         self.bet = new_bet
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"bet": self.bet})
     
     def set_minimum_call(self, minimum_call):
         self.minimum_call = minimum_call
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"minimum_call": self.minimum_call})
 
     def set_player_decision(self, player_decision):
         self.player_decision = player_decision
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_decision": self.player_decision})
 
     def set_dealer(self, dealer):
         # dealer is the index of the dealer
         self.dealer = dealer
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"dealer": self.dealer})
 
     def update_dealer(self):
@@ -115,21 +127,25 @@ class Game_state:
         # use this index and add (and mod) to get other players such as blind and double_blind
         self.dealer += 1
         self.dealer % 4
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"dealer": self.dealer})
 
     # set_actives is really just removing anyone who folds
     def remove_player(self, player):
         self.actives.remove(player.name)
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"actives": self.actives})
 
     def set_round(self, round):
         # updates the enumerated type for round after the right number of turns have passed (depending on len(actives))
         # do we need to check that this is "next in line"?
         self.round = round
+        game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"round": self.round})
 
 # getters 
     def get_players(self):
+        game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.players
 
@@ -137,9 +153,11 @@ class Game_state:
         return self.community_cards
     
     def get_total_pot(self):
-        return self.total_pot 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.total_pot 
     
-    def get_round_pot(self)
+    def get_round_pot(self):
         return self.round_pot
 
     def get_bet(self):
@@ -162,7 +180,9 @@ class Game_state:
 
     # set_actives is really just removing anyone who folds
     def get_actives(self):
-        return self.actives
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.actives
 
     def get_round(self):
        return self.round
