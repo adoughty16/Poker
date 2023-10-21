@@ -1,5 +1,10 @@
 from enum import Enum
 
+''' 
+Game State class to keep track of game information in the data base (to allow multi-player)
+takes in a document name and database connection to create the object!! 
+every getter and setter interfaces with the database (to avoid conflicting information)
+'''
 """
 pre-flop:After the Dealer has passed out two cards to everyone, 
 the player clockwise to the Right Blind has the option to fold, 
