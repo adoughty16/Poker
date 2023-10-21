@@ -55,7 +55,7 @@ class Game_state:
         data = {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, 
         "total_pot": total_pot, "round_pot": round_pot, "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer,
         "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
-        game_state_ref = db.collection("").add(data)
+        game_state_ref = db.collection("states").add(data)
 
 
     def set_players(self, players):
@@ -63,11 +63,26 @@ class Game_state:
             self.players.append(player.name)
         game_state_ref.udpate({"player_names": self.players})
 
+    # takes in community cards and sets them for flop
     def set_community_cards(self, community_cards):
         # add to the community cards
         # self.community_cards.append()
         # based on where these are decided, maybe add makes more sense and call twice in flop
-        pass
+        for card in community_cards:
+            self.community_cards.append(card)
+        # NOTE: can firebase store an array of custom object types? 
+        game_state_ref.update("community_cards": self.community_cards)
+    
+    # adds a community card in turn and river 
+    def add_community_card(self, community_card):
+        self.community_cards.append(community_card)
+        game_state_ref.udpate("community_cards": self.community_cards)
+
+    # function only to be used during showdown
+    def set_player_hands(self, player_hands):
+        for player in self.players:
+            self.player_hands.append(player.hand)
+        game_state_ref.update("player_hands": self.player_hands)
     
     def set_total_pot(self, pot):
         self.total_pot = pot
@@ -119,10 +134,7 @@ class Game_state:
         return doc.players
 
     def get_community_cards(self):
-        # add to the community cards
-        # self.community_cards.append()
-        # based on where these are decided, maybe add makes more sense and call twice in flop
-        pass
+        return self.community_cards
     
     def get_total_pot(self):
         return self.total_pot 
