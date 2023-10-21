@@ -200,12 +200,3 @@ class Game_state:
     # this will be the parser where we reset everything? 
     def fetch_turn(player):
         pass
-
-# an attempt at testing the database and game state classes 
-def main():
-    game_state = Game_state()
-    print(game_state.get_actives)
-    game_state.set_total_pot(100)
-    print(game_state.get_total_pot)
-
-main()
