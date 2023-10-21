@@ -176,8 +176,17 @@ class Game_state:
     def upload_turn():
         #data = {"players": players, "community_cards": community_cards, "pot": self.pot, "bet": self.bet , "dealer": , "actives": , "round": }
         #db.collection("").document("").set(data)
-        return
+        pass
 
     # this will be the parser where we reset everything? 
     def fetch_turn(player):
-        return
+        pass
+
+# an attempt at testing the database and game state classes 
+def main():
+    game_state = Game_state()
+    print(game_state.get_actives)
+    game_state.set_total_pot(100)
+    print(game_state.get_total_pot)
+
+main()
