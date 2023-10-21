@@ -1,5 +1,4 @@
 from enum import Enum
-from db_connect import db 
 
 """
 pre-flop:After the Dealer has passed out two cards to everyone, 
@@ -23,11 +22,11 @@ all to see with the highest hand taking the pot.
 
 source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 """
-round = Enum('dealing','pre-flop','flop','turn','river','showdown')
-play = Enum('bet', 'check', 'fold', 'call')
+round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
+play = Enum('play', ['bet', 'check', 'fold', 'call'])
 
 class Game_state:
-    def __init__(self, doc_name):
+    def __init__(self, db, doc_name):
         #populate variables
         self.player_names = []
         # added player hands to be set and "got" only in showdown (for built-in security)
@@ -60,14 +59,14 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
 
-    def set_players(self, players):
+    def set_players(self, players, db):
         for player in players:
             self.players.append(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"player_names": self.players})
 
     # takes in community cards and sets them for flop
-    def set_community_cards(self, community_cards):
+    def set_community_cards(self, community_cards, db):
         # add to the community cards
         # self.community_cards.append()
         # based on where these are decided, maybe add makes more sense and call twice in flop
@@ -78,51 +77,51 @@ class Game_state:
         game_state_ref.update({"community_cards": self.community_cards})
     
     # adds a community card in turn and river 
-    def add_community_card(self, community_card):
+    def add_community_card(self, community_card, db):
         self.community_cards.append(community_card)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"community_cards": self.community_cards})
 
     # function only to be used during showdown
-    def set_player_hands(self, player_hands):
+    def set_player_hands(self, player_hands, db):
         for player in self.players:
             self.player_hands.append(player.hand)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_hands": self.player_hands})
     
-    def set_total_pot(self, pot):
+    def set_total_pot(self, pot, db):
         self.total_pot = pot
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"total_pot": self.total_pot})
     
-    def set_round_pot(self, round_pot):
+    def set_round_pot(self, round_pot, db):
         self.round_pot = round_pot
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"round_pot": self.round_pot})
 
-    def set_bet(self, new_bet):
+    def set_bet(self, new_bet, db):
         # wherever this is called, only call if new_bet > bet
         self.bet = new_bet
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"bet": self.bet})
     
-    def set_minimum_call(self, minimum_call):
+    def set_minimum_call(self, minimum_call, db):
         self.minimum_call = minimum_call
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"minimum_call": self.minimum_call})
 
-    def set_player_decision(self, player_decision):
+    def set_player_decision(self, player_decision, db):
         self.player_decision = player_decision
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_decision": self.player_decision})
 
-    def set_dealer(self, dealer):
+    def set_dealer(self, dealer, db):
         # dealer is the index of the dealer
         self.dealer = dealer
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"dealer": self.dealer})
 
-    def update_dealer(self):
+    def update_dealer(self, db):
         # dealer is the index of the dealer
         # use this index and add (and mod) to get other players such as blind and double_blind
         self.dealer += 1
@@ -131,12 +130,12 @@ class Game_state:
         game_state_ref.udpate({"dealer": self.dealer})
 
     # set_actives is really just removing anyone who folds
-    def remove_player(self, player):
+    def remove_player(self, player, db):
         self.actives.remove(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"actives": self.actives})
 
-    def set_round(self, round):
+    def set_round(self, round, db):
         # updates the enumerated type for round after the right number of turns have passed (depending on len(actives))
         # do we need to check that this is "next in line"?
         self.round = round
@@ -144,47 +143,47 @@ class Game_state:
         game_state_ref.udpate({"round": self.round})
 
 # getters 
-    def get_players(self):
+    def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.players
 
-    def get_community_cards(self):
+    def get_community_cards(self, db):
         return self.community_cards
     
-    def get_total_pot(self):
+    def get_total_pot(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.total_pot 
     
-    def get_round_pot(self):
+    def get_round_pot(self, db):
         return self.round_pot
 
-    def get_bet(self):
+    def get_bet(self, db):
         # wherever this is called, only call if new_bet > bet
         return self.bet 
     
-    def get_minimum_call(self):
+    def get_minimum_call(self, db):
         return self.minimum_call 
 
-    def get_player_decision(self):
+    def get_player_decision(self, db):
         return self.player_decision
 
-    def get_bet(self):
+    def get_bet(self, db):
         return self.bet 
 
-    def get_dealer(self):
+    def get_dealer(self, db):
         # dealer is the index of the dealer
         # use this index and add (and mod) to get other players such as blind and double_blind
         return self.dealer
 
     # set_actives is really just removing anyone who folds
-    def get_actives(self):
+    def get_actives(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.actives
 
-    def get_round(self):
+    def get_round(self, db):
        return self.round
 
 # other funcitons 
