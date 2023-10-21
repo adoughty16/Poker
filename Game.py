@@ -51,7 +51,7 @@ class Game():
 				flags[self.num_players] = 1
 				self.db.collection("flags").document("flag_document").set({"values": flags})
 		
-		#NOTE: game_state = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
+		#NOTE: round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 		while playing:
 			if self.game_state.get_round() == 'dealing':
 				#deal
@@ -63,6 +63,7 @@ class Game():
 				lock.aquire() 
 				for player, hand in zip(self.game_state.players, hands):
 					player.set_hand(hand)
+				# the way that game_state is designed now this should just call set to whatever changes (no need for upload)
 				self.game_state.s
 				self.game_state.upload()
 				lock.release()
