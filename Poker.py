@@ -28,7 +28,7 @@ def main():
 	game_state = Game_state.Game_state(db, 'doc1')
 	
 	# Boots up graphics window in one thread
-	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, thread_ready, lock)
+	graphicsThread = threading.Thread(Graphics.main(), (num_players, host, game_state, thread_ready, lock))
 	graphicsThread.start()
 
 	while not ready:
@@ -43,7 +43,7 @@ def main():
 	lock.release()
 
 	# Call game loop thread
-	gameThread = threading.Thread(game.initial_main(), lock)
+	gameThread = threading.Thread(game.initial_main(), (game_state, lock))
 	gameThread.start()
 
 	graphicsThread.join()
