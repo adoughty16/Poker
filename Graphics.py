@@ -74,50 +74,66 @@ class WelcomeView(arcade.View):
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.UIBoxLayout()
 
+        self.x_box = arcade.gui.UIBoxLayout()
+
+
+
+
 
         # creating host button
         host_button = arcade.gui.UIFlatButton(text="Host Game", width=200)
         self.v_box.add(host_button.with_space_around(bottom=20))
 
-    #    self.manager.add(
-      #      arcade.gui.UIAnchorWidget(
-      #          anchor_x="center_x",
-      #          anchor_y="center_y",
-      #          child=host_button)
-      #  )
-
-
-
         # creating join game button
         join_button = arcade.gui.UIFlatButton(text="Join Game", width=200)
         self.v_box.add(join_button.with_space_around(bottom=20))
 
+        host_button.on_click = self.on_buttonclick
+        join_button.on_click = self.on_buttonclick
+
+
         # creating 1 player button
-      #  player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
-       # self.v_box.add(player1_button.with_space_around(bottom=20))
+        player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
+        self.x_box.add(player1_button.with_space_around(bottom=20))
 
         # creating 2 players button
-      #  player2_button = arcade.gui.UIFlatButton(text="2 players", width=200)
-      #  self.v_box.add(player2_button.with_space_around(bottom=20))
-
+        player2_button = arcade.gui.UIFlatButton(text="2 players", width=200)
+        self.x_box.add(player2_button.with_space_around(bottom=20))
 
         # creating 3 players button
-     #   player3_button = arcade.gui.UIFlatButton(text="3 players", width=200)
-     #   self.v_box.add(player3_button.with_space_around(bottom=20))
+        player3_button = arcade.gui.UIFlatButton(text="3 players", width=200)
+        self.x_box.add(player3_button.with_space_around(bottom=20))
 
 
         # creating 4 players button
-      #  player4_button = arcade.gui.UIFlatButton(text="4 players", width=200)
-      #  self.v_box.add(player4_button.with_space_around(bottom=20))
+        player4_button = arcade.gui.UIFlatButton(text="4 players", width=200)
+        self.x_box.add(player4_button.with_space_around(bottom=20))
 
-        # Create a widget to hold the v_box widget, that will center the buttons
+        player1_button.on_click = self.on_buttonclick
+        player2_button.on_click = self.on_buttonclick
+        player3_button.on_click = self.on_buttonclick
+        player4_button.on_click = self.on_buttonclick
+
+        # Create a widget to hold the v_box widget, that will center the
+        # buttons
         self.manager.add(
             arcade.gui.UIAnchorWidget(
-                anchor_x="center_x",
+                anchor_x="left",
                 anchor_y="center_y",
                 child=self.v_box)
         )
 
+        # for positioning of number of players
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="right",
+                anchor_y="center_y",
+                child=self.x_box)
+        )
+
+    # This function will be called everytime the user presses a button
+    def on_buttonclick(self, event):
+            print("Button is clicked")
 
 
     def on_draw(self):
@@ -141,13 +157,10 @@ class WelcomeView(arcade.View):
                          arcade.color.WHITE, font_size=48, anchor_x="center")
         arcade.draw_text("Click to advance", self.window.width / 2, self.window.height - 100,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
-        arcade.draw_text("Do you want to HOST or JOIN the game?", self.window.width / 2 , self.window.height /2 + 90,
+        arcade.draw_text("Do you want to HOST or JOIN the game?",  190 , self.window.height /2 + 90,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
-        #arcade.draw_text("How many people are playing?", self.window.width - 70 , self.window.height / 2,
-                         #arcade.color.WHITE, font_size=15, anchor_x="center")
-
-
-
+        arcade.draw_text("How many people are playing?", 870, self.window.height / 2 + 160,
+                         arcade.color.WHITE, font_size=15, anchor_x="center")
 
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
@@ -155,9 +168,6 @@ class WelcomeView(arcade.View):
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
-
-
-
 
 
 
@@ -349,10 +359,14 @@ class Card(arcade.Sprite):
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
 
-def main(num_players, host, game_state, ready, lock):
+# add parameters to main: num_players, host, game_state, ready, lock
+def main():
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     start_view = WelcomeView()
     window.show_view(start_view)
     arcade.run()
+
+if __name__ == "__main__":
+    main()
