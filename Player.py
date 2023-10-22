@@ -1,4 +1,5 @@
 import cards
+import random
 from enum import Enum
 from collections import Counter
 
@@ -31,7 +32,7 @@ class Player:
     def get_stack(self):
         return self.stack
     
-    def get_player_type(self):
+    def is_computer_player(self):
         return self.is_computer_player
     
     def set_name(self, name):
@@ -65,9 +66,10 @@ class Player:
     def make_decision(self, community_cards):
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
-        import random
+        #EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
+        bet_value = None
         decisions = ["bet", "check", "fold"]
-        return random.choice(decisions)
+        return random.choice(decisions), bet_value
 
     def calculate_strength(self, cards):
         # Implement hand strength evaluation

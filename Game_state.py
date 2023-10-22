@@ -40,7 +40,18 @@ class Game_state:
         self.community_cards = []
         # to bet updated each time
         self.total_pot = 0
-        self.round_pot = 0 
+        self.round_pot = 0
+
+        #
+        # to keep track of the total per-person call amount per round
+        #
+        self.total_call = 0
+
+        #
+        # to keep track of which player is expected to upload turn info
+        #
+        self.whose_turn = 0
+
         # hard code first blind to be 10
         self.bet = 10
         # the current amount needed for a call (For graphics, check is only an option if this value is zero)

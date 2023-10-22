@@ -16,8 +16,12 @@ class Game():
 		self.deck = deck()
 		self.pot = 0
 		self.dealer = 0
+		self.current = 3
+		self.total_call = 10
+		self.me = 0
 		self.host = host
 		self.db = db
+		self.actives = [0, 1, 2, 3]
 
 	def initial_main(self, lock): #determines which game loop to call
 		if (self.host):
@@ -53,6 +57,10 @@ class Game():
 		
 		#NOTE: round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 		while playing:
+			lock.aquire:()
+			self.game_state.set_dealer(self.dealer, self.db)
+			# other inits for game_state
+
 			if self.game_state.get_round() == 'dealing':
 				#deal
 				hands = self.deck.deal()
@@ -64,18 +72,58 @@ class Game():
 				for player, hand in zip(self.game_state.players, hands):
 					player.set_hand(hand)
 				# the way that game_state is designed now this should just call set to whatever changes (no need for upload)
-				self.game_state.s
-				self.game_state.upload()
+				self.game_state.set_round('pre-flop')
 				lock.release()
 
 			if self.game_state.get_round() == 'pre-flop':
 				all_called = False
 				#establish dealer/blinds
 				self.pot += 15
-				Players[self.dealer + 1]. 
-
+				self.players[(self.dealer + 1) % 4].set_stack(self.players[(self.dealer + 1) % 4].get_stack() - 5)
+				self.players[(self.dealer + 2) % 4].set_stack(self.players[(self.dealer + 2) % 4].get_stack() - 10)
+				#
+				#
+				#update gamestate with new player stacks HERE
+				#
+				#
 
 				while not all_called:
+					#get the decision from the current player
+					if self.players[self.current].is_computer_player():
+						choice, value = self.players[self.current].turn()
+						if choice == 'bet':
+							self.pot += value
+							self.total_call += value
+							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
+							lock.aquire()
+							self.game_state.set_round_pot(value)
+							self.game_state.set_bet(value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value)
+							self.game_state.set_player_decision(choice)
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+
+						elif choice == 'check':
+							lock.aquire()
+							self.game_state.set_round_pot(value)
+							self.game_state.set_bet(value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value)
+							self.game_state.set_player_decision(choice)
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+							
+						elif choice == 'fold':
+							pass
+						elif choice == 'call':
+							pass
+					
+
+
+
 				
 				#update state
 				#get bets one at a time and update state each time
