@@ -59,6 +59,8 @@ class Game():
 		while playing:
 			lock.aquire:()
 			self.game_state.set_dealer(self.dealer, self.db)
+			self.game_state.set_player_hands([None] for i in range(4))
+			lock.release()
 			# other inits for game_state
 
 			if self.game_state.get_round() == 'dealing':
@@ -86,6 +88,7 @@ class Game():
 
 				self.stacks = [self.players.get_stack() for _ in range(4)]
 				lock.aquire()
+				self.game_state.set_round_pot(self.pot, self.db)
 				self.set_player_stacks(self.stacks)
 				lock.release()
 
@@ -101,7 +104,7 @@ class Game():
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
 							self.set_player_stacks(self.stacks)
-							self.game_state.set_round_pot(value, self.db)
+							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
 							self.game_state.set_player_decision(choice, self.db)
@@ -127,12 +130,13 @@ class Game():
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
 							self.set_player_stacks(self.stacks)
-							self.game_state.set_round_pot(value, self.db)
+							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn()
 							lock.release()
+
 					if self.current == self.me:
 						#It's my turn! This turn happens in the graphics window.
 						#This will be the same as the turn in guest_main()
@@ -158,7 +162,7 @@ class Game():
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
 							self.set_player_stacks(self.stacks)
-							self.game_state.set_round_pot(value, self.db)
+							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
@@ -184,7 +188,7 @@ class Game():
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
 							self.set_player_stacks(self.stacks)
-							self.game_state.set_round_pot(value, self.db)
+							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
@@ -192,11 +196,11 @@ class Game():
 							lock.release()
 						lock.release()
 
-						#change current player
+					#change current player
+					self.current += 1
+					while self.current not in self.actives:
 						self.current += 1
-						while self.current not in self.actives:
-							self.current += 1
-							self.current = self.current % 4
+						self.current = self.current % 4
 					
 					#if at any point only one player is active
 					if len(self.actives) == 1:
@@ -246,7 +250,13 @@ class Game():
 				self.players[self.actives[0]].set_stack(self.players[self.actives[0]].get_stack() + self.pot)
 				#reset values
 				#change the round
-				#update db with actual hands
+				lock.aquire()
+				self.game_state.set_player_stacks(self.stacks, self.db)
+				self.game_state.set_round('dealing', self.db)
+				self.game_state.set_total_pot(0, self.db)
+				self.game_state.set_round_pot(0, self.db)
+				self.game_state.set_player_hands([player.get_hand() for player in self.players], self.db)
+				lock.release()
 				self.pot = 0
 				self.dealer += 1
 				self.current = (self.dealer + 3) % 4
