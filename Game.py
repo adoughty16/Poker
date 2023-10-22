@@ -18,6 +18,7 @@ class Game():
 		self.dealer = 0
 		self.current = 3
 		self.total_call = 10
+		self.round_bets = [0, 0, 0, 0]
 		self.me = 0
 		self.host = host
 		self.db = db
@@ -80,7 +81,9 @@ class Game():
 				#establish dealer/blinds
 				self.pot += 15
 				self.players[(self.dealer + 1) % 4].set_stack(self.players[(self.dealer + 1) % 4].get_stack() - 5)
+				self.round_bets[(self.dealer + 1) % 4] = 5
 				self.players[(self.dealer + 2) % 4].set_stack(self.players[(self.dealer + 2) % 4].get_stack() - 10)
+				self.round_bets[(self.dealer + 1) % 4] = 10
 				#
 				#
 				#update gamestate with new player stacks HERE
@@ -94,12 +97,14 @@ class Game():
 						if choice == 'bet':
 							self.pot += value
 							self.total_call += value
+							self.round_bets[self.current] += value
 							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
 							lock.aquire()
 							self.game_state.set_round_pot(value)
 							self.game_state.set_bet(value)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value) #NEEDED IN GS
 							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn() # NEED THIS IN GS
 							lock.release()
 							self.current += 1
 							while self.current not in self.actives:
@@ -107,19 +112,37 @@ class Game():
 
 						elif choice == 'check':
 							lock.aquire()
-							self.game_state.set_round_pot(value)
-							self.game_state.set_bet(value)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value)
 							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn()
 							lock.release()
 							self.current += 1
 							while self.current not in self.actives:
 								self.current += 1
 							
 						elif choice == 'fold':
-							pass
+							self.actives.remove(self.current)
+							lock.aquire()
+							self.game_state.remove_player(self.current)
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+
 						elif choice == 'call':
-							pass
+							self.pot += (self.total_call - self.round_bets[self.current])
+							self.players[self.current].set_stack(self.player[self.current].get_stack - (self.total_call - self.round_bets[self.current]))
+							self.round_bets[self.current] = self.total_call
+							lock.aquire()
+							self.game_state.set_round_pot(value)
+							self.game_state.set_bet(value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value) #NEEDED IN GS
+							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+
 					
 
 
