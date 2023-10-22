@@ -1,4 +1,5 @@
 import Game
+import arcade
 import Game_state
 import Graphics
 import threading
