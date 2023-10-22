@@ -276,6 +276,12 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.whose_turn 
+    
+    # this also may need some help from cards class as it will be an array of arrays of card objects 
+    def get_player_hands(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.player_hands 
 
 # other funcitons 
     # i'm confused by what the difference between upload and upload_turn are - this is only called once (so far) in the game loop
