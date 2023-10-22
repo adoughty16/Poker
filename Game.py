@@ -95,8 +95,10 @@ class Game():
 
 				while not all_called:
 					#get the decision from the current player
+
+					#if it is an AI turn
 					if self.players[self.current].is_computer_player():
-						choice, value = self.players[self.current].turn()
+						choice, value = self.players[self.current].turn(self.community_cards)
 						if choice == 'bet':
 							self.pot += value
 							self.total_call += value
@@ -158,6 +160,7 @@ class Game():
 						while self.game_state.get_waiting():
 							#if the host is waiting, just keep checking until the turn has been taken
 							time.sleep(3)
+						lock.release()
 						# once the player takes their turn we just get the decision and then use the same logic from the AI
 						# player turn
 
@@ -324,43 +327,7 @@ class Game():
 			#sleeping might not be necessary but it keeps us from making maybe 100s of queries while connecting
 			time.sleep(1)
 
-		#while playing is true:
-		while (playing):
-			
-			if self.game_state.get_round() == 'dealing':
-				pass
-			if self.game_state.get_round() == 'pre-flop':
-				pass
-			if self.game_state.get_round() == 'flop':
-				pass
-			if self.game_state.get_round() == 'turn':
-				pass
-			if self.game_state.get_round() == 'river':
-				pass
-			if self.game_state.get_round() == 'showdown':
-				pass
-
-			#fetch_game_state() until it is your turn
-
-			#update game_state for drawing
-
-			#while your turn:
-				#check for decision from GUI (maybe a shared list called decision with 
-											#binary values for  [check, call, fold, bet], and a separate shared value for
-											#bet amount)
-				#if bet
-					#reduce stack by bet amount
-					#upload_turn()
-				#if call
-					#reduce stack by call
-					#upload_turn()
-				#if fold
-					##upload_turn()
-				#if check
-					##upload_turn()
-
-
-				#your turn is false
+			#once connected, the game takes place entirely in the graphics window.
 	
 	def find_best_hand():
 		#calls each player's evaluate_hand() and determines the winner. If there is a tie, it can 
