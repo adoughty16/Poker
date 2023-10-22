@@ -35,12 +35,12 @@ class Card:
     #if the card passed in is greater than this card, return 1
     #if the card passed in is less than this card, return -1
     #if the card passed in is equal to this card, return 0
-    def compareTo(this_card):
-        if (this_card.value>this.card.value):
+    def compareTo(self, this_card):
+        if (this_card.value>self.card.value):
             return 1
-        if (this_card.value<this.card.value):
+        if (this_card.value<self.card.value):
             return -1
-        if (this_card.value==this.card.value):
+        if (this_card.value==self.card.value):
             return 0
         
     
