@@ -274,17 +274,9 @@ class Card(arcade.Sprite):
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
 
-def main(self, num_players, host, game_state, ready, lock):
+def main(num_players, host, game_state, ready, lock):
     """ Main function """
-
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     start_view = WelcomeView()
     window.show_view(start_view)
     arcade.run()
-
-
-
-
-if __name__ == "__main__":
-    main()
-
