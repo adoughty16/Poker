@@ -70,10 +70,13 @@ class Game():
 
 			if self.game_state.get_round() == 'pre-flop':
 				all_called = False
+				#establish dealer/blinds
+				self.pot += 15
+				Players[self.dealer + 1]. 
+
 
 				while not all_called:
-				#establish dealer/blinds
-				self.pot 
+				
 				#update state
 				#get bets one at a time and update state each time
 			if self.game_state.get_round() == 'flop':

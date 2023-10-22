@@ -21,6 +21,28 @@ class Player:
         self.hand = []
         self.stack = 0
         self.is_computer_player = is_computer_player
+    
+    def get_name(self):
+        return self.name
+    
+    def get_hand(self):
+        return self.hand
+    
+    def get_stack(self):
+        return self.stack
+    
+    def get_player_type(self):
+        return self.is_computer_player
+    
+    def set_name(self, name):
+        self.name = name
+    
+    def set_hand(self, hand):
+        self.hand = hand
+    
+    def set_player_type(self, boolean_value):
+        self.is_computer_player = boolean_value
+
 
     def turn(self, community_cards):
         # return decision (bet, check, fold)
