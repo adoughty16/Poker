@@ -56,7 +56,6 @@ class Game():
 				flags[self.num_players] = 1
 				self.db.collection("flags").document("flag_document").set({"values": flags})
 		
-		#NOTE: round = Enum('game_state',['dealing','pre-flop','flop','turn','river','showdown'])
 		while playing:
 			lock.aquire:()
 			self.game_state.set_dealer(self.dealer, self.db)
@@ -85,8 +84,9 @@ class Game():
 				self.players[(self.dealer + 2) % 4].set_stack(self.players[(self.dealer + 2) % 4].get_stack() - 10)
 				self.round_bets[(self.dealer + 1) % 4] = 10
 
+				self.stacks = [self.players.get_stack() for _ in range(4)]
 				lock.aquire()
-				
+				self.set_player_stacks(self.stacks)
 				lock.release()
 
 				while not all_called:
@@ -98,49 +98,41 @@ class Game():
 							self.total_call += value
 							self.round_bets[self.current] += value
 							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
+							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
+							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn() # NEED THIS IN GS
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 
 						elif choice == 'check':
 							lock.aquire()
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn()
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 							
 						elif choice == 'fold':
 							self.actives.remove(self.current)
 							lock.aquire()
 							self.game_state.remove_player(self.current, self.db)
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 
 						elif choice == 'call':
 							self.pot += (self.total_call - self.round_bets[self.current])
 							self.players[self.current].set_stack(self.player[self.current].get_stack - (self.total_call - self.round_bets[self.current]))
 							self.round_bets[self.current] = self.total_call
+							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
+							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(value, self.db)
 							self.game_state.set_bet(value, self.db)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
+							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							self.game_state.increment_whose_turn()
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 					if self.current == self.me:
 						#It's my turn! This turn happens in the graphics window.
 						#This will be the same as the turn in guest_main()
@@ -157,67 +149,66 @@ class Game():
 						# once the player takes their turn we just get the decision and then use the same logic from the AI
 						# player turn
 
-						choice, value = self.game_state.get_player_decision(self.db) #NEEDS EDITING IN GS
-													#MORE OF THE GETTERS SHOULD UPDATE FROM THE DB BEFORE RETURNING
+						choice, value = self.game_state.get_player_decision(self.db)
 						if choice == 'bet':
 							self.pot += value
 							self.total_call += value
 							self.round_bets[self.current] += value
 							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
+							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
+							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(value, self.db)
 							self.game_state.set_bet(value, self.db)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
+							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							self.game_state.increment_whose_turn()
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 
 						elif choice == 'check':
 							lock.aquire()
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn()
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 							
 						elif choice == 'fold':
 							self.actives.remove(self.current)
 							lock.aquire()
 							self.game_state.remove_player(self.current, self.db)
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 
 						elif choice == 'call':
 							self.pot += (self.total_call - self.round_bets[self.current])
 							self.players[self.current].set_stack(self.player[self.current].get_stack - (self.total_call - self.round_bets[self.current]))
 							self.round_bets[self.current] = self.total_call
+							self.stacks[self.current] = self.players[self.current].get_stack()
 							lock.aquire()
+							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(value, self.db)
 							self.game_state.set_bet(value, self.db)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
+							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							self.game_state.increment_whose_turn()
 							lock.release()
-							self.current += 1
-							while self.current not in self.actives:
-								self.current += 1
 						lock.release()
+
+						#change current player
+						self.current += 1
+						while self.current not in self.actives:
+							self.current += 1
+							self.current = self.current % 4
 					
 					#if at any point only one player is active
 					if len(self.actives) == 1:
 						#everyone else folded and the last one is the winner
 						#award the pot to the winner
 						self.players[self.actives[0]].set_stack(self.players[self.actives[0]].get_stack() + self.pot)
+						self.stacks[self.actives[0]] = self.players[self.actives[0]].get_stack()
 						#reset the game to dealing values
 						self.round_bets = [0, 0, 0, 0]
 						self.pot = 0
 						lock.aquire()
+						self.set_player_stacks(self.stacks)
 						self.game_state.set_total_pot(0, self.db)
 						self.game_state.set_round('dealing', self.db)
 						lock.release()
