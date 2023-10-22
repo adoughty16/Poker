@@ -12,6 +12,7 @@ class Game():
 	def __init__ (self, num_players, game_state, host, db):
 		self.game_state = game_state
 		self.num_players = num_players
+		self.community_cards = []
 		self.players = [Player() for _ in range(num_players)]
 		self.deck = deck()
 		self.pot = 0
@@ -106,9 +107,9 @@ class Game():
 							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
-							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db) #NEEDED IN GS
+							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							self.game_state.increment_whose_turn()
 							lock.release()
 
 						elif choice == 'check':
@@ -140,6 +141,13 @@ class Game():
 					if self.current == self.me:
 						#It's my turn! This turn happens in the graphics window.
 						#This will be the same as the turn in guest_main()
+						
+						#graphics will constantly check local gamestate for whose_turn
+						#when it is the local players turn, graphics will prompt/allow input for that turn
+						#that turn info will then be put into the local gamestate as the decision, and then flips the waiting
+						#boolean
+
+						#host_main then procedes as if it was a normal turn, and then uploads the game state
 						pass
 					
 					if (self.current is not self.me) and (not self.players[self.current].is_computer_player()):
@@ -228,17 +236,26 @@ class Game():
 
 					if all_called:
 						#merge round pot and total pot
+						#also deal more cards
+						#also change round
 						lock.aquire()
 						self.game_state.set_total_pot(self.game_state.get_total_pot() + self.game_state.get_round_pot())
 						if self.game_state.get_round() == 'pre-flop':
 							self.game_state.set_round('flop', self.db)
+							self.community_cards = self.deck.flop()
+							self.game_state.set_community_cards(self.community_cards, self.db)
 						elif self.game_state.get_round() == 'flop':
 							self.game_state.set_round('turn', self.db)
+							self.community_cards.append(self.deck.turn())
+							self.game_state.set_community_cards(self.community_cards, self.db)
 						elif self.game_state.get_round() == 'turn':
 							self.game_state.set_round('river', self.db)
+							self.community_cards.append(self.deck.turn())
+							self.game_state.set_community_cards(self.community_cards, self.db)
 						elif self.game_state.get_round() == 'river':
 							self.game_state.set_round('showdown', self.db)
 						lock.release()
+
 
 						#reset betting/round values
 						self.current = (self.dealer + 3) % 4
@@ -263,8 +280,17 @@ class Game():
 				self.total_call = 10
 				self.round_bets = [0, 0, 0, 0]
 				self.actives = [0, 1, 2, 3]
-
-
+			
+			num_busts = 0
+			for stack in self.stacks:
+				if stack == 0:
+					num_busts += 1
+			
+			if num_busts == 3:
+				playing = False
+		
+		#Need some game over screen here.
+			
 	def guest_main(self, lock):
 		playing = True
 		connected = False
