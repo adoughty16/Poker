@@ -1,5 +1,6 @@
 from enum import Enum
-
+from cards import Card 
+from firebase_admin import firestore 
 ''' 
 Game State class to keep track of game information in the data base (to allow multi-player)
 takes in a document name and database connection to create the object!! 
@@ -94,22 +95,23 @@ class Game_state:
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
-        self.community_cards = community_cards 
-        # can firebase store an array of custom object types?!
+        self.clear_community_cards(self, db)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"community_cards": self.community_cards})
-    
+        for card in community_cards:
+            self.community_cards.append(card)
+            game_state_ref.udpate({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
+            
+    def clear_community_cards(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        for card in self.community_cards:
+            game_state_ref.update({"community_cards": firestore.ArrayRemove(Card.to_dict(card))})
+            self.community_cards.remove(card)
+        
     # function add a singular community card in turn and river 
     def add_community_card(self, card, db):
         self.community_cards.append(card)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"community_cards": self.community_cards})
-
-    # adds a community card in turn and river 
-    def add_community_card(self, community_card, db):
-        self.community_cards.append(community_card)
-        game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"community_cards": self.community_cards})
+        game_state_ref.udpate({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
@@ -205,7 +207,10 @@ class Game_state:
     def get_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.community_cards
+        comm_cards = []
+        for comm_card in doc.community_cards:
+            comm_cards.append(Card.from_dict(comm_card))
+        return comm_cards 
     
     def get_total_pot(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -281,7 +286,10 @@ class Game_state:
     def get_player_hands(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.player_hands 
+        player_hands = []
+        for hand in doc.player_hands:
+            player_hands.append(Card.from_dict(hand))
+        return player_hands 
 
 # other funcitons 
     # i'm confused by what the difference between upload and upload_turn are - this is only called once (so far) in the game loop
