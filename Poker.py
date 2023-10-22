@@ -10,6 +10,7 @@ def main():
 	db = database.init()
 	lock = threading.Lock()
 	ready = False
+	thread_ready = False
 	# Boots up graphics window in one thread
 	# Calls game loop in another
 	# all shared variables get passed to both
@@ -27,10 +28,16 @@ def main():
 	
 	game_state = Game_state.Game_state(db, 'doc1')
 	
-	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, ready, lock)
+	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, thread_ready, lock)
 	graphicsThread.start()
 
-
+	while not ready:
+		lock.acquire()
+		if thread_ready:
+			ready = True
+		lock.release()
+		time.sleep(2)
+	
 	lock.acquire()
 	game = Game(num_players, game_state, host, db)
 	lock.release()
