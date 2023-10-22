@@ -27,31 +27,30 @@ def main():
 	#init game_state
 	game_state = Game_state.Game_state(db, 'doc1')
 
-
 	
 	# Boots up graphics window in one thread
-	graphicsThread = threading.Thread(group=None, target=Graphics.main, name=None, args=(num_players, host, game_state, thread_ready, lock,))
-	graphicsThread.start()
+	# graphicsThread = threading.Thread(group=None, target=Graphics.main, name=None, args=(num_players, host, game_state, thread_ready, lock,))
+	# graphicsThread.start()
 					#(group=None, target=None, name=None, args=(), kwargs={}, *, daemon=None)¶
-	while not ready:
-		lock.acquire()
-		if thread_ready:
-			ready = True
-		lock.release()
-		time.sleep(2)
-	
-	lock.acquire()
-	game = Game(num_players, game_state, host, db)
-	lock.release()
+	# while not ready:
+	#	lock.acquire()
+	#	if thread_ready:
+	#		ready = True
+	#	lock.release()
+	#	time.sleep(2)
+	#
+	#lock.acquire()
+	#game = Game(num_players, game_state, host, db)
+	#lock.release()
 
 	# Call game loop thread
-	gameThread = threading.Thread(group=None, target=game.initial_main, name=None, args=(game_state, lock))
-	gameThread.start()
+	#gameThread = threading.Thread(group=None, target=game.initial_main, name=None, args=(game_state, lock))
+	#gameThread.start()
 
-	graphicsThread.join()
-	gameThread.join()
+#	graphicsThread.join()
+#	gameThread.join()
 
-	db.close()
+#	db.close()
 
 
 main()

@@ -276,6 +276,7 @@ class Card(arcade.Sprite):
 
 def main(num_players, host, game_state, ready, lock):
     """ Main function """
+
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     start_view = WelcomeView()
     window.show_view(start_view)
