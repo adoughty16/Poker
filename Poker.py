@@ -27,6 +27,8 @@ def main():
 	#init game_state
 	game_state = Game_state.Game_state(db, 'doc1')
 
+	Graphics.main(num_players, host, game_state, ready, lock)
+
 	
 	# Boots up graphics window in one thread
 	# graphicsThread = threading.Thread(group=None, target=Graphics.main, name=None, args=(num_players, host, game_state, thread_ready, lock,))
