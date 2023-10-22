@@ -43,6 +43,12 @@ class Game_state:
         self.round_pot = 0
 
         #
+        #to keep track of how much money everyone has (for drawing)
+        # needs setters/getters
+        #
+        self.player_stacks [1000, 1000, 1000, 1000]
+
+        #
         # to keep track of the total per-person call amount per round
         #
         self.total_call = 0
