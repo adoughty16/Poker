@@ -100,7 +100,7 @@ class Game_state:
         for card in community_cards:
             self.community_cards.append(card)
             game_state_ref.udpate({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
-            
+
     def clear_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         for card in self.community_cards:
@@ -184,6 +184,14 @@ class Game_state:
     
     def set_waiting(self, waiting, db):
         self.waiting = waiting
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"waiting": self.waiting})
+    
+    def flip_waiting(self, db):
+        if self.waiting == True:
+            self.waiting = False
+        else:
+            self.waiting = True
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"waiting": self.waiting})
     

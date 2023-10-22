@@ -1,0 +1,24 @@
+
+from Game_state import Game_state 
+import db_connect as database
+
+# function to test game_state class 
+def test_game_state():
+    db = database.init()
+    game_state_1 = Game_state()
+    expected_player_stacks = [1000, 1000, 1000, 1000]
+    if game_state_1.get_player_stacks(db) != expected_player_stacks:
+        print('FAILED')
+        print(game_state_1.get_player_stacks(db))
+    expected_total_call = 0 
+    expected_waiting = False 
+    if game_state_1.get_total_call(db) != expected_total_call:
+        print('FAILED')
+        print(game_state_1.get_total_call(db))
+    if game_state_1.get_waiting(db) != expected_waiting:
+        print('FAILED')
+
+def main():
+    test_game_state()
+
+main()
