@@ -46,7 +46,7 @@ class Game_state:
         #to keep track of how much money everyone has (for drawing)
         # needs setters/getters
         #
-        self.player_stacks [1000, 1000, 1000, 1000]
+        self.player_stacks = [1000, 1000, 1000, 1000]
 
         #
         # to keep track of the total per-person call amount per round
@@ -92,17 +92,19 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"player_names": self.players})
 
-    # takes in community cards and sets them for flop
+    # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
-        # add to the community cards
-        # self.community_cards.append()
-        # based on where these are decided, maybe add makes more sense and call twice in flop
-        for card in community_cards:
-            self.community_cards.append(card)
-        # NOTE: can firebase store an array of custom object types? 
+        self.community_cards = community_cards 
+        # can firebase store an array of custom object types?!
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"community_cards": self.community_cards})
     
+    # function add a singular community card in turn and river 
+    def add_community_card(self, card, db):
+        self.community_cards.append(card)
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"community_cards": self.community_cards})
+
     # adds a community card in turn and river 
     def add_community_card(self, community_card, db):
         self.community_cards.append(community_card)
