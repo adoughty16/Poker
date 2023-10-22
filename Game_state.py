@@ -43,27 +43,14 @@ class Game_state:
         self.total_pot = 0
         self.round_pot = 0
 
-        #
         #to keep track of how much money everyone has (for drawing)
-        # needs setters/getters
-        #
         self.player_stacks = [1000, 1000, 1000, 1000]
-
-        #
         # to keep track of the total per-person call amount per round
-        #
         self.total_call = 0
-
-        #
         # waiting is a flag set by host to indicate that a guest turn is being waited on
-        # it needs a flip_waiting() function for guest/host to call that flips the boolean value
-        # also needs a getter for the host/guest to check for
-        #
-        # whose turn is to keep track of which player is expected to upload turn info needs setter/getter
-        #
         self.waiting = False
+        # whose turn is to keep track of which player is expected to upload turn info needs setter/getter
         self.whose_turn = 0
-
         # hard code first blind to be 10
         self.bet = 10
         # the current amount needed for a call (For graphics, check is only an option if this value is zero)

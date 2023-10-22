@@ -24,7 +24,7 @@ def main():
 	num_players = None #the number of non computer players for this game
 	host = None #boolean value for whether the user on this machine is the host
 	
-	game_state = Game_state()
+	game_state = Game_state.Game_state(db, 'doc1')
 	
 	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, lock)
 	graphicsThread.start()
