@@ -5,7 +5,7 @@ import db_connect as database
 # function to test game_state class 
 def test_game_state():
     db = database.init()
-    game_state_1 = Game_state()
+    game_state_1 = Game_state(db, 'test_doc')
     expected_player_stacks = [1000, 1000, 1000, 1000]
     if game_state_1.get_player_stacks(db) != expected_player_stacks:
         print('FAILED')

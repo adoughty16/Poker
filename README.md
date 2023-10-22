@@ -1,4 +1,21 @@
 # final_project
+## Online Multi-Player Poker 
+
+## Sprint 1
+* ~~review basics of poker and functionality~~
+* ~~write main host loop ~~
+* ~~write host game loop~~
+* ~~Game class~~
+* Player class
+* Deck class
+* Card class 
+* Beginning grahics
+* ~~Firestore database for Game state~~
+* ~~Game state language~~
+* ~~Game state class~~
+* function to update Game state 
+
+## Overview
 
 
 
