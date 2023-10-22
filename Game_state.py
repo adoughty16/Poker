@@ -111,8 +111,7 @@ class Game_state:
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
-        for player in self.players:
-            self.player_hands.append(player.hand)
+        self.player_hands = player_hands 
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_hands": self.player_hands})
     
@@ -152,13 +151,13 @@ class Game_state:
         # dealer is the index of the dealer
         # use this index and add (and mod) to get other players such as blind and double_blind
         self.dealer += 1
-        self.dealer % 4
+        self.dealer = self.dealer % 4
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"dealer": self.dealer})
 
     # set_actives is really just removing anyone who folds
-    def remove_player(self, player, db):
-        self.actives.remove(player.name)
+    def remove_player(self, player_index, db):
+        self.actives.remove(player_index)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"actives": self.actives})
 
@@ -168,15 +167,43 @@ class Game_state:
         self.round = round
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.udpate({"round": self.round})
+    
+    def set_player_stacks(self, player_stacks, db):
+        self.player_stacks = player_stacks 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"player_stacks": self.player_stacks})
 
+    def set_total_call(self, total_call, db):
+        self.total_call = total_call
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"total_call": self.total_call})
+    
+    def set_waiting(self, waiting, db):
+        self.waiting = waiting
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.udpate({"waiting": self.waiting})
+    
+    def increment_whose_turn(self, db):
+        self.whose_turn += 1
+        while self.whose_turn not in self.actives:
+            self.whose_turn += 1
+            self.whose_turn = self.whose_turn % 4
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"whose_turn": self.whose_turn})
+    
 # getters 
     def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.players
 
+    # going to need some interfacing with the cards class
+    # since these are custom objects, a to_dict and from_dict may be necessary 
+    # it is also an array of 3 - 5 of these custom objects 
     def get_community_cards(self, db):
-        return self.community_cards
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.community_cards
     
     def get_total_pot(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -184,34 +211,69 @@ class Game_state:
         return doc.total_pot 
     
     def get_round_pot(self, db):
-        return self.round_pot
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.round_pot
 
     def get_bet(self, db):
-        # wherever this is called, only call if new_bet > bet
-        return self.bet 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.bet 
     
     def get_minimum_call(self, db):
-        return self.minimum_call 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.minimum_call 
 
-    def get_player_decision(self, db): #can this return (decision, bet_value), where the value is zero unless decision is bet?
-        return self.player_decision
+    # get_player_decision returns the enumerated type of the decision AND the value of that decision (0 unless bet) 
+    def get_player_decision(self, db): 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        if doc.player_decision == 'bet':
+            bet_value = 1
+        else:
+            bet_value = self.get_bet()
+        return doc.player_decision, bet_value 
 
     def get_bet(self, db):
-        return self.bet 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.bet 
 
     def get_dealer(self, db):
-        # dealer is the index of the dealer
-        # use this index and add (and mod) to get other players such as blind and double_blind
-        return self.dealer
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.dealer
 
-    # set_actives is really just removing anyone who folds
     def get_actives(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.actives
 
     def get_round(self, db):
-       return self.round
+       game_state_ref = db.collection("states").document(self.doc_name)
+       doc = game_state_ref.get()
+       return doc.round
+
+    def get_total_call(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.total_call 
+    
+    def get_player_stacks(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name) 
+        doc = game_state_ref.get()
+        return doc.player_stacks
+    
+    def get_waiting(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.waiting 
+
+    def get_whose_turn(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.whose_turn 
 
 # other funcitons 
     # i'm confused by what the difference between upload and upload_turn are - this is only called once (so far) in the game loop
