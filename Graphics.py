@@ -360,7 +360,7 @@ class Card(arcade.Sprite):
 
 
 # add parameters to main: num_players, host, game_state, ready, lock
-def main():
+def main(num_players, host, game_state, ready, lock):
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
@@ -368,5 +368,5 @@ def main():
     window.show_view(start_view)
     arcade.run()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+   # main()
