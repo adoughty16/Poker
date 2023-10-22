@@ -62,6 +62,68 @@ FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
 ''' CREATE THE WELCOME SCREEN'''
 
 class WelcomeView(arcade.View):
+
+
+    def __init__(self):
+        super().__init__()
+
+        # --- Required for all code that uses UI element,
+        # a UIManager to handle the UI.
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        # Create a vertical BoxGroup to align buttons
+        self.v_box = arcade.gui.UIBoxLayout()
+
+
+        # creating host button
+        host_button = arcade.gui.UIFlatButton(text="Host Game", width=200)
+        self.v_box.add(host_button.with_space_around(bottom=20))
+
+    #    self.manager.add(
+      #      arcade.gui.UIAnchorWidget(
+      #          anchor_x="center_x",
+      #          anchor_y="center_y",
+      #          child=host_button)
+      #  )
+
+
+
+        # creating join game button
+        join_button = arcade.gui.UIFlatButton(text="Join Game", width=200)
+        self.v_box.add(join_button.with_space_around(bottom=20))
+
+        # creating 1 player button
+      #  player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
+       # self.v_box.add(player1_button.with_space_around(bottom=20))
+
+        # creating 2 players button
+      #  player2_button = arcade.gui.UIFlatButton(text="2 players", width=200)
+      #  self.v_box.add(player2_button.with_space_around(bottom=20))
+
+
+        # creating 3 players button
+     #   player3_button = arcade.gui.UIFlatButton(text="3 players", width=200)
+     #   self.v_box.add(player3_button.with_space_around(bottom=20))
+
+
+        # creating 4 players button
+      #  player4_button = arcade.gui.UIFlatButton(text="4 players", width=200)
+      #  self.v_box.add(player4_button.with_space_around(bottom=20))
+
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box)
+        )
+
+
+
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
+
     def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.BROWN)
@@ -74,16 +136,29 @@ class WelcomeView(arcade.View):
     def on_draw(self):
         """ Draw this view """
         self.clear()
-        arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height / 2,
+        self.manager.draw()
+        arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 50,
                          arcade.color.WHITE, font_size=48, anchor_x="center")
-        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height / 2-75,
+        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height - 100,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
+        arcade.draw_text("Do you want to HOST or JOIN the game?", self.window.width / 2 , self.window.height /2 + 90,
+                         arcade.color.WHITE, font_size=15, anchor_x="center")
+        #arcade.draw_text("How many people are playing?", self.window.width - 70 , self.window.height / 2,
+                         #arcade.color.WHITE, font_size=15, anchor_x="center")
+
+
+
+
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
         game_view = GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
+
+
+
 
 
 
