@@ -142,11 +142,73 @@ class Game():
 							self.current += 1
 							while self.current not in self.actives:
 								self.current += 1
-
+					if self.current == self.me:
+						#It's my turn! This turn happens in the graphics window.
+						#This will be the same as the turn in guest_main()
+						pass
 					
+					if (self.current is not self.me) and (not self.players[self.current].is_computer_player()):
+						#it is a guest players turn
+						#we need to wait and let them update the gamestate
+						#once they have updated the game state, we update the local game and then move on
+						lock.aquire()
+						while self.game_state.get_waiting():
+							#if the host is waiting, just keep checking until the turn has been taken
+							time.sleep(3)
+						# once the player takes their turn we just get the decision and then use the same logic from the AI
+						# player turn
 
+						choice, value = self.game_state.get_player_decision() #NEEDS EDITING IN GS
+						if choice == 'bet':
+							self.pot += value
+							self.total_call += value
+							self.round_bets[self.current] += value
+							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
+							lock.aquire()
+							self.game_state.set_round_pot(value)
+							self.game_state.set_bet(value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value) #NEEDED IN GS
+							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
 
+						elif choice == 'check':
+							lock.aquire()
+							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn()
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+							
+						elif choice == 'fold':
+							self.actives.remove(self.current)
+							lock.aquire()
+							self.game_state.remove_player(self.current)
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
 
+						elif choice == 'call':
+							self.pot += (self.total_call - self.round_bets[self.current])
+							self.players[self.current].set_stack(self.player[self.current].get_stack - (self.total_call - self.round_bets[self.current]))
+							self.round_bets[self.current] = self.total_call
+							lock.aquire()
+							self.game_state.set_round_pot(value)
+							self.game_state.set_bet(value)
+							self.game_state.set_total_call(self.game_state.get_total_call() + value) #NEEDED IN GS
+							self.game_state.set_player_decision(choice)
+							self.game_state.increment_whose_turn() # NEED THIS IN GS
+							lock.release()
+							self.current += 1
+							while self.current not in self.actives:
+								self.current += 1
+						lock.release()
+					
 				
 				#update state
 				#get bets one at a time and update state each time

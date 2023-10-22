@@ -48,8 +48,13 @@ class Game_state:
         self.total_call = 0
 
         #
-        # to keep track of which player is expected to upload turn info
+        # waiting is a flag set by host to indicate that a guest turn is being waited on
+        # it needs a flip_waiting() function for guest/host to call that flips the boolean value
+        # also needs a getter for the host/guest to check for
         #
+        # whose turn is to keep track of which player is expected to upload turn info needs setter/getter
+        #
+        self.waiting = False
         self.whose_turn = 0
 
         # hard code first blind to be 10
@@ -182,7 +187,7 @@ class Game_state:
     def get_minimum_call(self, db):
         return self.minimum_call 
 
-    def get_player_decision(self, db):
+    def get_player_decision(self, db): #can this return (decision, bet_value), where the value is zero unless decision is bet?
         return self.player_decision
 
     def get_bet(self, db):
