@@ -9,6 +9,7 @@ import db_connect as database
 def main():
 	db = database.init()
 	lock = threading.Lock()
+	ready = False
 	# Boots up graphics window in one thread
 	# Calls game loop in another
 	# all shared variables get passed to both
@@ -26,8 +27,9 @@ def main():
 	
 	game_state = Game_state.Game_state(db, 'doc1')
 	
-	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, lock)
+	graphicsThread = threading.Thread(Graphics.main(), num_players, host, game_state, ready, lock)
 	graphicsThread.start()
+
 
 	lock.acquire()
 	game = Game(num_players, game_state, host, db)
