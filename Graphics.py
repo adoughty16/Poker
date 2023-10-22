@@ -1,6 +1,7 @@
 
 import arcade
 import threading
+import arcade.gui
 
 # Screen title and size
 SCREEN_WIDTH = 1024
@@ -28,7 +29,25 @@ HORIZONTAL_MARGIN_PERCENT = 0.10
 BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 
 # The X of where to start putting things on bottom
-START_X = SCREEN_WIDTH/2 #MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
+START_X = SCREEN_WIDTH/2
+
+
+# The Y of the top row
+TOP_Y = SCREEN_HEIGHT - MAT_HEIGHT / 2 - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
+
+# The Y of the middle row
+MIDDLE_Y = SCREEN_HEIGHT/2
+
+# the X for player 2, middle row
+MIDDLE_X_2 = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
+
+
+# the X for player 4, middle row
+MIDDLE_X_4 = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
+
+
+# How far apart each pile goes
+X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 # Card constants
 CARD_VALUES = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -50,6 +69,7 @@ class WelcomeView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
 
     def on_draw(self):
         """ Draw this view """
@@ -87,7 +107,10 @@ class GameView(arcade.View):
         self.held_cards_original_position = None
 
         # Don't show the mouse cursor
-        self.window.set_mouse_visible(False)
+        #self.window.set_mouse_visible(False)
+
+        # Sprite list with all the mats tha cards lay on.
+        self.pile_mat_list = None
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
@@ -97,6 +120,41 @@ class GameView(arcade.View):
         # Original location of cards we are dragging with the mouse in case
         # they have to go back.
         self.held_cards_original_position = []
+
+        # ---  Create the mats the cards go on.
+
+        # Sprite list with all the mats tha cards lay on.
+        self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
+
+        # Create the mats for player 1 (bottom)
+        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = START_X, BOTTOM_Y
+        self.pile_mat_list.append(pile)
+
+        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+        pile.position = START_X + X_SPACING, BOTTOM_Y
+        self.pile_mat_list.append(pile)
+
+        # Create player 2 (left)
+        for i in range(2):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = MIDDLE_X_2 + i * X_SPACING, MIDDLE_Y
+            self.pile_mat_list.append(pile)
+
+        # Create player 3 (top)
+        for i in range(2):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = START_X + i * X_SPACING, TOP_Y
+            self.pile_mat_list.append(pile)
+
+        # create player 4 (right)
+       # for i in range(2):
+           # pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+          #  pile.position = MIDDLE_X_4 + i * X_SPACING, MIDDLE_Y
+          #  self.pile_mat_list.append(pile)
+
+
+
 
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
@@ -135,6 +193,7 @@ class GameView(arcade.View):
             # Put on top in drawing order
             self.pull_to_top(self.held_cards[0])
 
+
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
 
@@ -154,22 +213,45 @@ class GameView(arcade.View):
         # We are no longer holding cards
         self.held_cards = []
 
+
+
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
         self.clear()
+
+        # Draw the mats the cards go on to
+        self.pile_mat_list.draw()
 
         # Draw the cards
         self.card_list.draw()
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
-        pass
+        # Get list of cards we've clicked on
+        cards = arcade.get_sprites_at_point((x, y), self.card_list)
+
+        # Have we clicked on a card?
+        if len(cards) > 0:
+            # Might be a stack of cards, get the top one
+            primary_card = cards[-1]
+
+            # All other cases, grab the face-up card we are clicking on
+            self.held_cards = [primary_card]
+            # Save the position
+            self.held_cards_original_position = [self.held_cards[0].position]
+            # Put on top in drawing order
+            self.pull_to_top(self.held_cards[0])
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
         """ Called when the user presses a mouse button. """
-        pass
+        # If we don't have any cards, who cares
+        if len(self.held_cards) == 0:
+            return
+
+        # We are no longer holding cards
+        self.held_cards = []
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
