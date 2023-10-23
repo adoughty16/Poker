@@ -10,13 +10,30 @@ def test_game_state():
     if game_state_1.get_player_stacks(db) != expected_player_stacks:
         print('FAILED')
         print(game_state_1.get_player_stacks(db))
+    else:
+        print('PASSED PLAYER STACKS')
     expected_total_call = 0 
-    expected_waiting = False 
     if game_state_1.get_total_call(db) != expected_total_call:
         print('FAILED')
         print(game_state_1.get_total_call(db))
+    else:
+        print('PASSED TOTAL_CALL')
+    expected_dealer = 3
+    game_state_1.set_dealer(expected_dealer, db)
+    if game_state_1.get_dealer(db) != expected_dealer:
+        print('FAILED DEALER')
+    else:
+        print('PASSED DEALER')
+    expected_waiting = False 
     if game_state_1.get_waiting(db) != expected_waiting:
         print('FAILED')
+    else:
+        print('PASSED WAITING')
+    game_state_1.flip_waiting(db)
+    if game_state_1.get_waiting(db) != True:
+        print('FAILED')
+    else:
+        print('PASSED WAITING FLIP')
 
 def main():
     test_game_state()

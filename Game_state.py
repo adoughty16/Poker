@@ -32,7 +32,7 @@ round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
 play = Enum('play', ['bet', 'check', 'fold', 'call'])
 
 class Game_state:
-    def __init__(self, db, doc_name):
+    def __init__(self, db, doc_name, dictionary = {}):
         #populate variables
         self.player_names = []
         # added player hands to be set and "got" only in showdown (for built-in security)
@@ -63,23 +63,36 @@ class Game_state:
         self.round = 'dealing'
         self.player_decision = 'check'
 
+        for key in dictionary:
+            setattr(self ,key , dictionary[key])
+
         self.doc_name = doc_name
 
         # create a document in the database for the game's gamestate
         # ultimately, we decided to make one document and update it as needed to theoretically support multiple games at once
         # NOTE: player_hands and comunity_cards means that the card class with need a to_dict and from_dict 
+
         data = {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, 
         "total_pot": self.total_pot, "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, 
         "waiting": self.waiting, "whose_turn": self.whose_turn, "bet": self.bet, "minimum_call": self.minimum_call, 
         "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
         game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
+    #def from_dict(source):
+     #   return Game_state(source["player_names"], source["player_hands"], source["community_cards"], source["total_pot"], source["round_pot"], 
+      #             source["player_stacks"], source["total_call"], source["waiting"], source["whose_turn"], source["bet"], source["minimum_call"], 
+       #            source["dealer"], source["actives"], source["round"], source["player_decision"])
+    
+    def to_dict(self):
+        return {"player_names": self.player_names, "player_hand": self.player_hands, "community_cards": self.community_cards, "total_pot": self.total_pot, 
+                "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, "waiting": self.waiting, "whose_turn": self.whose_turn, 
+                "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
 
     def set_players(self, players, db):
         for player in players:
             self.players.append(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"player_names": self.players})
+        game_state_ref.update({"player_names": self.players})
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
@@ -87,7 +100,7 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         for card in community_cards:
             self.community_cards.append(card)
-            game_state_ref.udpate({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
+            game_state_ref.update({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
 
     def clear_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -99,7 +112,7 @@ class Game_state:
     def add_community_card(self, card, db):
         self.community_cards.append(card)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
+        game_state_ref.update({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
@@ -137,7 +150,7 @@ class Game_state:
         # dealer is the index of the dealer
         self.dealer = dealer
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"dealer": self.dealer})
+        game_state_ref.update({"dealer": self.dealer})
 
     def update_dealer(self, db):
         # dealer is the index of the dealer
@@ -145,7 +158,7 @@ class Game_state:
         self.dealer += 1
         self.dealer = self.dealer % 4
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"dealer": self.dealer})
+        game_state_ref.update({"dealer": self.dealer})
 
     # set_actives is really just removing anyone who folds
     def remove_player(self, player_index, db):
@@ -158,22 +171,22 @@ class Game_state:
         # do we need to check that this is "next in line"?
         self.round = round
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"round": self.round})
+        game_state_ref.update({"round": self.round})
     
     def set_player_stacks(self, player_stacks, db):
         self.player_stacks = player_stacks 
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"player_stacks": self.player_stacks})
+        game_state_ref.update({"player_stacks": self.player_stacks})
 
     def set_total_call(self, total_call, db):
         self.total_call = total_call
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"total_call": self.total_call})
+        game_state_ref.update({"total_call": self.total_call})
     
     def set_waiting(self, waiting, db):
         self.waiting = waiting
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"waiting": self.waiting})
+        game_state_ref.update({"waiting": self.waiting})
     
     def flip_waiting(self, db):
         if self.waiting == True:
@@ -181,7 +194,7 @@ class Game_state:
         else:
             self.waiting = True
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.udpate({"waiting": self.waiting})
+        game_state_ref.update({"waiting": self.waiting})
     
     def increment_whose_turn(self, db):
         self.whose_turn += 1
@@ -195,7 +208,7 @@ class Game_state:
     def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.players
+        return doc.to_dict()["players"]
 
     # going to need some interfacing with the cards class
     # since these are custom objects, a to_dict and from_dict may be necessary 
@@ -211,72 +224,73 @@ class Game_state:
     def get_total_pot(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.total_pot 
+        return doc.to_dict()["total_pot"]
     
     def get_round_pot(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.round_pot
+        return doc.to_dict()["round_pot"]
 
     def get_bet(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.bet 
+        return doc.to_dict()["bet"]
     
     def get_minimum_call(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.minimum_call 
+        return doc.to_dict()["minimum_call"]
 
     # get_player_decision returns the enumerated type of the decision AND the value of that decision (0 unless bet) 
     def get_player_decision(self, db): 
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        if doc.player_decision == 'bet':
+        if doc.to_dict()["player_decision"] == 'bet':
             bet_value = 1
         else:
             bet_value = self.get_bet()
-        return doc.player_decision, bet_value 
+        return doc.to_dict()["player_decision"], bet_value 
 
     def get_bet(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.bet 
+        return doc.to_dict()["bet"]
 
     def get_dealer(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.dealer
+        return doc.to_dict()["dealer"]
 
     def get_actives(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.actives
+        return doc.to_dict()["actives"]
 
     def get_round(self, db):
        game_state_ref = db.collection("states").document(self.doc_name)
        doc = game_state_ref.get()
-       return doc.round
+       return doc.to_dict()["round"]
 
     def get_total_call(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.total_call 
+        return doc.to_dict()["total_call"]
+
     
     def get_player_stacks(self, db):
         game_state_ref = db.collection("states").document(self.doc_name) 
         doc = game_state_ref.get()
-        return doc.player_stacks
+        return doc.to_dict()["player_stacks"]
     
     def get_waiting(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.waiting 
+        return doc.to_dict()["waiting"]
 
     def get_whose_turn(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.whose_turn 
+        return doc.to_dict()["whose_turn"]
     
     # this also may need some help from cards class as it will be an array of arrays of card objects 
     def get_player_hands(self, db):
