@@ -69,8 +69,9 @@ class Game_state:
         # ultimately, we decided to make one document and update it as needed to theoretically support multiple games at once
         # NOTE: player_hands and comunity_cards means that the card class with need a to_dict and from_dict 
         data = {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, 
-        "total_pot": self.total_pot, "round_pot": self.round_pot, "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer,
-        "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
+        "total_pot": self.total_pot, "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, 
+        "waiting": self.waiting, "whose_turn": self.whose_turn, "bet": self.bet, "minimum_call": self.minimum_call, 
+        "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
         game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
 
