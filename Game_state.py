@@ -208,7 +208,7 @@ class Game_state:
     def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
-        return doc.to_dict()["players"]
+        return doc.to_dict()["player_names"]
 
     # going to need some interfacing with the cards class
     # since these are custom objects, a to_dict and from_dict may be necessary 
@@ -248,7 +248,7 @@ class Game_state:
         if doc.to_dict()["player_decision"] == 'bet':
             bet_value = 1
         else:
-            bet_value = self.get_bet()
+            bet_value = self.get_bet(db)
         return doc.to_dict()["player_decision"], bet_value 
 
     def get_bet(self, db):
