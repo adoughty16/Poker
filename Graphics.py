@@ -67,6 +67,10 @@ class WelcomeView(arcade.View):
     def __init__(self):
         super().__init__()
 
+        # instance variables
+        self.selected_players = 1  # Default to 1 player
+        self.selected_option = None  # To store "Host" or "Join"
+
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
         self.manager = arcade.gui.UIManager()
@@ -82,10 +86,12 @@ class WelcomeView(arcade.View):
 
         # creating host button
         host_button = arcade.gui.UIFlatButton(text="Host Game", width=200)
+        host_button.text = "Host Game"
         self.v_box.add(host_button.with_space_around(bottom=20))
 
         # creating join game button
         join_button = arcade.gui.UIFlatButton(text="Join Game", width=200)
+        join_button.text = "Join Game"
         self.v_box.add(join_button.with_space_around(bottom=20))
 
         host_button.on_click = self.on_buttonclick
@@ -94,19 +100,23 @@ class WelcomeView(arcade.View):
 
         # creating 1 player button
         player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
+        player1_button.text = "1 player"
         self.x_box.add(player1_button.with_space_around(bottom=20))
 
         # creating 2 players button
         player2_button = arcade.gui.UIFlatButton(text="2 players", width=200)
+        player2_button.text = "2 players"
         self.x_box.add(player2_button.with_space_around(bottom=20))
 
         # creating 3 players button
         player3_button = arcade.gui.UIFlatButton(text="3 players", width=200)
+        player3_button.text = "3 players"
         self.x_box.add(player3_button.with_space_around(bottom=20))
 
 
         # creating 4 players button
         player4_button = arcade.gui.UIFlatButton(text="4 players", width=200)
+        player4_button.text = "4 players"
         self.x_box.add(player4_button.with_space_around(bottom=20))
 
         player1_button.on_click = self.on_buttonclick
@@ -133,8 +143,20 @@ class WelcomeView(arcade.View):
 
     # This function will be called everytime the user presses a button
     def on_buttonclick(self, event):
-            print("Button is clicked")
+        if event.text == "Host Game":
+            self.selected_option = True
+        elif event.text == "Join Game":
+            self.selected_option = False
 
+            # Handle the player buttons
+        if event.text == "1 player":
+            self.selected_players = 1
+        elif event.text == "2 players":
+            self.selected_players = 2
+        elif event.text == "3 players":
+            self.selected_players = 3
+        elif event.text == "4 players":
+            self.selected_players = 4
 
     def on_draw(self):
         self.clear()
@@ -167,6 +189,8 @@ class WelcomeView(arcade.View):
         """ If the user presses the mouse button, start the game. """
         game_view = GameView()
         game_view.setup()
+        game_view.selected_players = self.selected_players
+        game_view.selected_option = self.selected_option
         self.window.show_view(game_view)
 
 
@@ -360,7 +384,7 @@ class Card(arcade.Sprite):
 
 
 # add parameters to main: num_players, host, game_state, ready, lock
-def main(num_players, host, game_state, ready, lock):
+def main():
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
@@ -368,5 +392,5 @@ def main(num_players, host, game_state, ready, lock):
     window.show_view(start_view)
     arcade.run()
 
-#if __name__ == "__main__":
-   # main()
+if __name__ == "__main__":
+    main()
