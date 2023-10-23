@@ -13,14 +13,16 @@ from enum import Enum
 # s = spades
 suit = Enum('suit', ['d','c','h','s'])
 
-# TODO: add optional dictionary in constructor (for from_dict) and manual to_dict for firestore
 class Card:
     
-    def __init__(self, suit, value ):
+    def __init__(self, suit, value, dictionary = {} ):
         self.suit=suit
         self.value=value
+        for key in dictionary:
+            setattr(self ,key , dictionary[key])
 
-
+    def to_dict(self):
+        return {"suit": self.suit, "value": self.value}
 
     
 

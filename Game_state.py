@@ -7,6 +7,12 @@ takes in a document name and database connection to create the object!!
 every getter and setter interfaces with the database (to avoid conflicting information)
 '''
 
+'''
+What needs doing:
+- test the community card and hand functions after implementing to_dict and from_dict in Card
+- test all functions getters and setters 
+'''
+
 round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
 play = Enum('play', ['bet', 'check', 'fold', 'call'])
 
