@@ -17,6 +17,27 @@
 
 ## Overview
 
+### Round Notes
+pre-flop:After the Dealer has passed out two cards to everyone, 
+the player clockwise to the Right Blind has the option to fold, 
+call or raise the previous bet. Play then proceeds clockwise 
+around the table.
+
+flop:At the start of the Flop round, the Dealer places three community 
+cards upright in the middle of the table. Normal play then proceeds 
+starting with the player clockwise from the Dealer.
+
+turn:At the start of the Turn Round, or Fourth Street, the Dealer places 
+a fourth card in the community.
+
+river:At the start of the River Round, the Dealer places a fifth 
+and final card in the community. (this reuses turn())
+
+showdown: If there are still players in the game after the River Round, 
+players must over turn their cards for 
+all to see with the highest hand taking the pot.
+
+source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
 
 
 ## Getting started

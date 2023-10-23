@@ -6,28 +6,7 @@ Game State class to keep track of game information in the data base (to allow mu
 takes in a document name and database connection to create the object!! 
 every getter and setter interfaces with the database (to avoid conflicting information)
 '''
-"""
-pre-flop:After the Dealer has passed out two cards to everyone, 
-the player clockwise to the Right Blind has the option to fold, 
-call or raise the previous bet. Play then proceeds clockwise 
-around the table.
 
-flop:At the start of the Flop round, the Dealer places three community 
-cards upright in the middle of the table. Normal play then proceeds 
-starting with the player clockwise from the Dealer.
-
-turn:At the start of the Turn Round, or Fourth Street, the Dealer places 
-a fourth card in the community.
-
-river:At the start of the River Round, the Dealer places a fifth 
-and final card in the community. (this reuses turn())
-
-showdown: If there are still players in the game after the River Round, 
-players must over turn their cards for 
-all to see with the highest hand taking the pot.
-
-source: https://playingcarddecks.com/blogs/how-to-play/texas-holdem-game-rules
-"""
 round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
 play = Enum('play', ['bet', 'check', 'fold', 'call'])
 
@@ -300,18 +279,3 @@ class Game_state:
         for hand in doc.player_hands:
             player_hands.append(Card.from_dict(hand))
         return player_hands 
-
-# other funcitons 
-    # i'm confused by what the difference between upload and upload_turn are - this is only called once (so far) in the game loop
-    # i didn't think we would need to store player decisions or anything like that and could just update whatever attribute specifically changed in the game loop 
-    def upload(self, db): #uploads game_state to db
-        pass
-    
-    def upload_turn():
-        #data = {"players": players, "community_cards": community_cards, "pot": self.pot, "bet": self.bet , "dealer": , "actives": , "round": }
-        #db.collection("").document("").set(data)
-        pass
-
-    # this will be the parser where we reset everything? 
-    def fetch_turn(player):
-        pass
