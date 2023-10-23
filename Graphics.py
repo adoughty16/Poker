@@ -97,6 +97,7 @@ class WelcomeView(arcade.View):
         host_button.on_click = self.on_buttonclick
         join_button.on_click = self.on_buttonclick
 
+        # record whether user clicked host or main somehow 
 
         # creating 1 player button
         player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
@@ -123,6 +124,8 @@ class WelcomeView(arcade.View):
         player2_button.on_click = self.on_buttonclick
         player3_button.on_click = self.on_buttonclick
         player4_button.on_click = self.on_buttonclick
+
+        # record how many players the user selected 
 
         # Create a widget to hold the v_box widget, that will center the
         # buttons
