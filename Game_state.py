@@ -48,6 +48,10 @@ class Game_state:
         self.round = 'dealing'
         self.player_decision = 'check'
 
+        # selected_host and selected_players for graphics
+        self.selected_host = True 
+        self.selected_players = 1 
+
         for key in dictionary:
             setattr(self ,key , dictionary[key])
 
@@ -78,27 +82,6 @@ class Game_state:
             self.players.append(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_names": self.players})
-
-    # get/set the selected host and selected players from graphics
-    def get_selected_host(self, db):
-        game_state_ref = db.collection("states").document(self.doc_name)
-        doc = game_state_ref.get()
-        return doc.to_dict()["selected_host"]
-
-    def get_selected_players(self, db):
-        game_state_ref = db.collection("states").document(self.doc_name)
-        doc = game_state_ref.get()
-        return doc.to_dict()["selected_players"]
-
-    def set_selected_host(self, selected_host, db):
-        self.selected_host = selected_host
-        game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"selected_host": self.selected_host})
-
-    def set_selected_players(self, selected_players, db):
-        self.selected_players = selected_players
-        game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"selected_players": self.selected_players})
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
@@ -210,7 +193,21 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"whose_turn": self.whose_turn})
     
+    # get/set the selected host and selected players from graphics
+
+    def set_selected_host(self, selected_host):
+        self.selected_host = selected_host 
+
+    def set_selected_players(self, selected_players):
+        self.selected_players = selected_players
+        
 # getters 
+    def get_selected_host(self):
+        return self.selected_host 
+
+    def get_selected_players(self):
+        return self.selected_players
+    
     def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
