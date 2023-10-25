@@ -213,14 +213,15 @@ class Game_state:
         doc = game_state_ref.get()
         return doc.to_dict()["player_names"]
 
-    # going to need some interfacing with the cards class
-    # since these are custom objects, a to_dict and from_dict may be necessary 
-    # it is also an array of 3 - 5 of these custom objects 
+    # adds each community card to an array to be returned by calling from_dict on object in database 
     def get_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         comm_cards = []
+        # for card in the document's community cards
         for comm_card in doc.community_cards:
+            # converts the document in the database to a Card object using from_dict
+            # see Card's constructor with default dictionary built-in for more details 
             comm_cards.append(Card.from_dict(comm_card))
         return comm_cards 
     
@@ -248,10 +249,12 @@ class Game_state:
     def get_player_decision(self, db): 
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
+        # if the player decides to bet, the value is the bet
         if doc.to_dict()["player_decision"] == 'bet':
-            bet_value = 1
-        else:
             bet_value = self.get_bet(db)
+        # if they make another decision, the value is 0 
+        else:
+            bet_value = 0
         return doc.to_dict()["player_decision"], bet_value 
 
     def get_bet(self, db):
@@ -278,7 +281,6 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.to_dict()["total_call"]
-
     
     def get_player_stacks(self, db):
         game_state_ref = db.collection("states").document(self.doc_name) 
@@ -295,11 +297,15 @@ class Game_state:
         doc = game_state_ref.get()
         return doc.to_dict()["whose_turn"]
     
-    # this also may need some help from cards class as it will be an array of arrays of card objects 
+    # TODO: change this function to return nested arary based on actives
+    # gets player hands by converting database document to Card object and appending to an array 
     def get_player_hands(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         player_hands = []
+        # for every player's hand stored in the database
         for hand in doc.player_hands:
+            # convert the hands to Card objects with the from_dict (similar to get_community_cards)
+            # adds it to the array 
             player_hands.append(Card.from_dict(hand))
         return player_hands 
