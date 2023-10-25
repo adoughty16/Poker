@@ -11,6 +11,7 @@ def test_game_state():
     else:
         print('PASSED PLAYER NAMES')
     # player hands 
+    if game_state_1.get_community_cards != 
     # community cards 
     if game_state_1.get_total_pot(db) != 0:
         print('FAILED')
