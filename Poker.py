@@ -5,6 +5,8 @@ import Graphics
 import threading
 import time
 import db_connect as database
+from Graphics import WelcomeView
+
 
 def main():
 	db = database.init()
@@ -23,11 +25,18 @@ def main():
 	#graphics window needs to prompt and allow input for the following 2 values:
 	num_players = None #the number of non computer players for this game
 	host = None #boolean value for whether the user on this machine is the host
-	
+
 	#init game_state
 	game_state = Game_state.Game_state(db, 'doc1')
 
-	Graphics.main(num_players, host, game_state, ready, lock)
+	game_state.set_selected_host(True, db)  # Set initial value for selected_host
+	game_state.set_selected_players(1, db)  # Set initial value for selected_players
+
+	# Create an instance of the WelcomeView and pass the game_state object
+	welcome_view = WelcomeView(game_state)
+	Graphics.main(welcome_view, ready, lock)
+
+	#Graphics.main(num_players, host, game_state, ready, lock)
 
 
 	# Boots up graphics window in one thread

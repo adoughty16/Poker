@@ -2,6 +2,7 @@
 import arcade
 import threading
 import arcade.gui
+from Game_state import  Game_state
 
 # Screen title and size
 SCREEN_WIDTH = 1024
@@ -60,106 +61,130 @@ FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
 
 
 ''' CREATE THE WELCOME SCREEN'''
-
 class WelcomeView(arcade.View):
 
 
-    def __init__(self):
+    def __init__(self, game_state):
         super().__init__()
 
         # instance variables
+        self.game_state = game_state
         self.selected_players = 1  # Default to 1 player
-        self.selected_option = None  # To store "Host" or "Join"
+        self.selected_host = None  # To store "Host" or "Join"
+       # self.selected_start = None
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
+
         # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxLayout()
+        self.host_join_box = arcade.gui.UIBoxLayout()
+        self.player_box = arcade.gui.UIBoxLayout()
 
-        self.x_box = arcade.gui.UIBoxLayout()
-
-
-
-
-
-        # creating host button
+        ''' CREATING HOST AND JOIN BUTTON '''
+        # creating HOST button
         host_button = arcade.gui.UIFlatButton(text="Host Game", width=200)
         host_button.text = "Host Game"
-        self.v_box.add(host_button.with_space_around(bottom=20))
+        self.host_join_box.add(host_button.with_space_around(bottom=20))
 
-        # creating join game button
+        # creating JOIN game button
         join_button = arcade.gui.UIFlatButton(text="Join Game", width=200)
         join_button.text = "Join Game"
-        self.v_box.add(join_button.with_space_around(bottom=20))
+        self.host_join_box.add(join_button.with_space_around(bottom=20))
 
         host_button.on_click = self.on_buttonclick
         join_button.on_click = self.on_buttonclick
 
-        # record whether user clicked host or main somehow 
+        # for positioning of host join buttons
+        self.manager.add(
+            # Create a widget to hold the host_join_box widget, that will center the host/join buttons
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="center_y",
+                child=self.host_join_box)
+        )
+
+
+        ''' NUMBER OF PLAYERS BUTTON '''
 
         # creating 1 player button
         player1_button = arcade.gui.UIFlatButton(text="1 player", width=200)
         player1_button.text = "1 player"
-        self.x_box.add(player1_button.with_space_around(bottom=20))
+        self.player_box.add(player1_button.with_space_around(bottom=20))
 
         # creating 2 players button
         player2_button = arcade.gui.UIFlatButton(text="2 players", width=200)
         player2_button.text = "2 players"
-        self.x_box.add(player2_button.with_space_around(bottom=20))
+        self.player_box.add(player2_button.with_space_around(bottom=20))
 
         # creating 3 players button
         player3_button = arcade.gui.UIFlatButton(text="3 players", width=200)
         player3_button.text = "3 players"
-        self.x_box.add(player3_button.with_space_around(bottom=20))
-
+        self.player_box.add(player3_button.with_space_around(bottom=20))
 
         # creating 4 players button
         player4_button = arcade.gui.UIFlatButton(text="4 players", width=200)
         player4_button.text = "4 players"
-        self.x_box.add(player4_button.with_space_around(bottom=20))
+        self.player_box.add(player4_button.with_space_around(bottom=20))
 
         player1_button.on_click = self.on_buttonclick
         player2_button.on_click = self.on_buttonclick
         player3_button.on_click = self.on_buttonclick
         player4_button.on_click = self.on_buttonclick
 
-        # record how many players the user selected 
-
-        # Create a widget to hold the v_box widget, that will center the
-        # buttons
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="left",
-                anchor_y="center_y",
-                child=self.v_box)
-        )
-
         # for positioning of number of players
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="right",
                 anchor_y="center_y",
-                child=self.x_box)
+                child=self.player_box)
         )
+
+
+        ''' START BUTTON '''
+
+        #creating START button
+        start_button = arcade.gui.UIFlatButton(text="START", width=200)
+        start_button.text = "START"
+
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=start_button)
+        )
+
+        #start_button.on_click = self.on_buttonclick()
+
 
     # This function will be called everytime the user presses a button
     def on_buttonclick(self, event):
         if event.text == "Host Game":
-            self.selected_option = True
+            self.selected_host = True
+            # Update the game_state with the selected values
+            self.game_state.set_selected_host(self.selected_host)
         elif event.text == "Join Game":
-            self.selected_option = False
+            self.selected_host = False
+            # Update the game_state with the selected values
+            self.game_state.set_selected_host(self.selected_host)
 
             # Handle the player buttons
         if event.text == "1 player":
             self.selected_players = 1
+            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "2 players":
             self.selected_players = 2
+            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "3 players":
             self.selected_players = 3
+            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "4 players":
             self.selected_players = 4
+            self.game_state.set_selected_players(self.selected_players)
+
+
+
 
     def on_draw(self):
         self.clear()
@@ -180,7 +205,7 @@ class WelcomeView(arcade.View):
         self.manager.draw()
         arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 50,
                          arcade.color.WHITE, font_size=48, anchor_x="center")
-        arcade.draw_text("Click to advance", self.window.width / 2, self.window.height - 100,
+        arcade.draw_text("Answer the 2 questions below, then click START", self.window.width / 2, self.window.height - 100,
                          arcade.color.WHITE, font_size=20, anchor_x="center")
         arcade.draw_text("Do you want to HOST or JOIN the game?",  190 , self.window.height /2 + 90,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
@@ -192,8 +217,9 @@ class WelcomeView(arcade.View):
         """ If the user presses the mouse button, start the game. """
         game_view = GameView()
         game_view.setup()
-        game_view.selected_players = self.selected_players
-        game_view.selected_option = self.selected_option
+        game_view.selected_players = self.game_state.get_selected_players()  # Retrieve selected_players from game_state
+        game_view.selected_host = self.game_state.get_selected_host()  # Retrieve selected_host from game_state
+        #game_view.selected_start = self.selected_start
         self.window.show_view(game_view)
 
 
@@ -387,13 +413,13 @@ class Card(arcade.Sprite):
 
 
 # add parameters to main: num_players, host, game_state, ready, lock
-def main():
+def main(num_players, host, game_state, ready, lock):
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    start_view = WelcomeView()
+    start_view = WelcomeView(game_state)
     window.show_view(start_view)
     arcade.run()
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+   # main()

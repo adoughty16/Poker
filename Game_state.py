@@ -79,6 +79,27 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_names": self.players})
 
+    # get/set the selected host and selected players from graphics
+    def get_selected_host(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.to_dict()["selected_host"]
+
+    def get_selected_players(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        doc = game_state_ref.get()
+        return doc.to_dict()["selected_players"]
+
+    def set_selected_host(self, selected_host, db):
+        self.selected_host = selected_host
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"selected_host": self.selected_host})
+
+    def set_selected_players(self, selected_players, db):
+        self.selected_players = selected_players
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"selected_players": self.selected_players})
+
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
         self.clear_community_cards(self, db)
