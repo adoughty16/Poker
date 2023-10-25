@@ -29,8 +29,8 @@ def main():
 	#init game_state
 	game_state = Game_state.Game_state(db, 'doc1')
 
-	game_state.set_selected_host(True, db)  # Set initial value for selected_host
-	game_state.set_selected_players(1, db)  # Set initial value for selected_players
+	game_state.set_selected_host(True)  # Set initial value for selected_host
+	game_state.set_selected_players(1)  # Set initial value for selected_players
 
 	# Create an instance of the WelcomeView and pass the game_state object
 	welcome_view = WelcomeView(game_state)
