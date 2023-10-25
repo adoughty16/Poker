@@ -8,7 +8,7 @@ import threading
 
 
 class Game():
-
+#
 	def __init__ (self, num_players, game_state, host, db):
 		#the gamestate
 		self.game_state = game_state
