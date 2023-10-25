@@ -10,9 +10,13 @@ import threading
 class Game():
 
 	def __init__ (self, num_players, game_state, host, db):
+		#the gamestate
 		self.game_state = game_state
+		#number of human players in this game
 		self.num_players = num_players
+		#shared cards on table 
 		self.community_cards = []
+		#list of local player objects
 		self.players = [Player() for _ in range(num_players)]
 		self.deck = deck()
 		self.pot = 0
@@ -84,9 +88,13 @@ class Game():
 					player.set_hand(hand)
 				lock.release()
 
+			#if we are in a betting round
 			if self.game_state.get_round() == 'pre-flop' or 'flop' or 'turn' or 'river':
+				#enter the betting loop
+				#all_called will tell us if we can move on to the next round
 				all_called = False
-				#establish dealer/blinds
+				#establish dealer/blinds by adding to the pot and removing the values from the players in the blind positions
+				#(blind positions are determined relative to the dealer position)
 				self.pot += 15
 				self.players[(self.dealer + 1) % 4].set_stack(self.players[(self.dealer + 1) % 4].get_stack() - 5)
 				self.round_bets[(self.dealer + 1) % 4] = 5
@@ -94,6 +102,7 @@ class Game():
 				self.round_bets[(self.dealer + 1) % 4] = 10
 
 				self.stacks = [self.players.get_stack() for _ in range(4)]
+				#now reflect those changes in the gamestate
 				lock.aquire()
 				self.game_state.set_round_pot(self.pot, self.db)
 				self.set_player_stacks(self.stacks)
