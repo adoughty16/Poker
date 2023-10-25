@@ -36,7 +36,7 @@ class Game_state:
         self.waiting = False
         # whose turn is to keep track of which player is expected to upload turn info needs setter/getter
         self.whose_turn = 0
-        # hard code first blind to be 10
+        # treating bet as raise (since raise is keyword in python) 
         self.bet = 0
         # the current amount needed for a call (For graphics, check is only an option if this value is zero)
         self.minimum_call = 10 
@@ -85,11 +85,14 @@ class Game_state:
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
-        self.clear_community_cards(self, db)
+        self.clear_community_cards(db)
         game_state_ref = db.collection("states").document(self.doc_name)
+        cards_dic = []
         for card in community_cards:
             self.community_cards.append(card)
-            game_state_ref.update({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
+            cards_dic.append(Card.to_dict(card))
+        game_state_ref.update({"community_cards": cards_dic})
+            #game_state_ref.update({"community_cards": firestore.ArrayUnion(Card.to_dict(card))})
 
     def clear_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -223,8 +226,9 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         comm_cards = []
+        # TODO: how to access community cards array from the database ?
         # for card in the document's community cards
-        for comm_card in doc.community_cards:
+        for comm_card in doc["community_cards"]:
             # converts the document in the database to a Card object using from_dict
             # see Card's constructor with default dictionary built-in for more details 
             comm_cards.append(Card.from_dict(comm_card))

@@ -1,6 +1,7 @@
 
 from Game_state import Game_state 
 import db_connect as database
+from cards import Card
 
 # function to test game_state class 
 def test_game_state():
@@ -11,7 +12,14 @@ def test_game_state():
     else:
         print('PASSED PLAYER NAMES')
     # player hands 
-    if game_state_1.get_community_cards != 
+    if game_state_1.get_community_cards != []:
+        print('FAILED COMMUNITY CARDS')
+    else:
+        print('PASSED COMMUNITY CARDS')
+    
+    game_state_1.set_community_cards([Card('d', 12), Card('c', 1)], db)
+    print(game_state_1.get_community_cards(db))
+
     # community cards 
     if game_state_1.get_total_pot(db) != 0:
         print('FAILED')
