@@ -46,6 +46,7 @@ class Game():
 			#update local flags from database
 			flags = flag_document.to_dict()["values"]
 			connected = True
+			#for all the flags that  aren't the confirmation bit
 			for i in range(self.num_players - 1):
 				#if any are 0
 				if flags[i] == 0:
@@ -58,24 +59,29 @@ class Game():
 				self.db.collection("flags").document("flag_document").set({"values": flags})
 		
 		while playing:
+			#set dealer in game state
+			#and erase player hands in database
+			#DECK WILL NEED TO BE RESET TOO.
 			lock.aquire:()
 			self.game_state.set_dealer(self.dealer, self.db)
 			self.game_state.set_player_hands([None] for i in range(4))
 			lock.release()
 			# other inits for game_state
 
+			#if round is dealing
 			if self.game_state.get_round() == 'dealing':
-				#deal
+				#deal from the deck
 				hands = self.deck.deal()
 				for player, hand in zip(self.players, hands):
 					player.set_hand(hand)
 
-				#update game_state locally, then on db
+				#update game_state with the hands (automatically uploads)
+				#BECAUSE THE GAME STATE NEEDS TO BE UPDATED BUT WE DON'T WANT HANDS TO BE AVAILABLE
+				#ON THE DATABASE MAYBE WE SHOULD HAVE THIS FUNCTION BE THE ONLY ONE THAT DOESN'T AUTOMATICALLY
+				#UPDATE TO THE DB. INSTEAD WE COULD HAVE A DIFFERENT FUNCTION TO PUSH HANDS TO THE DB DURING SHOWDOWN
 				lock.aquire() 
 				for player, hand in zip(self.game_state.get_players(self.db), hands):
 					player.set_hand(hand)
-				# the way that game_state is designed now this should just call set to whatever changes (no need for upload)
-				self.game_state.set_round('pre-flop', self.db)
 				lock.release()
 
 			if self.game_state.get_round() == 'pre-flop' or 'flop' or 'turn' or 'river':
@@ -258,7 +264,6 @@ class Game():
 						elif self.game_state.get_round() == 'river':
 							self.game_state.set_round('showdown', self.db)
 						lock.release()
-
 
 						#reset betting/round values
 						self.current = (self.dealer + 3) % 4
