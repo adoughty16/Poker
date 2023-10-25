@@ -35,7 +35,6 @@ def main():
 	# Create an instance of the WelcomeView and pass the game_state object
 	welcome_view = WelcomeView(game_state)
 	Graphics.main(welcome_view, ready, lock)
-
 	#Graphics.main(num_players, host, game_state, ready, lock)
 
 
