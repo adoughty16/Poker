@@ -37,7 +37,7 @@ class Game_state:
         # whose turn is to keep track of which player is expected to upload turn info needs setter/getter
         self.whose_turn = 0
         # hard code first blind to be 10
-        self.bet = 10
+        self.bet = 0
         # the current amount needed for a call (For graphics, check is only an option if this value is zero)
         self.minimum_call = 10 
         # index of the dealer
@@ -106,6 +106,11 @@ class Game_state:
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
         self.player_hands = player_hands 
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"player_hands": self.player_hands})
+    
+    def set_player_hand(self, player_index, hand, db):
+        self.player_hands[player_index] = hand
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_hands": self.player_hands})
     
@@ -296,8 +301,7 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         return doc.to_dict()["whose_turn"]
-    
-    # TODO: change this function to return nested arary based on actives
+
     # gets player hands by converting database document to Card object and appending to an array 
     def get_player_hands(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -305,7 +309,12 @@ class Game_state:
         player_hands = []
         # for every player's hand stored in the database
         for hand in doc.player_hands:
-            # convert the hands to Card objects with the from_dict (similar to get_community_cards)
-            # adds it to the array 
-            player_hands.append(Card.from_dict(hand))
+            # for every card in that hand 
+            for card in hand:
+                current_hand = []
+                # add the card to the curent hand (an array to store the hand) 
+                # by converting the card to a Card object using the from_dict (similar to get_community_cards)
+                current_hand.append(Card.from_dict(card))
+            # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
+            player_hands.append(Card.from_dict(card))
         return player_hands 
