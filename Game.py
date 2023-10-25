@@ -17,16 +17,31 @@ class Game():
 		#shared cards on table 
 		self.community_cards = []
 		#list of local player objects
-		self.players = [Player() for _ in range(num_players)]
+		self.players = [Player() for _ in range(4)]
+		#the deck
 		self.deck = deck()
+		#the current betting pot
 		self.pot = 0
+		#players[] index to track current dealer
 		self.dealer = 0
+		#players[] index to track the current player (whose turn it is)
+		#automatically 3 because in the first round the dealer/smallblind/bigblind players are in 0,1,2
 		self.current = 3
+		#total call is the maximum value that has been bet in the current round by any player (this helps keep track of
+		# the miniumum call values for players who have already put money into the pot for the round. So the call value for
+		# a given player is the total_call minus the amount they have already bet this round)
 		self.total_call = 10
+		#round bets keeps track of the total money bet so far in the current round by each player (organized by index)
 		self.round_bets = [0, 0, 0, 0]
+		#everyone starts with 1000
+		self.stacks = [1000, 1000, 1000, 1000]
+		#me is my index in the player list
 		self.me = 0
+		#host is a boolean that tells me if I am the host or not
 		self.host = host
+		#db is the firestore db that holds the game state and the connection flags
 		self.db = db
+		#actives is the indexes of all the players in the round who have not folded and who have not busted out of the game
 		self.actives = [0, 1, 2, 3]
 
 	def initial_main(self, lock): #determines which game loop to call
@@ -113,23 +128,39 @@ class Game():
 
 					#if it is an AI turn
 					if self.players[self.current].is_computer_player():
+						#give the player's turn() function the community cards and it will return a decision
 						choice, value = self.players[self.current].turn(self.community_cards)
+						#if the AI decides to bet
 						if choice == 'bet':
-							self.pot += value
+							#compute the amount of money this player is putting into the pot:
+							#	The value is the amount over the minimum call that the player is putting into the pot
+							#	To compute the total amount you just take the total_call minus the amount the player has
+							#	already bet that round. Then you add the bet value.
+							bet_amount = ((self.total_call - self.round_bets[self.current]) + value)
+							#pot goes up by bet amount
+							self.pot += bet_amount
+							#total_call goes up by the bet value
 							self.total_call += value
-							self.round_bets[self.current] += value
-							self.players[self.current].set_stack(self.player[self.current].get_stack - value)
+							#add the bet_amount to the round_bets for the current player
+							self.round_bets[self.current] += bet_amount
+							#subtract that amount from the player's stack
+							self.players[self.current].set_stack(self.player[self.current].get_stack - bet_amount)
+							#update local stacks
 							self.stacks[self.current] = self.players[self.current].get_stack()
+							#now reflect those changes in the gamestate
 							lock.aquire()
 							self.set_player_stacks(self.stacks)
-							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
+							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn()
 							lock.release()
-
+						
+						#if the AI decides to check
 						elif choice == 'check':
+							#basically just skipping their turn
+							#reflect in game state
 							lock.aquire()
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn()
