@@ -10,9 +10,13 @@ import threading
 class Game():
 
 	def __init__ (self, num_players, game_state, host, db):
+		#the gamestate
 		self.game_state = game_state
+		#number of human players in this game
 		self.num_players = num_players
+		#shared cards on table 
 		self.community_cards = []
+		#list of local player objects
 		self.players = [Player() for _ in range(num_players)]
 		self.deck = deck()
 		self.pot = 0
@@ -46,6 +50,7 @@ class Game():
 			#update local flags from database
 			flags = flag_document.to_dict()["values"]
 			connected = True
+			#for all the flags that  aren't the confirmation bit
 			for i in range(self.num_players - 1):
 				#if any are 0
 				if flags[i] == 0:
@@ -58,29 +63,38 @@ class Game():
 				self.db.collection("flags").document("flag_document").set({"values": flags})
 		
 		while playing:
+			#set dealer in game state
+			#and erase player hands in database
+			#DECK WILL NEED TO BE RESET TOO.
 			lock.aquire:()
 			self.game_state.set_dealer(self.dealer, self.db)
 			self.game_state.set_player_hands([None] for i in range(4))
 			lock.release()
 			# other inits for game_state
 
+			#if round is dealing
 			if self.game_state.get_round() == 'dealing':
-				#deal
+				#deal from the deck
 				hands = self.deck.deal()
 				for player, hand in zip(self.players, hands):
 					player.set_hand(hand)
 
-				#update game_state locally, then on db
+				#update game_state with the hands (automatically uploads)
+				#BECAUSE THE GAME STATE NEEDS TO BE UPDATED BUT WE DON'T WANT HANDS TO BE AVAILABLE
+				#ON THE DATABASE MAYBE WE SHOULD HAVE THIS FUNCTION BE THE ONLY ONE THAT DOESN'T AUTOMATICALLY
+				#UPDATE TO THE DB. INSTEAD WE COULD HAVE A DIFFERENT FUNCTION TO PUSH HANDS TO THE DB DURING SHOWDOWN
 				lock.aquire() 
 				for player, hand in zip(self.game_state.get_players(self.db), hands):
 					player.set_hand(hand)
-				# the way that game_state is designed now this should just call set to whatever changes (no need for upload)
-				self.game_state.set_round('pre-flop', self.db)
 				lock.release()
 
+			#if we are in a betting round
 			if self.game_state.get_round() == 'pre-flop' or 'flop' or 'turn' or 'river':
+				#enter the betting loop
+				#all_called will tell us if we can move on to the next round
 				all_called = False
-				#establish dealer/blinds
+				#establish dealer/blinds by adding to the pot and removing the values from the players in the blind positions
+				#(blind positions are determined relative to the dealer position)
 				self.pot += 15
 				self.players[(self.dealer + 1) % 4].set_stack(self.players[(self.dealer + 1) % 4].get_stack() - 5)
 				self.round_bets[(self.dealer + 1) % 4] = 5
@@ -88,6 +102,7 @@ class Game():
 				self.round_bets[(self.dealer + 1) % 4] = 10
 
 				self.stacks = [self.players.get_stack() for _ in range(4)]
+				#now reflect those changes in the gamestate
 				lock.aquire()
 				self.game_state.set_round_pot(self.pot, self.db)
 				self.set_player_stacks(self.stacks)
@@ -258,7 +273,6 @@ class Game():
 						elif self.game_state.get_round() == 'river':
 							self.game_state.set_round('showdown', self.db)
 						lock.release()
-
 
 						#reset betting/round values
 						self.current = (self.dealer + 3) % 4
