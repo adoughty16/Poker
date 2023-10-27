@@ -1,6 +1,19 @@
 # final_project
 ## Online Multi-Player Poker 
 
+## Sprint 2
+The goal for sprint 2 is to get a game working which involves work in the Player class, implementation of graphics, and debugging of the game loop primarily. 
+* get input from initial graphics window - through WelcomeView and game_state 
+* multi-threading game and graphics troubleshooting
+* finish functions in Player class
+* testing card functions
+* implement Card class structure for database - added to_dict and from_dict, troubleshooting arrays of custom objects 
+* implement host player turn in graphics
+* finish showdown in game loop 
+* debug game loop
+* document bugs
+* connect all team members to firestore 
+
 ## Sprint 1
 * ~~review basics of poker and functionality~~
 * ~~write main host loop ~~
