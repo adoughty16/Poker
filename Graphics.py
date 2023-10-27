@@ -3,6 +3,7 @@ import arcade
 import arcade.gui
 from Game_state import  Game_state
 import db_connect
+import Player
 
 # Screen title and size
 SCREEN_WIDTH = 1424
@@ -73,6 +74,7 @@ class WelcomeView(arcade.View):
         self.selected_host = None  # To store "Host" or "Join"
         self.players_chosen = False
         self.host_chosen = False
+        self.button_change = False
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
@@ -106,6 +108,19 @@ class WelcomeView(arcade.View):
                 child=self.host_join_box)
         )
 
+        self.pressed = {
+            "font_name": ("calibri", "arial"),
+            "font_size": 15,
+            "font_color": arcade.color.BLACK,
+            "border_width": 2,
+            "border_color": None,
+            "bg_color": arcade.color.WHITE,
+
+            # used if button is pressed
+            "bg_color_pressed": arcade.color.WHITE,
+            "border_color_pressed": arcade.color.RED,  # also used when hovered
+            "font_color_pressed": arcade.color.RED,
+        }
 
         ''' NUMBER OF PLAYERS BUTTON '''
 
@@ -164,21 +179,27 @@ class WelcomeView(arcade.View):
     def on_host_click(self, event):
         self.selected_host = True
         self.host_chosen = True
+        self.button_change = True
     def on_join_click(self, event):
         self.selected_host = False
         self.host_chosen = True
+        self.button_change = True
     def on_1p_click(self, event):
         self.selected_players = 1
         self.players_chosen = True
+        self.button_change = True
     def on_2p_click(self, event):
         self.selected_players = 2
         self.players_chosen = True
+        self.button_change = True
     def on_3p_click(self, event):
         self.selected_players = 3
         self.players_chosen = True
+        self.button_change = True
     def on_4p_click(self, event):
         self.selected_players = 4
         self.players_chosen = True
+        self.button_change = True
     def on_start_click(self, event):
         #if required selections have been made
         if (self.players_chosen) and (self.host_chosen):
@@ -197,6 +218,9 @@ class WelcomeView(arcade.View):
         # Reset the viewport, necessary if we have a scrolling game and we need
         # to reset the viewport back to the start so we can see what we draw.
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
+    def on_update(self, delta_time):
+        pass
 
 
     def on_draw(self):
@@ -231,11 +255,42 @@ class GameView(arcade.View):
     """ Main application class. """
 
     def __init__(self, selected_players, selected_host):
-        self.selected_players = selected_players
-        self.selected_host = selected_host 
         self.db = db_connect.init()
-        # TODO: fix db connection here 
         self.game_state = Game_state(self.db, 'doc1')
+
+        self.num_players = selected_players
+		#shared cards on table 
+        self.community_cards = []
+		#list of local player objects
+        self.players = [Player() for _ in range(4)]
+		#the deck
+        self.deck = deck()
+		#the current betting pot
+        self.pot = 0
+		#players[] index to track current dealer
+        self.dealer = 0
+		#players[] index to track the current player (whose turn it is)
+		#automatically 3 because in the first round the dealer/smallblind/bigblind players are in 0,1,2
+        self.current = 3
+		#total call is the maximum value that has been bet in the current round by any player (this helps keep track of
+		# the miniumum call values for players who have already put money into the pot for the round. So the call value for
+		# a given player is the total_call minus the amount they have already bet this round)
+        self.total_call = 10
+		#round bets keeps track of the total money bet so far in the current round by each player (organized by index)
+        self.round_bets = [0, 0, 0, 0]
+		#everyone starts with 1000
+        self.stacks = [1000, 1000, 1000, 1000]
+		#me is my index in the player list
+        self.me = 0
+		#host is a boolean that tells me if I am the host or not
+        self.host = selected_host
+		#actives is the indexes of all the players in the round who have not folded and who have not busted out of the game
+        self.actives = [0, 1, 2, 3]
+
+        #TODO: implement these two functions in Game_state
+        #self.gamestate.set_num_real_players(selected_players)
+        #self.gamestate.set_host(selected_host)
+
         super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
@@ -334,9 +389,9 @@ class GameView(arcade.View):
                 # will happen from there, including gamestate updates.
                 # so prettymuch do nothing
             # if it isn't my turn:
-                if self.game_state.get_round() == 'dealing':
+                if self.game_state.get_round(self.db) == 'dealing':
                     #deal from the deck
-                    hands = self.deck.deal()
+                    hands = self.deck.deal(self.db)
                     for player, hand in zip(self.players, hands):
                         player.set_hand(hand)
                             
