@@ -87,7 +87,7 @@ class Game():
 			# other inits for game_state
 
 			#if round is dealing
-			if self.game_state.get_round() == 'dealing':
+			if self.game_state.get_round(self.db) == 'dealing':
 				#deal from the deck
 				hands = self.deck.deal()
 				for player, hand in zip(self.players, hands):
@@ -103,7 +103,7 @@ class Game():
 				lock.release()
 
 			#if we are in a betting round
-			if self.game_state.get_round() == 'pre-flop' or 'flop' or 'turn' or 'river':
+			if self.game_state.get_round(self.db) == 'pre-flop' or 'flop' or 'turn' or 'river':
 				#enter the betting loop
 				#all_called will tell us if we can move on to the next round
 				all_called = False
@@ -153,7 +153,7 @@ class Game():
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 						
 						#if the AI decides to check
@@ -162,7 +162,7 @@ class Game():
 							#reflect in game state
 							lock.aquire()
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 						
 						#if AI decides to fold
@@ -192,7 +192,7 @@ class Game():
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 
 					if self.current == self.me:
@@ -212,7 +212,7 @@ class Game():
 						#we need to wait and let them update the gamestate
 						#once they have updated the game state, we update the local game and then move on
 						lock.aquire()
-						while self.game_state.get_waiting():
+						while self.game_state.get_waiting(self.db):
 							#if the host is waiting, just keep checking until the turn has been taken
 							time.sleep(3)
 						lock.release()
@@ -244,7 +244,7 @@ class Game():
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 						
 						#if check
@@ -253,7 +253,7 @@ class Game():
 							#reflect in game state
 							lock.aquire()
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 						
 						#if fold
@@ -283,7 +283,7 @@ class Game():
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
-							self.game_state.increment_whose_turn()
+							self.game_state.increment_whose_turn(self.db)
 							lock.release()
 
 					#increment current player based on actives[]
@@ -323,20 +323,21 @@ class Game():
 						#also deal more cards
 						#also change round
 						lock.aquire()
-						self.game_state.set_total_pot(self.game_state.get_total_pot() + self.game_state.get_round_pot())
-						if self.game_state.get_round() == 'pre-flop':
+						# this would be more efficient if we get_round from the db once and then compare that stored value 
+						self.game_state.set_total_pot(self.game_state.get_total_pot() + self.game_state.get_round_pot(), self.db)
+						if self.game_state.get_round(self.db) == 'pre-flop':
 							self.game_state.set_round('flop', self.db)
 							self.community_cards = self.deck.flop()
 							self.game_state.set_community_cards(self.community_cards, self.db)
-						elif self.game_state.get_round() == 'flop':
+						elif self.game_state.get_round(self.db) == 'flop':
 							self.game_state.set_round('turn', self.db)
 							self.community_cards.append(self.deck.turn())
 							self.game_state.set_community_cards(self.community_cards, self.db)
-						elif self.game_state.get_round() == 'turn':
+						elif self.game_state.get_round(self.db) == 'turn':
 							self.game_state.set_round('river', self.db)
 							self.community_cards.append(self.deck.turn())
 							self.game_state.set_community_cards(self.community_cards, self.db)
-						elif self.game_state.get_round() == 'river':
+						elif self.game_state.get_round(self.db) == 'river':
 							self.game_state.set_round('showdown', self.db)
 						lock.release()
 
@@ -345,7 +346,7 @@ class Game():
 						self.total_call = 10
 						self.round_bets = [0, 0, 0, 0]
 
-			if self.game_state.get_round() == 'showdown':
+			if self.game_state.get_round(self.db) == 'showdown':
 				#award winner
 				self.players[self.actives[0]].set_stack(self.players[self.actives[0]].get_stack() + self.pot)
 				#reset values
