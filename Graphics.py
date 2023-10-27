@@ -2,6 +2,7 @@
 import arcade
 import arcade.gui
 from Game_state import  Game_state
+import db_connect
 
 # Screen title and size
 SCREEN_WIDTH = 1424
@@ -68,9 +69,10 @@ class WelcomeView(arcade.View):
         super().__init__()
 
         # instance variables
-        self.selected_players = 1  # Default to 1 player
+        self.selected_players = -1  # Default to -1 player
         self.selected_host = None  # To store "Host" or "Join"
-        # self.selected_start = None
+        self.players_chosen = False
+        self.host_chosen = False
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
@@ -92,8 +94,8 @@ class WelcomeView(arcade.View):
         join_button.text = "Join Game"
         self.host_join_box.add(join_button.with_space_around(bottom=20))
 
-        host_button.on_click = self.on_buttonclick
-        join_button.on_click = self.on_buttonclick
+        host_button.on_click = self.on_host_click
+        join_button.on_click = self.on_join_click
 
         # for positioning of host join buttons
         self.manager.add(
@@ -127,10 +129,10 @@ class WelcomeView(arcade.View):
         player4_button.text = "4 players"
         self.player_box.add(player4_button.with_space_around(bottom=20))
 
-        player1_button.on_click = self.on_buttonclick
-        player2_button.on_click = self.on_buttonclick
-        player3_button.on_click = self.on_buttonclick
-        player4_button.on_click = self.on_buttonclick
+        player1_button.on_click = self.on_1p_click
+        player2_button.on_click = self.on_2p_click
+        player3_button.on_click = self.on_3p_click
+        player4_button.on_click = self.on_4p_click
 
         # for positioning of number of players
         self.manager.add(
@@ -146,6 +148,7 @@ class WelcomeView(arcade.View):
         #creating START button
         start_button = arcade.gui.UIFlatButton(text="START", width=200)
         start_button.text = "START"
+        start_button.on_click = self.on_start_click
 
         self.manager.add(
             arcade.gui.UIAnchorWidget(
@@ -158,21 +161,32 @@ class WelcomeView(arcade.View):
 
 
     # This function will be called everytime the user presses a button
-    def on_buttonclick(self, event):
-        if event.text == "Host Game":
-            self.selected_host = True
-        elif event.text == "Join Game":
-            self.selected_host = False
+    def on_host_click(self, event):
+        self.selected_host = True
+        self.host_chosen = True
+    def on_join_click(self, event):
+        self.selected_host = False
+        self.host_chosen = True
+    def on_1p_click(self, event):
+        self.selected_players = 1
+        self.players_chosen = True
+    def on_2p_click(self, event):
+        self.selected_players = 2
+        self.players_chosen = True
+    def on_3p_click(self, event):
+        self.selected_players = 3
+        self.players_chosen = True
+    def on_4p_click(self, event):
+        self.selected_players = 4
+        self.players_chosen = True
+    def on_start_click(self, event):
+        #if required selections have been made
+        if (self.players_chosen) and (self.host_chosen):
+            #launch the game
+            game_view = GameView(self.selected_players, self.selected_host)
+            game_view.setup()
+            self.window.show_view(game_view)
 
-            # Handle the player buttons
-        if event.text == "1 player":
-            self.selected_players = 1
-        elif event.text == "2 players":
-            self.selected_players = 2
-        elif event.text == "3 players":
-            self.selected_players = 3
-        elif event.text == "4 players":
-            self.selected_players = 4
 
 
 
@@ -201,10 +215,10 @@ class WelcomeView(arcade.View):
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
-        game_view = GameView(self.selected_players, self.selected_host)
-        game_view.setup()
-        self.window.show_view(game_view)
-
+        #game_view = GameView(self.selected_players, self.selected_host)
+        #game_view.setup()
+        #self.window.show_view(game_view)
+        pass
         # pass in self.selected_host() and self.selected_players to the next window rather than using game-state
         # so that GameView can access those values and also create its own game-state object 
 
@@ -219,8 +233,9 @@ class GameView(arcade.View):
     def __init__(self, selected_players, selected_host):
         self.selected_players = selected_players
         self.selected_host = selected_host 
+        self.db = db_connect.init()
         # TODO: fix db connection here 
-        #game_state = Game_state(db, 'doc1')
+        self.game_state = Game_state(self.db, 'doc1')
         super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
@@ -298,11 +313,11 @@ class GameView(arcade.View):
                 self.card_list.append(card)
         pass
 
-    def on_update(self):
+    def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
 
         #update game_state from server
-        self.game_state.download()
+        #self.game_state.download()
 
         # if I am not the host:
         if not self.selected_host:
@@ -454,14 +469,14 @@ class Card(arcade.Sprite):
 
 
 # add parameters to main: num_players, host, game_state, ready, lock
-def main(game_state, ready, lock):
+def main():
     """ Main function """
 
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    start_view = WelcomeView(game_state)
+    start_view = WelcomeView()
     window.show_view(start_view)
     arcade.run()
 
-#if __name__ == "__main__":
-   # main()
+if __name__ == "__main__":
+    main()
 
