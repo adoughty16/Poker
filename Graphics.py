@@ -71,7 +71,7 @@ class WelcomeView(arcade.View):
         self.game_state = game_state
         self.selected_players = 1  # Default to 1 player
         self.selected_host = None  # To store "Host" or "Join"
-       # self.selected_start = None
+        # self.selected_start = None
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
@@ -245,7 +245,7 @@ class GameView(arcade.View):
         self.held_cards_original_position = None
 
         # Don't show the mouse cursor
-        #self.window.set_mouse_visible(False)
+        # self.window.set_mouse_visible(False)
 
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list = None
