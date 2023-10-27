@@ -70,6 +70,8 @@ class WelcomeView(arcade.View):
 
     def __init__(self):
         super().__init__()
+        #TODO: We need a way to input player names in this window as well
+        self.play_name = None
 
         # instance variables
         self.selected_players = -1  # Default to -1 player
@@ -265,6 +267,9 @@ class GameView(arcade.View):
         self.community_cards = []
 		#list of local player objects
         self.players = [Player() for _ in range(4)]
+        for i in range(self.num_players):
+            #This means that the real players will be the first in the list
+            self.players[i].set_computer_player(False)
 		#the deck
         self.deck = deck()
 		#the current betting pot

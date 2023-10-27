@@ -17,11 +17,11 @@ class HandStrength(Enum):
     ROYAL_FLUSH = 10
 
 class Player:
-    def __init__(self, name, is_computer_player=False):
-        self.name = name
+    def __init__(self):
+        self.name = None
         self.hand = []
         self.stack = 0
-        self.is_computer_player = is_computer_player
+        self.is_computer_player = True #defaults to computer player
     
     def get_name(self):
         return self.name
@@ -41,7 +41,7 @@ class Player:
     def set_hand(self, hand):
         self.hand = hand
     
-    def set_player_type(self, boolean_value):
+    def set_computer_player(self, boolean_value):
         self.is_computer_player = boolean_value
 
 
