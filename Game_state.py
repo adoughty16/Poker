@@ -320,3 +320,7 @@ class Game_state:
             # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
             player_hands.append(Card.from_dict(card))
         return player_hands 
+
+    # TODO: write download function 
+    # def download - to get updated version of game_state from database 
+    # takes in self and returns nothing because it is updating all of the values 
