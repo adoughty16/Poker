@@ -48,9 +48,6 @@ class Game_state:
         self.round = 'dealing'
         self.player_decision = 'check'
 
-        # selected_host and selected_players for graphics
-        self.selected_host = True 
-        self.selected_players = 1 
 
         for key in dictionary:
             setattr(self ,key , dictionary[key])
@@ -196,20 +193,8 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"whose_turn": self.whose_turn})
     
-    # get/set the selected host and selected players from graphics
-
-    def set_selected_host(self, selected_host):
-        self.selected_host = selected_host 
-
-    def set_selected_players(self, selected_players):
-        self.selected_players = selected_players
         
 # getters 
-    def get_selected_host(self):
-        return self.selected_host 
-
-    def get_selected_players(self):
-        return self.selected_players
     
     def get_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -321,6 +306,38 @@ class Game_state:
             player_hands.append(Card.from_dict(card))
         return player_hands 
 
-    # TODO: write download function 
     # def download - to get updated version of game_state from database 
     # takes in self and returns nothing because it is updating all of the values 
+    def download(self, db):
+        self.player_names = self.get_players(self, db)
+        self.community_cards = self.get_community_cards(self, db)
+        self.total_pot = self.get_total_pot(self, db)
+        self.round_pot = self.get_round_pot(self, db)
+        self.player_stacks = self.get_player_stacks(self, db)
+        self.total_call = self.get_total_call(self, db)
+        self.waiting = self.get_waiting(self, db)
+        self.whose_turn = self.get_whose_turn(self, db)
+        self.bet = self.get_bet(self, db)
+        self.minimum_call = self.get_minimum_call(self, db)
+        self.dealer = self.get_dealer(self, db)
+        self.actives = self.get_actives(self, db)
+        self.round = self.get_round(self, db)
+        self.player_decision = self.get_player_decision(self, db)
+
+    # dow=wnload with player hands (wph) to be used in showdown to only retrieve player_hands then!
+    def download_wph(self, db):
+        self.player_names = self.get_players(self, db)
+        self.player_hands = self.get_player_hands(self, db)
+        self.community_cards = self.get_community_cards(self, db)
+        self.total_pot = self.get_total_pot(self, db)
+        self.round_pot = self.get_round_pot(self, db)
+        self.player_stacks = self.get_player_stacks(self, db)
+        self.total_call = self.get_total_call(self, db)
+        self.waiting = self.get_waiting(self, db)
+        self.whose_turn = self.get_whose_turn(self, db)
+        self.bet = self.get_bet(self, db)
+        self.minimum_call = self.get_minimum_call(self, db)
+        self.dealer = self.get_dealer(self, db)
+        self.actives = self.get_actives(self, db)
+        self.round = self.get_round(self, db)
+        self.player_decision = self.get_player_decision(self, db)
