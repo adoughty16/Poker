@@ -9,7 +9,7 @@ from Graphics import WelcomeView
 
 def main():
 	db = database.init()
-	
+
 	#graphics window needs to prompt and allow input for the following 2 values:
 	num_players = None #the number of non computer players for this game
 	host = None #boolean value for whether the user on this machine is the host
@@ -21,8 +21,7 @@ def main():
 	game_state.set_selected_players(1)  # Set initial value for selected_players
 
 	# Create an instance of the WelcomeView and pass the game_state object
-	# Graphics.main(welcome_view, ready, lock)
-	Graphics.main(game_state, ready)
+	Graphics.main(game_state)
 
 
 #	db.close()
