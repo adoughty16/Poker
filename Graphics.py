@@ -66,8 +66,7 @@ class WelcomeView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        # instance variables
-        self.game_state = Game_state()
+        # instance variabless
         self.selected_players = 1  # Default to 1 player
         self.selected_host = None  # To store "Host" or "Join"
         # self.selected_start = None
@@ -302,11 +301,12 @@ class GameView(arcade.View):
                 self.card_list.append(card)
         pass
 
-    def on_update():
+    def on_update(self):
         #GAME LOGIC SIMULATES HERE
         #update game_state from server
 
         # if I am not the host:
+        if self.selected_host:
             # if it is not my turn:
                 # keep waiting
             # if it is my turn
@@ -319,7 +319,9 @@ class GameView(arcade.View):
                 # will happen from there, including gamestate updates.
                 # so prettymuch do nothing
             # if it isn't my turn:
-                
+                # run the turn logic from Game.py
+                 
+
 
         pass
 
