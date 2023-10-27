@@ -4,7 +4,7 @@ import arcade.gui
 from Game_state import  Game_state
 
 # Screen title and size
-SCREEN_WIDTH = 1024
+SCREEN_WIDTH = 1424
 SCREEN_HEIGHT = 768
 SCREEN_TITLE = "Texas Hold'em Poker"
 
@@ -29,7 +29,7 @@ HORIZONTAL_MARGIN_PERCENT = 0.10
 BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 
 # The X of where to start putting things on bottom
-START_X = SCREEN_WIDTH / 2
+START_X = (SCREEN_WIDTH / 2) - 50
 
 
 # The Y of the top row
@@ -41,10 +41,11 @@ MIDDLE_Y = SCREEN_HEIGHT / 2
 # the X for player 2, middle row
 MIDDLE_X_2 = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
-
 # the X for player 4, middle row
 MIDDLE_X_4 = MAT_WIDTH + 725 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
+# community card mats
+MIDDLE_X_COMMUNITYCARDS = MAT_WIDTH + 375 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 # How far apart each pile goes
 X_SPACING = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
@@ -280,6 +281,11 @@ class GameView(arcade.View):
             pile.position = MIDDLE_X_4 + i * X_SPACING, MIDDLE_Y
             self.pile_mat_list.append(pile)
 
+        # create community card mats
+        for i in range(5):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = MIDDLE_X_COMMUNITYCARDS + i * X_SPACING, MIDDLE_Y
+            self.pile_mat_list.append(pile)
 
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
