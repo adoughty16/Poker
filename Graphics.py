@@ -4,6 +4,7 @@ import arcade.gui
 from Game_state import  Game_state
 import db_connect
 import Player
+import deck
 
 # Screen title and size
 SCREEN_WIDTH = 1424
@@ -286,6 +287,8 @@ class GameView(arcade.View):
         self.host = selected_host
 		#actives is the indexes of all the players in the round who have not folded and who have not busted out of the game
         self.actives = [0, 1, 2, 3]
+        #controls betting rounds
+        self.all_called = False
 
         #TODO: implement these two functions in Game_state
         #self.gamestate.set_num_real_players(selected_players)
@@ -372,6 +375,7 @@ class GameView(arcade.View):
         #GAME LOGIC SIMULATES HERE
 
         #update game_state from server
+        #TODO: implement this in gamestate
         #self.game_state.download()
 
         # if I am not the host:
@@ -393,11 +397,88 @@ class GameView(arcade.View):
                     #deal from the deck
                     hands = self.deck.deal(self.db)
                     for player, hand in zip(self.players, hands):
-                        player.set_hand(hand)
-                            
+                        player.set_hand(hand)       
                     for player, hand in zip(self.game_state.get_players(self.db), hands):
                         player.set_hand(hand)
-        pass
+
+                    #establish dealer/blinds by adding to the pot and removing the values from the players in the blind positions
+                    #(blind positions are determined relative to the dealer position)
+                    self.pot += 15
+                    self.players[(self.dealer + 1) % 4].set_stack(self.players[(self.dealer + 1) % 4].get_stack() - 5)
+                    self.round_bets[(self.dealer + 1) % 4] = 5
+                    self.players[(self.dealer + 2) % 4].set_stack(self.players[(self.dealer + 2) % 4].get_stack() - 10)
+                    self.round_bets[(self.dealer + 1) % 4] = 10
+                    
+                    self.stacks = [self.players.get_stack() for _ in range(4)]
+                    #now reflect those changes in the gamestate
+                    self.game_state.set_round_pot(self.pot, self.db)
+                    self.set_player_stacks(self.stacks)
+                    self.game_state.set_round('pre-flop')
+
+                # if we are betting
+                elif self.game_state.get_round(self.db) == 'pre-flop' or 'flop' or 'turn' or 'river':
+                    #if it is an AI turn
+                    if self.players[self.current].is_computer_player():
+						#give the player's turn() function the community cards and it will return a decision
+                        choice, value = self.players[self.current].turn(self.community_cards)
+						#if the AI decides to bet
+                        if choice == 'bet':
+							#compute the amount of money this player is putting into the pot:
+							#	The value is the amount over the minimum call that the player is putting into the pot
+							#	To compute the total amount you just take the total_call minus the amount the player has
+							#	already bet that round. Then you add the bet value.
+                            bet_amount = ((self.total_call - self.round_bets[self.current]) + value)
+							#pot goes up by bet amount
+                            self.pot += bet_amount
+							#total_call goes up by the bet value
+                            self.total_call += value
+							#add the bet_amount to the round_bets for the current player
+                            self.round_bets[self.current] += bet_amount
+							#subtract that amount from the player's stack
+                            self.players[self.current].set_stack(self.player[self.current].get_stack - bet_amount)
+							#update local stacks
+                            self.stacks[self.current] = self.players[self.current].get_stack()
+							#now reflect those changes in the gamestate
+                            self.set_player_stacks(self.stacks)
+                            self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
+                            self.game_state.set_bet(value, self.db)
+                            self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
+                            self.game_state.set_player_decision(choice, self.db)
+                            self.game_state.increment_whose_turn(self.db)
+						
+						#if the AI decides to check
+                        elif choice == 'check':
+							#basically just skipping their turn
+							#reflect in game state
+                            self.game_state.set_player_decision(choice, self.db)
+                            self.game_state.increment_whose_turn(self.db)
+						
+						#if AI decides to fold
+                        elif choice == 'fold':
+							#remove their index from actives[]
+                            self.actives.remove(self.current)
+							#tell gamestate
+                            self.game_state.remove_player(self.current, self.db)
+
+						# if AI decides to call
+                        elif choice == 'call':
+							# add to the pot the call amount (based on the amount below the total_call the current player
+							# has already bet in round_bets)
+                            self.pot += (self.total_call - self.round_bets[self.current])
+							#reflect that in the player's stack
+                            self.players[self.current].set_stack(self.player[self.current].get_stack - (self.total_call - self.round_bets[self.current]))
+							#set that players round_bets to the call value
+                            self.round_bets[self.current] = self.total_call
+							#update local stacks with the new player stack
+                            self.stacks[self.current] = self.players[self.current].get_stack()
+							#reflect the changes in the gamestate
+                            self.set_player_stacks(self.stacks)
+                            self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
+                            self.game_state.set_bet(value, self.db)
+                            self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
+                            self.game_state.set_player_decision(choice, self.db)
+                            self.game_state.increment_whose_turn(self.db)
+                
 
     def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
