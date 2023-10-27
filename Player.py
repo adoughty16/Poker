@@ -5,6 +5,7 @@ from collections import Counter
 
 
 class HandStrength(Enum):
+    DEFAULT = 0
     HIGH_CARD = 1
     ONE_PAIR = 2
     TWO_PAIR = 3
@@ -22,6 +23,8 @@ class Player:
         self.hand = []
         self.stack = 0
         self.is_computer_player = is_computer_player
+        showdown_cards = []
+        showdown_strength = HandStrength.DEFAULT
     
     def get_name(self):
         return self.name
@@ -34,7 +37,10 @@ class Player:
     
     def is_computer_player(self):
         return self.is_computer_player
-    
+
+    def set_strength(self, HandStrength):
+        self.HandStrength = HandStrength
+
     def set_name(self, name):
         self.name = name
     
@@ -67,72 +73,55 @@ class Player:
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
         #EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        bet_value = None
+        bet_value = 0
         decisions = ["bet", "check", "fold"]
         return random.choice(decisions), bet_value
 
     def calculate_strength(self, cards):
         # Implement hand strength evaluation
         # Sort the cards by rank (e.g., 2, 3, 4, ..., A)
-        sorted_cards = sorted(cards, key=lambda card: Card.RANK_ORDER.index(card.rank))
-        counts = Counter(card.rank for card in sorted_cards)
+        sorted_cards = sorted(cards, key=lambda card: card.RANK_ORDER.index(card.rank)) #<---- card sorter i assume. could we merge this into get_hand_type?
+        counts = Counter(card.rank for card in sorted_cards) #<----- what is this?
 
-        if self.is_royal_flush(sorted_cards):
-            return HandStrength.ROYAL_FLUSH
-        elif self.is_straight_flush(sorted_cards):
-            return HandStrength.STRAIGHT_FLUSH
-        elif self.is_four_of_a_kind(counts):
-            return HandStrength.FOUR_OF_A_KIND
-        elif self.is_full_house(counts):
-            return HandStrength.FULL_HOUSE
-        elif self.is_flush(sorted_cards):
-            return HandStrength.FLUSH
-        elif self.is_straight(sorted_cards):
-            return HandStrength.STRAIGHT
-        elif self.is_three_of_a_kind(counts):
-            return HandStrength.THREE_OF_A_KIND
-        elif self.is_two_pair(counts):
-            return HandStrength.TWO_PAIR
-        elif self.is_one_pair(counts):
-            return HandStrength.ONE_PAIR
-        else:
-            return HandStrength.HIGH_CARD
     def get_hand_type(self, cards):
         # Implement hand type evaluation logic
         # Return the appropriate ENUM from HandStrength
 
-        def is_royal_flush(self, cards):
-            # Check if it's a Royal Flush (A, K, Q, J, 10 of the same suit)
-            pass
+        def matching(self, cards):
+            #create memory for cards in form list[]
+            matching_mem = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+            #count of card pairs
+            pair_count = 0
+            #iterate thru cards
+            for i in cards:
+                #count each card and add it to matching mem, index = card value
+                matching_mem[i.getValue] =+ 1
+            #index through matching mem
+            for e in matching_mem:
+                #if a card value occurs 4 times, return enum four of a kind
+                if e == 4:
+                    showdown_strength = HandStrength.FOUR_OF_A_KIND
+                    return HandStrength.FOUR_OF_A_KIND
+                #if a card value occurs 3 times, return enum three of a kind
+                if e == 3:
+                    showdown_strength = HandStrength.THREE_OF_A_KIND
+                    return HandStrength.THREE_OF_A_KIND
+                #if a card value occurs twice, increment the count of pairs
+                if e == 2:
+                    pair_count=+1
+            #if there are two pairs, return enum two pair
+            if pair_count == 2:
+                showdown_strength = HandStrength.TWO_PAIR
+                return HandStrength.TWO_PAIR
+            #if there is one pair, return enum one_pair
+            if pair_count == 1:
+                showdown_strength = HandStrength.ONE_PAIR
+                return HandStrength.ONE_PAIR
 
-        def is_straight_flush(self, cards):
-            # Check if it's a Straight Flush
-            pass
+        #this function will use a similar algo to the matching algo
+        def flushing(self, cards):
+            #create memory for increasing
+            flushing_mem = [0,0,0,0,0,0,0,0,0,0,0,0,0]
+            current_strength = HandStrength.HIGH_CARD
 
-        def is_four_of_a_kind(self, counts):
-            # Check if it's Four of a Kind
-            pass
 
-        def is_full_house(self, counts):
-            # Check if it's a Full House
-            pass
-
-        def is_flush(self, cards):
-            # Check if it's a Flush
-            pass
-
-        def is_straight(self, cards):
-            # Check if it's a Straight
-            pass
-
-        def is_three_of_a_kind(self, counts):
-            # Check if it's Three of a Kind
-            pass
-
-        def is_two_pair(self, counts):
-            # Check if it's Two Pair
-            pass
-
-        def is_one_pair(self, counts):
-            # Check if it's One Pair
-            return 2 in counts.values()
