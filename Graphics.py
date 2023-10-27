@@ -292,8 +292,6 @@ class GameView(arcade.View):
           #  self.pile_mat_list.append(pile)
 
 
-
-
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
 
