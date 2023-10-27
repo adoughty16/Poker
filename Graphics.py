@@ -1,6 +1,5 @@
 
 import arcade
-import threading
 import arcade.gui
 from Game_state import  Game_state
 

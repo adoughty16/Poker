@@ -2,7 +2,6 @@ import Game
 import arcade
 import Game_state
 import Graphics
-import threading
 import time
 import db_connect as database
 from Graphics import WelcomeView

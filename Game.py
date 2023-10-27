@@ -3,7 +3,6 @@ import deck
 import cards
 import Game_state
 import time
-import threading
 
 
 
