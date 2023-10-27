@@ -303,6 +303,10 @@ class GameView(arcade.View):
                 self.card_list.append(card)
         pass
 
+    def on_update():
+        #GAME LOGIC SIMULATES HERE
+        pass
+
     def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
 
