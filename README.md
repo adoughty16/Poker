@@ -29,6 +29,7 @@ The goal for sprint 2 is to get a game working which involves work in the Player
 * function to update Game state 
 
 ## Overview
+Our system implements a multi-player online Texas Hold Em Poker game! It stores information in a variety of classes including Card, Deck, Player, and Gamestate, and uses this information to run the game through the use of Graphics and a game loop in Game used in Poker. The game supports 4 players at a time with a mix of real and computer-generated players. It stores their turn in the Game_state class which interfaces with the Google Firebase Firestore Data Base as a custom object type, making use of the other custom objects. The database is also designed to support multiple games at once. 
 
 ### Round Notes
 pre-flop:After the Dealer has passed out two cards to everyone, 
