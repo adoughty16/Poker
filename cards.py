@@ -53,4 +53,8 @@ class Card:
     def get_image(self):
         pass
 
-    
+    def __eq__(self, other):
+        if self.suit == other.suit and self.value == other.value:
+            return True
+        else:
+            return False

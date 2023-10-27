@@ -66,7 +66,7 @@ class WelcomeView(arcade.View):
     def __init__(self):
         super().__init__()
 
-        # instance variabless
+        # instance variables
         self.selected_players = 1  # Default to 1 player
         self.selected_host = None  # To store "Host" or "Join"
         # self.selected_start = None
@@ -160,26 +160,18 @@ class WelcomeView(arcade.View):
     def on_buttonclick(self, event):
         if event.text == "Host Game":
             self.selected_host = True
-            # Update the game_state with the selected values
-            self.game_state.set_selected_host(self.selected_host)
         elif event.text == "Join Game":
             self.selected_host = False
-            # Update the game_state with the selected values
-            self.game_state.set_selected_host(self.selected_host)
 
             # Handle the player buttons
         if event.text == "1 player":
             self.selected_players = 1
-            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "2 players":
             self.selected_players = 2
-            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "3 players":
             self.selected_players = 3
-            self.game_state.set_selected_players(self.selected_players)
         elif event.text == "4 players":
             self.selected_players = 4
-            self.game_state.set_selected_players(self.selected_players)
 
 
 
@@ -213,12 +205,12 @@ class WelcomeView(arcade.View):
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
-        game_view = GameView()
+        game_view = GameView(self.selected_players, self.selected_host)
         game_view.setup()
-        game_view.selected_players = self.game_state.get_selected_players()  # Retrieve selected_players from game_state
-        game_view.selected_host = self.game_state.get_selected_host()  # Retrieve selected_host from game_state
-        #game_view.selected_start = self.selected_start
         self.window.show_view(game_view)
+
+        # pass in self.selected_host() and self.selected_players to the next window rather than using game-state
+        # so that GameView can access those values and also create its own game-state object 
 
 
 
@@ -228,7 +220,11 @@ class WelcomeView(arcade.View):
 class GameView(arcade.View):
     """ Main application class. """
 
-    def __init__(self):
+    def __init__(self, selected_players, selected_host):
+        self.selected_players = selected_players
+        self.selected_host = selected_host 
+        # TODO: fix db connection here 
+        #game_state = Game_state(db, 'doc1')
         super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
@@ -390,6 +386,23 @@ class GameView(arcade.View):
 
         # Draw the cards
         self.card_list.draw()
+
+        # get information from game_state to draw current state 
+
+        # player variables 
+        # draw player_names below their mats (commented out for now because we don't have them yet)
+        # draw the player's round_bets
+        # actives- gray out players who have folded 
+        # who the dealer is 
+
+        
+        # arrow for whose_turn and minimum_call
+
+        # in the center 
+
+        # community_cards
+        # round_pot
+
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """

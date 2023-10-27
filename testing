@@ -4,6 +4,13 @@ import db_connect as database
 from cards import Card
 
 # function to test game_state class 
+
+''' current failures
+- community cards 
+- community cards setter
+- get bet
+- decision 
+- '''
 def test_game_state():
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
@@ -18,51 +25,54 @@ def test_game_state():
         print('PASSED COMMUNITY CARDS')
     
     game_state_1.set_community_cards([Card('d', 12), Card('c', 1)], db)
-    print(game_state_1.get_community_cards(db))
-
+    if game_state_1.get_community_cards(db)[0] == Card('d', 12) and game_state_1.get_community_cards(db)[0] == Card('c', 1):
+        print('PASSED COMMUNITY CARDS SETTER')
+    else:
+        print('FAILED COMMUNITY CARDS SETTER')
+    
     # community cards 
     if game_state_1.get_total_pot(db) != 0:
-        print('FAILED')
+        print('FAILED TOTAL POT')
     else:
-        print('PASSED')
+        print('PASSED TOTAL POT')
     if game_state_1.get_round_pot(db) != 0:
-        print('FAILED')
+        print('FAILED ROUND POT')
     else:
-        print('PASSED')
+        print('PASSED ROUND POT')
     expected_player_stacks = [1000, 1000, 1000, 1000]
     if game_state_1.get_player_stacks(db) != expected_player_stacks:
-        print('FAILED')
+        print('FAILED PLAYER STACKS')
         print(game_state_1.get_player_stacks(db))
     else:
         print('PASSED PLAYER STACKS')
     expected_total_call = 0 
     if game_state_1.get_total_call(db) != expected_total_call:
-        print('FAILED')
+        print('FAILED TOTAL CALL')
         print(game_state_1.get_total_call(db))
     else:
         print('PASSED TOTAL_CALL')
     expected_waiting = False 
     if game_state_1.get_waiting(db) != expected_waiting:
-        print('FAILED')
+        print('FAILED WAITING')
     else:
         print('PASSED WAITING')
     game_state_1.flip_waiting(db)
     if game_state_1.get_waiting(db) != True:
-        print('FAILED')
+        print('FAILED WAITING FLIP')
     else:
         print('PASSED WAITING FLIP')
     if game_state_1.get_whose_turn(db) != 0:
-        print('FAILED')
+        print('FAILED WHOSE TURN')
     else:
-        print('PASSED')
+        print('PASSED WHOSE TURN')
     if game_state_1.get_bet(db) != 10:
-        print('FAILED')
+        print('FAILED GET BET')
     else:
-        print('PASSED')
+        print('PASSED GET BET')
     if game_state_1.get_minimum_call(db) != 10:
-        print('FAILED')
+        print('FAILED MIN CALL')
     else:
-        print('PASSED')
+        print('PASSED MIN CALL')
     expected_dealer = 3
     game_state_1.set_dealer(expected_dealer, db)
     if game_state_1.get_dealer(db) != expected_dealer:
@@ -70,18 +80,18 @@ def test_game_state():
     else:
         print('PASSED DEALER')
     if game_state_1.get_actives(db) != [0, 1, 2, 3]:
-        print('FAILED')
+        print('FAILED ACTIVES')
     else:
-        print('PASSED')
+        print('PASSED ACTIVES')
     if game_state_1.get_round(db) != 'dealing':
-        print('FAILED')
+        print('FAILED ROUND')
     else:
-        print('PASSED')
+        print('PASSED ROUND')
     # player_decision fails! 
     if game_state_1.get_player_decision(db) != 'check':
-        print('FAILED')
+        print('FAILED DECISION')
     else:
-        print('PASSED')
+        print('PASSED DECISION')
 
 def main():
     test_game_state()
