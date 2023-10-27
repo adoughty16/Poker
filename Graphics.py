@@ -29,21 +29,21 @@ HORIZONTAL_MARGIN_PERCENT = 0.10
 BOTTOM_Y = MAT_HEIGHT / 2 + MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 
 # The X of where to start putting things on bottom
-START_X = SCREEN_WIDTH/2
+START_X = SCREEN_WIDTH / 2
 
 
 # The Y of the top row
 TOP_Y = SCREEN_HEIGHT - MAT_HEIGHT / 2 - MAT_HEIGHT * VERTICAL_MARGIN_PERCENT
 
 # The Y of the middle row
-MIDDLE_Y = SCREEN_HEIGHT/2
+MIDDLE_Y = SCREEN_HEIGHT / 2
 
 # the X for player 2, middle row
 MIDDLE_X_2 = MAT_WIDTH / 2 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 
 # the X for player 4, middle row
-MIDDLE_X_4 = MAT_WIDTH + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
+MIDDLE_X_4 = MAT_WIDTH + 725 + MAT_WIDTH * HORIZONTAL_MARGIN_PERCENT
 
 
 # How far apart each pile goes
@@ -175,11 +175,6 @@ class WelcomeView(arcade.View):
 
 
 
-
-    def on_draw(self):
-        self.clear()
-        self.manager.draw()
-
     def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.BROWN)
@@ -280,10 +275,10 @@ class GameView(arcade.View):
             self.pile_mat_list.append(pile)
 
         # create player 4 (right)
-       # for i in range(2):
-           # pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-          #  pile.position = MIDDLE_X_4 + i * X_SPACING, MIDDLE_Y
-          #  self.pile_mat_list.append(pile)
+        for i in range(2):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = MIDDLE_X_4 + i * X_SPACING, MIDDLE_Y
+            self.pile_mat_list.append(pile)
 
 
         # Sprite list with all the cards, no matter what pile they are in.
