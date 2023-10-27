@@ -9,7 +9,6 @@ from Graphics import WelcomeView
 
 def main():
 	db = database.init()
-	lock = threading.Lock()
 	ready = False
 	thread_ready = False
 	# all shared variables get passed to both

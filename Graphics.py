@@ -63,11 +63,11 @@ FACE_DOWN_IMAGE = ":resources:images/cards/cardBack_red2.png"
 class WelcomeView(arcade.View):
 
 
-    def __init__(self, game_state):
+    def __init__(self):
         super().__init__()
 
         # instance variables
-        self.game_state = game_state
+        self.game_state = Game_state()
         self.selected_players = 1  # Default to 1 player
         self.selected_host = None  # To store "Host" or "Join"
         # self.selected_start = None
@@ -304,6 +304,23 @@ class GameView(arcade.View):
 
     def on_update():
         #GAME LOGIC SIMULATES HERE
+        #update game_state from server
+
+        # if I am not the host:
+            # if it is not my turn:
+                # keep waiting
+            # if it is my turn
+                # clickable buttons will appear in the window and the turn logic
+                # will happen from there, including gamestate updates.
+                # so prettymuch still do nothing
+        # if I am the host:
+            # if it is my turn:
+                # clickable buttons will appear in the window and the turn logic
+                # will happen from there, including gamestate updates.
+                # so prettymuch do nothing
+            # if it isn't my turn:
+                
+
         pass
 
     def pull_to_top(self, card: arcade.Sprite):
