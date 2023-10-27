@@ -303,26 +303,33 @@ class GameView(arcade.View):
 
     def on_update(self):
         #GAME LOGIC SIMULATES HERE
+
         #update game_state from server
+        self.game_state.download()
 
         # if I am not the host:
-        if self.selected_host:
+        if not self.selected_host:
             # if it is not my turn:
                 # keep waiting
             # if it is my turn
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
-                # so prettymuch still do nothing
-        # if I am the host:
+                # so prettymuch still do nothing either way
+            pass
+        elif self.selected_host:
             # if it is my turn:
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
                 # so prettymuch do nothing
             # if it isn't my turn:
-                # run the turn logic from Game.py
-                 
-
-
+                if self.game_state.get_round() == 'dealing':
+                    #deal from the deck
+                    hands = self.deck.deal()
+                    for player, hand in zip(self.players, hands):
+                        player.set_hand(hand)
+                            
+                    for player, hand in zip(self.game_state.get_players(self.db), hands):
+                        player.set_hand(hand)
         pass
 
     def pull_to_top(self, card: arcade.Sprite):
