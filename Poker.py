@@ -33,7 +33,6 @@ def main():
 	game_state.set_selected_players(1)  # Set initial value for selected_players
 
 	# Create an instance of the WelcomeView and pass the game_state object
-	welcome_view = WelcomeView(game_state)
 	#Graphics.main(welcome_view, ready, lock)
 	Graphics.main(game_state, ready, lock)
 	#Graphics.main(num_players, host, game_state, ready, lock)
