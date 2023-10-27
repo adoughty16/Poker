@@ -15,16 +15,23 @@ suit = Enum('suit', ['d','c','h','s'])
 
 class Card:
     
-    def __init__(self, suit, value, dictionary = {} ):
+    def __init__(self, suit, value):
         self.suit=suit
         self.value=value
-        for key in dictionary:
-            setattr(self ,key , dictionary[key])
+        #for key in dictionary:
+         #   if key == 'suit':
+          #      self.set_suit(self, dictionary[key])
+           # if key == 'value':
+            #    self.set_value(self, dictionary[key])
 
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}
 
+    def set_suit(self, suit):
+        self.suit = suit
     
+    def set_value(self, value):
+        self.value = value 
 
     #compare to function
     #if the card passed in is greater than this card, return 1
@@ -45,3 +52,5 @@ class Card:
         return self.value
     def get_image(self):
         pass
+
+    

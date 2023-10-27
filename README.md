@@ -1,6 +1,33 @@
 # final_project
 ## Online Multi-Player Poker 
 
+
+## Graphics and Game Interface Notes
+### On_update
+*	Updates game_state from database
+*	Checks the game_state for the logic it needs to execute next 
+*	Simulate one turn at a time—no while loop (one step at a time to draw all turns rather than updating three at a time) 
+### On_draw 
+*	Then on_draw will draw whatever the game_state currently is 
+*	It needs the variables:
+**  Player_names
+**	Community_cards
+**	Player_stacks
+**	Minimum_call and whose_turn displayed as an arrow
+**	Dealer
+**	Actives
+**	Round_bets: new variables in game_state array in 
+*	If it’s not your turn, gray out the buttons so it’s obviously not your turn
+*	When it is your turn, “activate” the buttons and activate the on_clicks and mouse_press functionality 
+**	On the top of mouse_press, check the game_state and if it’s not my turn then don’t do anything
+**	But if it is, interface with game_state 
+### GameView Init()
+*	Initialize the host and the number of players
+*	All of the things from the top of game (connection and local things the host needs) 
+Not my turn and host, there should be some kind of loop to fetch the Game_state 
+*	Simulate fetch turns until it is my turn
+*	Logic in Game, using waiting and whose_turn 
+
 ## Sprint 2
 The goal for sprint 2 is to get a game working which involves work in the Player class, implementation of graphics, and debugging of the game loop primarily. 
 * get input from initial graphics window - through WelcomeView and game_state 

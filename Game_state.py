@@ -67,11 +67,6 @@ class Game_state:
         "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
         game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
-    #def from_dict(source):
-     #   return Game_state(source["player_names"], source["player_hands"], source["community_cards"], source["total_pot"], source["round_pot"], 
-      #             source["player_stacks"], source["total_call"], source["waiting"], source["whose_turn"], source["bet"], source["minimum_call"], 
-       #            source["dealer"], source["actives"], source["round"], source["player_decision"])
-    
     def to_dict(self):
         return {"player_names": self.player_names, "player_hand": self.player_hands, "community_cards": self.community_cards, "total_pot": self.total_pot, 
                 "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, "waiting": self.waiting, "whose_turn": self.whose_turn, 
@@ -228,10 +223,13 @@ class Game_state:
         comm_cards = []
         # TODO: how to access community cards array from the database ?
         # for card in the document's community cards
-        for comm_card in doc["community_cards"]:
+        doc_cc = doc.to_dict()["community_cards"]
+        for comm_card in doc_cc:
             # converts the document in the database to a Card object using from_dict
             # see Card's constructor with default dictionary built-in for more details 
-            comm_cards.append(Card.from_dict(comm_card))
+            print(comm_card['suit'])
+            print(comm_card['value'])
+            comm_cards.append(Card(comm_card['suit'], comm_card['value']))
         return comm_cards 
     
     def get_total_pot(self, db):
