@@ -210,10 +210,7 @@ class Game_state:
         # for card in the document's community cards
         doc_cc = doc.to_dict()["community_cards"]
         for comm_card in doc_cc:
-            # converts the document in the database to a Card object using from_dict
-            # see Card's constructor with default dictionary built-in for more details 
-            print(comm_card['suit'])
-            print(comm_card['value'])
+            # converts the document in the database to a Card object by calling constructor with dictionary key-value pairs 
             comm_cards.append(Card(comm_card['suit'], comm_card['value']))
         return comm_cards 
     
