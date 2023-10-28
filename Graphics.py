@@ -416,16 +416,16 @@ class GameView(arcade.View):
                     self.players[(self.dealer + 2) % 4].set_stack(self.players[(self.dealer + 2) % 4].get_stack() - 10)
                     self.round_bets[(self.dealer + 1) % 4] = 10
                     
-                    self.stacks = [self.players.get_stack() for _ in range(4)]
+                    self.stacks = [self.players[i].get_stack() for i in range(4)]
                     #now reflect those changes in the gamestate
                     self.game_state.set_round_pot(self.pot, self.db)
-                    self.set_player_stacks(self.stacks)
-                    self.game_state.set_round('pre-flop')
+                    self.game_state.set_player_stacks(self.stacks, self.db)
+                    self.game_state.set_round('pre-flop', self.db)
 
                 # if we are betting
                 elif self.game_state.get_round(self.db) == 'pre-flop' or 'flop' or 'turn' or 'river':
                     #if it is an AI turn
-                    if self.players[self.current].is_computer_player():
+                    if self.players[self.current].get_player_type():
 						#give the player's turn() function the community cards and it will return a decision
                         choice, value = self.players[self.current].turn(self.community_cards)
 						#if the AI decides to bet
@@ -442,7 +442,7 @@ class GameView(arcade.View):
 							#add the bet_amount to the round_bets for the current player
                             self.round_bets[self.current] += bet_amount
 							#subtract that amount from the player's stack
-                            self.players[self.current].set_stack(self.player[self.current].get_stack - bet_amount)
+                            self.players[self.current].set_stack(self.players[self.current].get_stack - bet_amount)
 							#update local stacks
                             self.stacks[self.current] = self.players[self.current].get_stack()
 							#now reflect those changes in the gamestate
@@ -487,7 +487,7 @@ class GameView(arcade.View):
                             self.game_state.increment_whose_turn(self.db)
                     
                     #if it is a guest-player turn
-                    if (self.current is not self.me) and (not self.players[self.current].is_computer_player()):
+                    if (self.current is not self.me) and (not self.players[self.current].get_player_type()):
 						# once the player takes their turn we just get the decision and then use the same logic from the AI
 						# player turn
                         choice, value = self.game_state.get_player_decision(self.db)
@@ -587,7 +587,7 @@ class GameView(arcade.View):
 						#also change round
                         # this would be more efficient if we get_round from the db once and then compare that stored value 
                         round = self.game_state.get_round(self.db)
-                        self.game_state.set_total_pot(self.game_state.get_total_pot() + self.game_state.get_round_pot(), self.db)
+                        self.game_state.set_total_pot(self.game_state.get_total_pot(self.db) + self.game_state.get_round_pot(self.db), self.db)
                         self.game_state.set_round_pot(0, self.db)
                         if round == 'pre-flop':
                             self.game_state.set_round('flop', self.db)

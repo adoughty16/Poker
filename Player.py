@@ -32,7 +32,7 @@ class Player:
     def get_stack(self):
         return self.stack
     
-    def is_computer_player(self):
+    def get_player_type(self):
         return self.is_computer_player
     
     def set_stack(self, stack):
@@ -70,7 +70,7 @@ class Player:
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
         #EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        bet_value = None
+        bet_value = -1 #THIS IS A PLACEHOLDER
         decisions = ["bet", "check", "fold"]
         return random.choice(decisions), bet_value
 
