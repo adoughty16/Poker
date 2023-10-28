@@ -295,6 +295,9 @@ class GameView(arcade.View):
         self.actives = [0, 1, 2, 3]
         #controls betting rounds
         self.all_called = False
+        self.connected = False
+        self.flags_not_up = True
+        self.waiting_for_host = False
 
         #TODO: implement these two functions in Game_state
         #self.gamestate.set_num_real_players(selected_players)
@@ -386,15 +389,63 @@ class GameView(arcade.View):
 
         # if I am not the host:
         if not self.host:
+            if not self.connected:
+                #check flags on database
+                flag_document = self.db.collection("flags").document("flag_document").get()
+                if flag_document.exists:
+				    #grab flags from db
+                    flags = flag_document.to_dict()["values"]
+                else:
+                    ready = False
+				#if we haven't reserved a spot in the game
+                if not self.waiting_for_host and ready:
+					#look through all flags except the confirmation bit at the end until we find an opening
+                    for i in range(self.num_players - 1):
+                        if flags[i] == 0:
+							#reserve the opening
+                            flags[i] = 1
+					#update flags on the database
+                    self.db.collection("flags").document("flag_document").set({"values": flags})
+					#now we just need to check for the host's confirmation bit
+                    self.waiting_for_host = True
+				#if we are awaiting confirmation
+                if self.waiting_for_host and ready:
+					#check the confirmation bit
+                    if flags[self.num_players] == 1:
+                        self.connected = True
             # if it is not my turn:
                 # keep waiting
             # if it is my turn
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
                 # so prettymuch still do nothing either way
-            pass
         #if we are waiting for a guest turn, just do nothing
-        elif self.host and not self.game_state.get_waiting(self.db):
+        elif self.host and not self.connected:
+            # Needs to establish and confirm connection with guests VIA firestore before game loop
+            #first spots in flags hold 0s for players to flip to 1s when they connect.
+            #last spot is host confirmation bit that host will flip when all player spots are filled
+            if self.flags_not_up:
+                self.flags = [0 for _ in range(self.num_players + 1)]
+                self.db.collection("flags").document("flag_document").set({"values": self.flags})
+                flag_document = self.db.collection("flags").document("flag_document").get()
+                self.flags_not_up = False
+
+			#update local flags from database
+            flags = flag_document.to_dict()["values"]
+            self.connected = True
+			#for all the flags that  aren't the confirmation bit
+            for i in range(self.num_players - 1):
+				#if any are 0
+                if flags[i] == 0:
+					#not everyone is connected yet
+                    self.connected = False
+			#if all players have connected
+            if self.connected:
+				#update and upload confirmation bit
+                flags[self.num_players] = 1
+                self.db.collection("flags").document("flag_document").set({"values": flags})
+
+        elif self.host and not self.game_state.get_waiting(self.db) and self.connected:
             # if it is my turn:
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
