@@ -298,6 +298,7 @@ class GameView(arcade.View):
         self.connected = False
         self.flags_not_up = True
         self.waiting_for_host = False
+        self.ready = True
 
         #TODO: implement these two functions in Game_state
         #self.gamestate.set_num_real_players(selected_players)
@@ -395,21 +396,21 @@ class GameView(arcade.View):
                 if flag_document.exists:
 				    #grab flags from db
                     flags = flag_document.to_dict()["values"]
-                else:
-                    ready = False
 				#if we haven't reserved a spot in the game
-                if not self.waiting_for_host and ready:
+                if not self.waiting_for_host and self.ready:
 					#look through all flags except the confirmation bit at the end until we find an opening
                     for i in range(self.num_players - 1):
                         if flags[i] == 0:
 							#reserve the opening
                             flags[i] = 1
+                            #break to only reserve one spot
+                            break
 					#update flags on the database
                     self.db.collection("flags").document("flag_document").set({"values": flags})
 					#now we just need to check for the host's confirmation bit
                     self.waiting_for_host = True
 				#if we are awaiting confirmation
-                if self.waiting_for_host and ready:
+                if self.waiting_for_host and self.ready:
 					#check the confirmation bit
                     if flags[self.num_players] == 1:
                         self.connected = True
@@ -427,22 +428,22 @@ class GameView(arcade.View):
             if self.flags_not_up:
                 self.flags = [0 for _ in range(self.num_players + 1)]
                 self.db.collection("flags").document("flag_document").set({"values": self.flags})
-                flag_document = self.db.collection("flags").document("flag_document").get()
+                self.flag_document = self.db.collection("flags").document("flag_document").get()
                 self.flags_not_up = False
 
 			#update local flags from database
-            flags = flag_document.to_dict()["values"]
+            self.flags = self.flag_document.to_dict()["values"]
             self.connected = True
 			#for all the flags that  aren't the confirmation bit
             for i in range(self.num_players - 1):
 				#if any are 0
-                if flags[i] == 0:
+                if self.flags[i] == 0:
 					#not everyone is connected yet
                     self.connected = False
 			#if all players have connected
             if self.connected:
 				#update and upload confirmation bit
-                flags[self.num_players] = 1
+                self.flags[self.num_players] = 1
                 self.db.collection("flags").document("flag_document").set({"values": flags})
 
         elif self.host and not self.game_state.get_waiting(self.db) and self.connected:
