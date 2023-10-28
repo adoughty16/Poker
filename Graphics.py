@@ -394,7 +394,7 @@ class GameView(arcade.View):
                 # so prettymuch still do nothing either way
             pass
         #if we are waiting for a guest turn, just do nothing
-        elif self.host and not self.game_state.get_waiting():
+        elif self.host and not self.game_state.get_waiting(self.db):
             # if it is my turn:
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
@@ -402,7 +402,7 @@ class GameView(arcade.View):
             # if it isn't my turn:
                 if self.game_state.get_round(self.db) == 'dealing':
                     #deal from the deck
-                    hands = self.deck.deal(self.db)
+                    hands = self.deck.deal()
                     for player, hand in zip(self.players, hands):
                         player.set_hand(hand)       
                     for player, hand in zip(self.game_state.get_players(self.db), hands):

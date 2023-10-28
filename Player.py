@@ -35,6 +35,9 @@ class Player:
     def is_computer_player(self):
         return self.is_computer_player
     
+    def set_stack(self, stack):
+        self.stack = stack
+    
     def set_name(self, name):
         self.name = name
     
