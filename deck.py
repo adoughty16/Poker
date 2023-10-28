@@ -12,17 +12,17 @@ deck = []
 
 class Deck:
 
-    def __init__(self, deck):
+    def __init__(self):
         these_cards=[]
         #for i less than 4
         for suit in range(4):
             #for e less than 13
             for value in range(13):
             #add card to the list these_cards, passing in card variables
-                these_cards.append(suit,value)
+                these_cards.append((suit,value))
         #shuffle this deck
         random.shuffle(these_cards)
-        return these_cards
+        self.deck = these_cards
 
 
     def get_deck(self):

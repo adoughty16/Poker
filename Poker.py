@@ -26,5 +26,3 @@ def main():
 
 #	db.close()
 
-
-main()

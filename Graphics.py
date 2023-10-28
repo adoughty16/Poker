@@ -266,12 +266,12 @@ class GameView(arcade.View):
 		#shared cards on table 
         self.community_cards = []
 		#list of local player objects
-        self.players = [Player() for _ in range(4)]
+        self.players = [Player.Player() for _ in range(4)]
         for i in range(self.num_players):
             #This means that the real players will be the first in the list
             self.players[i].set_computer_player(False)
 		#the deck
-        self.deck = deck()
+        self.deck = deck.Deck()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -385,7 +385,7 @@ class GameView(arcade.View):
         #self.game_state.download()
 
         # if I am not the host:
-        if not self.selected_host:
+        if not self.host:
             # if it is not my turn:
                 # keep waiting
             # if it is my turn
@@ -394,7 +394,7 @@ class GameView(arcade.View):
                 # so prettymuch still do nothing either way
             pass
         #if we are waiting for a guest turn, just do nothing
-        elif self.selected_host and not self.game_state.get_waiting():
+        elif self.host and not self.game_state.get_waiting():
             # if it is my turn:
                 # clickable buttons will appear in the window and the turn logic
                 # will happen from there, including gamestate updates.
