@@ -288,7 +288,7 @@ class GameView(arcade.View):
 		#everyone starts with 1000
         self.stacks = [1000, 1000, 1000, 1000]
 		#me is my index in the player list
-        self.me = 0
+        self.me = None
 		#host is a boolean that tells me if I am the host or not
         self.host = selected_host
 		#actives is the indexes of all the players in the round who have not folded and who have not busted out of the game
@@ -385,7 +385,6 @@ class GameView(arcade.View):
         #GAME LOGIC SIMULATES HERE
 
         #update game_state from server
-        #TODO: implement this in gamestate
         #self.game_state.download()
 
         # if I am not the host:
@@ -403,6 +402,9 @@ class GameView(arcade.View):
                         if flags[i] == 0:
 							#reserve the opening
                             flags[i] = 1
+                            #my index in the player list for this game is i + 1
+                            #(host is the 0th player)
+                            self.me = i + 1
                             #break to only reserve one spot
                             break
 					#update flags on the database
@@ -430,6 +432,8 @@ class GameView(arcade.View):
                 self.db.collection("flags").document("flag_document").set({"values": self.flags})
                 self.flag_document = self.db.collection("flags").document("flag_document").get()
                 self.flags_not_up = False
+                #reserve spot for myself
+                self.me = 0
 
 			#update local flags from database
             self.flags = self.flag_document.to_dict()["values"]
@@ -663,10 +667,11 @@ class GameView(arcade.View):
                         self.all_called = False
                 
                 if self.game_state.get_round(self.db) == 'showdown':
-                    #award winner
-                    self.players[self.actives[0]].set_stack(self.players[self.actives[0]].get_stack() + self.pot)
-                    #reset values
-                    # #change the round
+                    #TODO: determine winner (waiting on player functions)
+
+                    #award winner stack from pot
+
+                    #reset values and change the round
                     self.community_cards = []
                     self.game_state.set_community_cards(self.community_cards, self.db)
                     self.game_state.set_player_stacks(self.stacks, self.db)
@@ -747,6 +752,9 @@ class GameView(arcade.View):
 
         # Draw the cards
         self.card_list.draw()
+
+        #NOTE! To draw the table from this player's perspective, self.me holds the correct index in the player list.
+        #It should draw the 'me'th player on the bottom, and then go clockwise from there (will need to mod by 4)
 
         # get information from game_state to draw current state 
 
