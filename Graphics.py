@@ -443,7 +443,7 @@ class GameView(arcade.View):
 			#if all players have connected
             if self.connected:
 				#update and upload confirmation bit
-                self.flags[self.num_players] = 1
+                self.flags[self.num_players - 1] = 1
                 self.db.collection("flags").document("flag_document").set({"values": self.flags})
 
         elif self.host and not self.game_state.get_waiting(self.db) and self.connected:
