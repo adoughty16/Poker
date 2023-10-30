@@ -100,6 +100,7 @@ class Player:
             return HandStrength.ONE_PAIR
         else:
             return HandStrength.HIGH_CARD
+        
     def get_hand_type(self, cards):
         # Implement hand type evaluation logic
         # Return the appropriate ENUM from HandStrength
