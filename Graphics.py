@@ -756,6 +756,8 @@ class GameView(arcade.View):
         arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
         # actives- gray out players who have folded 
+        # one idea - turn their cards and name gray 
+        # other idea - just add gray rectangle over their whole section of the screen
         self.actives = self.game_state.get_actives(self.db)
         # who the dealer is 
         # TODO: do we want a function for this to just call draw dealer? (can maybe clean code up)
@@ -773,7 +775,6 @@ class GameView(arcade.View):
         # arrow for whose_turn and minimum_call
         arrow_to = self.game_state.get_whose_turn(self.db)
         arrow_amount = self.game_state.get_minimum_call(self.db) 
-
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
         # CENTER INFO 
