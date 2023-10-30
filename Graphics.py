@@ -242,14 +242,14 @@ class WelcomeView(arcade.View):
                          arcade.color.WHITE, font_size=15, anchor_x="center")
         
         if self.selected_players is not -1:
-            arcade.draw_text(f'Number of human players: {self.selected_players}', 1280, self.window.height / 2 - 160,
+            arcade.draw_text(f'Number of Human Players: {self.selected_players}', 720, self.window.height / 2 - 160,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
 
         if self.selected_host == True:
-            arcade.draw_text(f'I am the host', 1280, self.window.height / 2 - 160,
+            arcade.draw_text(f'I am the Host', 655, self.window.height / 2 - 100,
                          arcade.color.WHITE, font_size=15, anchor_x="left")
         if self.selected_host == False:
-            arcade.draw_text(f'I am not the host', 1280, self.window.height / 2 - 160,
+            arcade.draw_text(f'I am not the Host', 720, self.window.height / 2 - 100,
                          arcade.color.WHITE, font_size=15, anchor_x="left")
 
 
