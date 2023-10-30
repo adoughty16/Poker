@@ -1,6 +1,8 @@
 # final_project
 ## Online Multi-Player Poker 
 
+https://console.firebase.google.com/u/0/project/poker-29f47/firestore/data/~2Fflags~2Fflag_document
+
 
 ## Graphics and Game Interface Notes
 ### On_update
