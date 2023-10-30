@@ -177,10 +177,9 @@ class WelcomeView(arcade.View):
                 child=start_button)
         )
 
-        #start_button.on_click = self.on_buttonclick()
 
 
-    # This function will be called everytime the user presses a button
+    # These functions will be called everytime the user presses a button
     def on_host_click(self, event):
         self.selected_host = True
         self.host_chosen = True
