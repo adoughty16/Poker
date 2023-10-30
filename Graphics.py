@@ -780,7 +780,7 @@ class GameView(arcade.View):
         # CENTER INFO 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
-        # draw them in the middle on the mats there
+        # draw them in the middle on the mats there (or move them since they are all drawn already) 
         ''' 
         for card in self.card_list:
             for comm_card in self.community_cards:
@@ -814,9 +814,15 @@ class GameView(arcade.View):
             start_y = SCREEN_HEIGHT - (MAT_HEIGHT + 65)
             end_x = MIDDLE_X_4 - 25
             end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
-        #TODO: add a triangle on the end of this line! 
+        rise = end_y - start_y
+        run = end_x - start_x 
+        #adding triangle to line 
         arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE, 3)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
+        point_list = ((end_x + 0.03*run, end_y + 0.03*rise),
+              (end_x + 0.03*rise, end_y - 0.03*run),
+              (end_x - 0.03*rise, end_y + 0.03*run))
+        arcade.draw_polygon_filled(point_list, arcade.color.WHITE)
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2) + 0.5*rise, arcade.color.WHITE, 15) 
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
