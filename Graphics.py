@@ -649,7 +649,8 @@ class GameView(arcade.View):
 						#merge round pot and total pot
 						#also deal more cards
 						#also change round
-                        # this would be more efficient if we get_round from the db once and then compare that stored value 
+                        # this would be more efficient if we get_round from the db once and then compare that stored value
+                        # DONE 
                         round = self.game_state.get_round(self.db)
                         self.game_state.set_total_pot(self.game_state.get_total_pot(self.db) + self.game_state.get_round_pot(self.db), self.db)
                         self.game_state.set_round_pot(0, self.db)
