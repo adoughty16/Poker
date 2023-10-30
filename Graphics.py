@@ -5,6 +5,7 @@ from Game_state import  Game_state
 import db_connect
 import Player
 import deck
+import random
 import time
 
 # Screen title and size
@@ -334,14 +335,11 @@ class GameView(arcade.View):
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
-        # Create the mats for player 1 (bottom)
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X, BOTTOM_Y
-        self.pile_mat_list.append(pile)
-
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X + X_SPACING, BOTTOM_Y
-        self.pile_mat_list.append(pile)
+        # Create player 1 (bottom)
+        for i in range(2):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = START_X + i * X_SPACING, BOTTOM_Y
+            self.pile_mat_list.append(pile)
 
         # Create player 2 (left)
         for i in range(2):
@@ -376,7 +374,12 @@ class GameView(arcade.View):
                 card = Card(card_suit, card_value, CARD_SCALE)
                 card.position = START_X, BOTTOM_Y
                 self.card_list.append(card)
-        pass
+
+
+        # Shuffle the cards
+        for pos1 in range(len(self.card_list)):
+            pos2 = random.randrange(len(self.card_list))
+            self.card_list.swap(pos1, pos2)
 
     def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
@@ -735,8 +738,19 @@ class GameView(arcade.View):
         # draw player_names below their mats (also get them in WelcomeView) 
         # TODO: get player names in Welcome View (and pass to game_state or just draw) 
         names = self.game_state.get_players(self.db)
-        # TODO: draw the player's round bets - but where is this stored? 
-        # self.round_bets
+        # TODO: draw the player's round bets - can we do this as just name : bet 
+        '''
+        for i in range(4):
+            arcade.draw_text(f'{names[i]}: {self.round_bets[i]}', x, y, arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "2" is actually index 1 since indexing starts at 0 
+        arcade.draw_text(f'{names[2-1]}:{round_bets[1]}', MIDDLE_X_2, y, arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "4" is actually index 3 
+        arcade.draw_text(f'{names[4-1]}:{round_bets[3]}', MIDDLE_X_4, y, arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "1" is 0 - whatever is drawn on the bottom should be the current player 
+        arcade.draw_text(f'{names[1-1]}:{round_bets[0]}', MIDDLE_X, bottom + mat_height + space , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "3" is actually index 2 
+        arcade.draw_text(f'{names[3-1]}:{round_bets[2]}', MIDDLE_X, top - mat_height - space , arcade.color.WHITE, font_size=15, anchor_x="center")
+        '''
         # actives- gray out players who have folded 
         self.actives = self.game_state.get_actives(self.db)
         # who the dealer is 
@@ -749,41 +763,19 @@ class GameView(arcade.View):
         # CENTER INFO 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
-        # draw them in the middle on the mats there 
+        # draw them in the middle on the mats there
+        ''' 
+        for card in self.card_list:
+            for comm_card in self.community_cards:
+                if card == comm_card:
+                    # TODO: change the position of this so that it is on a mat 
+                    card.draw()
+        '''
         # round_pot
         self.pot = self.game_state.get_round_pot(self.db) 
+        #arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS, SCREEN_HEIGHT - MAT_HEIGHT,
+        #                 arcade.color.WHITE, font_size=15, anchor_x="center")
 
-
-    def on_mouse_press(self, x, y, button, key_modifiers):
-        """ Called when the user presses a mouse button. """
-        # Get list of cards we've clicked on
-        cards = arcade.get_sprites_at_point((x, y), self.card_list)
-
-        # Have we clicked on a card?
-        if len(cards) > 0:
-            # Might be a stack of cards, get the top one
-            primary_card = cards[-1]
-
-            # All other cases, grab the face-up card we are clicking on
-            self.held_cards = [primary_card]
-            # Save the position
-            self.held_cards_original_position = [self.held_cards[0].position]
-            # Put on top in drawing order
-            self.pull_to_top(self.held_cards[0])
-
-    def on_mouse_release(self, x: float, y: float, button: int,
-                         modifiers: int):
-        """ Called when the user presses a mouse button. """
-        # If we don't have any cards, who cares
-        if len(self.held_cards) == 0:
-            return
-
-        # We are no longer holding cards
-        self.held_cards = []
-
-    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
-        """ User moves mouse """
-        pass
 
 class Card(arcade.Sprite):
     """ Card sprite """
