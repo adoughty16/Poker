@@ -310,7 +310,8 @@ class GameView(arcade.View):
         self.connected = False
         self.flags_not_up = True
         self.waiting_for_host = False
-        self.ready = True
+        self.ready = False
+
         
         super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
@@ -394,6 +395,7 @@ class GameView(arcade.View):
                 if flag_document.exists:
 				    #grab flags from db
                     flags = flag_document.to_dict()["values"]
+                    self.ready = True
 				#if we haven't reserved a spot in the game
                 if not self.waiting_for_host and self.ready:
 					#look through all flags except the confirmation bit at the end until we find an opening
@@ -799,7 +801,7 @@ class Card(arcade.Sprite):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, update_rate = 1)
     start_view = WelcomeView()
     window.show_view(start_view)
     arcade.run()

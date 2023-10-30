@@ -38,7 +38,7 @@ class Deck:
         return (h1, h2, h3, h4)
 
     #returns list of 3 cards and removes them from Cards
-    def flop():
+    def flop(self):
         this_flop=[]
         this_flop.append(deck.pop())
         this_flop.append(deck.pop())
@@ -46,6 +46,6 @@ class Deck:
         return this_flop
 
     #returns 1 card and removes it from deck[]
-    def turn():
+    def turn(self):
         return deck.pop()
  

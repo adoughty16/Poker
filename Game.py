@@ -186,14 +186,12 @@ class Game():
 							#update local stacks with the new player stack
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							#reflect the changes in the gamestate
-							lock.aquire()
 							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + value, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn(self.db)
-							lock.release()
 
 					if self.current == self.me:
 						#It's my turn! This turn happens in the graphics window.
@@ -211,11 +209,9 @@ class Game():
 						#it is a guest players turn
 						#we need to wait and let them update the gamestate
 						#once they have updated the game state, we update the local game and then move on
-						lock.aquire()
 						while self.game_state.get_waiting(self.db):
 							#if the host is waiting, just keep checking until the turn has been taken
 							time.sleep(3)
-						lock.release()
 						# once the player takes their turn we just get the decision and then use the same logic from the AI
 						# player turn
 
@@ -238,14 +234,12 @@ class Game():
 							#update local stacks
 							self.stacks[self.current] = self.players[self.current].get_stack()
 							#now reflect those changes in the gamestate
-							lock.aquire()
 							self.set_player_stacks(self.stacks)
 							self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
 							self.game_state.set_bet(value, self.db)
 							self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
 							self.game_state.set_player_decision(choice, self.db)
 							self.game_state.increment_whose_turn(self.db)
-							lock.release()
 						
 						#if check
 						elif choice == 'check':

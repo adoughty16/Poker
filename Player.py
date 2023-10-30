@@ -71,7 +71,7 @@ class Player:
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
         #EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        bet_value = -1 #THIS IS A PLACEHOLDER
+        bet_value = 5 * random.randint(1, 10) #THIS IS A PLACEHOLDER
         decisions = ["bet", "check", "fold"]
         return random.choice(decisions), bet_value
 
