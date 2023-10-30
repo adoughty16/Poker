@@ -750,7 +750,17 @@ class GameView(arcade.View):
         # actives- gray out players who have folded 
         self.actives = self.game_state.get_actives(self.db)
         # who the dealer is 
+        # TODO: do we want a function for this to just call draw dealer? (can maybe clean code up)
         self.dealer = self.game_state.get_dealer(self.db) 
+        if self.dealer == 0:
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 15, arcade.color.RED)
+        elif self.dealer == 1:
+            arcade.draw_circle_filled((MIDDLE_X_2)+ (MAT_WIDTH) + 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
+        elif self.dealer == 2:
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, SCREEN_HEIGHT - MAT_HEIGHT -  25, 15, arcade.color.RED)
+        else:
+            arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
+
   
         # arrow for whose_turn and minimum_call
         arrow_to = self.game_state.get_whose_turn(self.db)
