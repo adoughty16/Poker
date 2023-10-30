@@ -744,7 +744,12 @@ class GameView(arcade.View):
         #  PLAYER VARIABLES 
 
         # draw player_names and round_bets below their mats (also get them in WelcomeView) 
+
+
+        #TODO: take these hard-coded values out after we implement player name input 
         self.game_state.set_player_names(['sydney', 'xan', 'abe', 'collin'], self.db)
+
+
         names = self.game_state.get_players(self.db)
         # player "2" is actually index 1 since indexing starts at 0 
         arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
@@ -756,11 +761,13 @@ class GameView(arcade.View):
         arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
         # actives- gray out players who have folded 
+        #TODO: implement actives graphics 
         # one idea - turn their cards and name gray 
         # other idea - just add gray rectangle over their whole section of the screen
         self.actives = self.game_state.get_actives(self.db)
+
+
         # who the dealer is 
-        # TODO: do we want a function for this to just call draw dealer? (can maybe clean code up)
         self.dealer = self.game_state.get_dealer(self.db) 
         if self.dealer == 0:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 15, arcade.color.RED)
@@ -778,6 +785,7 @@ class GameView(arcade.View):
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
         # CENTER INFO 
+        # TODO: draw the community_cards 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
         # draw them in the middle on the mats there (or move them since they are all drawn already) 
