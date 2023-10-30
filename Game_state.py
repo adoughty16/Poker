@@ -91,8 +91,8 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         # for every player in self player_names (which will all be strings), update the db by removing that string from its array too 
         for player in self.player_names:
-            game_state_ref.update({"player_names": firestore.ArrayRemove(player)})
             self.player_names.remove(player)
+        game_state_ref.update({"player_names": self.player_names})
         
 
     # rather than appending this will just take a new array of cards and set that in the database
