@@ -260,7 +260,14 @@ class WelcomeView(arcade.View):
         #self.window.show_view(game_view)
         pass
         # pass in self.selected_host() and self.selected_players to the next window rather than using game-state
-        # so that GameView can access those values and also create its own game-state object 
+        # so that GameView can access those values and also create its own game-state object
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ User presses key """
+        # when user presses ESCAPE key, quit program
+        if symbol == arcade.key.ESCAPE:
+            # quit
+            arcade.exit()
 
 
 
