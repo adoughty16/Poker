@@ -5,6 +5,7 @@ from Game_state import  Game_state
 import db_connect
 import Player
 import deck
+import random
 import time
 
 # Screen title and size
@@ -372,7 +373,12 @@ class GameView(arcade.View):
                 card = Card(card_suit, card_value, CARD_SCALE)
                 card.position = START_X, BOTTOM_Y
                 self.card_list.append(card)
-        pass
+
+
+        # Shuffle the cards
+        for pos1 in range(len(self.card_list)):
+            pos2 = random.randrange(len(self.card_list))
+            self.card_list.swap(pos1, pos2)
 
     def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
