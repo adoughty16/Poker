@@ -248,7 +248,7 @@ class WelcomeView(arcade.View):
             arcade.draw_text(f'I am the Host', 655, self.window.height / 2 - 100,
                          arcade.color.WHITE, font_size=15, anchor_x="left")
         if self.selected_host == False:
-            arcade.draw_text(f'I am not the Host', 720, self.window.height / 2 - 100,
+            arcade.draw_text(f'I am not the Host', 640, self.window.height / 2 - 100,
                          arcade.color.WHITE, font_size=15, anchor_x="left")
 
 
