@@ -815,6 +815,13 @@ class GameView(arcade.View):
         arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE)
         arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE) 
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ User presses key """
+        # when user presses ESCAPE key, quit program
+        if symbol == arcade.key.ESCAPE:
+            # quit
+            arcade.exit()
+
 class Card(arcade.Sprite):
     """ Card sprite """
 
