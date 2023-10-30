@@ -786,27 +786,28 @@ class GameView(arcade.View):
 
     def draw_turn_arrow(self, to, amount):
         if to == 0:
-            start_x = MIDDLE_X_4
-            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
-            end_x = SCREEN_WIDTH / 2
-            end_y = MAT_HEIGHT + 25
+            start_x = MIDDLE_X_4 - 25
+            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
+            end_x = (SCREEN_WIDTH / 2) + 65
+            end_y = MAT_HEIGHT + 65
         if to == 1:
-            start_x = SCREEN_WIDTH / 2
-            start_y = MAT_HEIGHT + 25
-            end_x = MIDDLE_X_2
-            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
+            start_x = (SCREEN_WIDTH / 2) + 65
+            start_y = MAT_HEIGHT + 65
+            end_x = MIDDLE_X_2 + 25
+            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
         if to == 2:
-            start_x = MIDDLE_X_2
-            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
-            end_x = SCREEN_WIDTH / 2
-            end_y = SCREEN_HEIGHT - (MAT_HEIGHT + 25)
+            start_x = MIDDLE_X_2 + 25 
+            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
+            end_x = (SCREEN_WIDTH / 2) - 25
+            end_y = SCREEN_HEIGHT - (MAT_HEIGHT + 65)
         if to == 3:
-            start_x = SCREEN_WIDTH / 2
-            start_y = SCREEN_HEIGHT - (MAT_HEIGHT + 25)
-            end_x = MIDDLE_X_4
-            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
-        arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE) 
+            start_x = (SCREEN_WIDTH / 2) - 25
+            start_y = SCREEN_HEIGHT - (MAT_HEIGHT + 65)
+            end_x = MIDDLE_X_4 - 25
+            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
+        #TODO: add a triangle on the end of this line! 
+        arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE, 3)
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
 
 class Card(arcade.Sprite):
     """ Card sprite """
