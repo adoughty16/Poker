@@ -410,7 +410,7 @@ class GameView(arcade.View):
 				#if we are awaiting confirmation
                 if self.waiting_for_host and self.ready:
 					#check the confirmation bit
-                    if flags[self.num_players] == 1:
+                    if flags[self.num_players - 1] == 1:
                         self.connected = True
             # if it is not my turn:
                 # keep waiting
