@@ -62,6 +62,7 @@ class Player:
 
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
+
         combined_cards = self.hand + community_cards
         hand_type = self.get_hand_type(combined_cards)
         return hand_type
