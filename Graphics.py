@@ -310,12 +310,7 @@ class GameView(arcade.View):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-        # List of cards we are dragging with the mouse
-        self.held_cards = None
 
-        # Original location of cards we are dragging with the mouse in case
-        # they have to go back.
-        self.held_cards_original_position = None
 
         # Don't show the mouse cursor
         # self.window.set_mouse_visible(False)
@@ -325,14 +320,8 @@ class GameView(arcade.View):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        # List of cards we are dragging with the mouse
-        self.held_cards = []
 
-        # Original location of cards we are dragging with the mouse in case
-        # they have to go back.
-        self.held_cards_original_position = []
-
-        # ---  Create the mats the cards go on.
+        # ---  Create the mats the cards go on
 
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
@@ -696,49 +685,21 @@ class GameView(arcade.View):
 
     def pull_to_top(self, card: arcade.Sprite):
         """ Pull card to top of rendering order (last to render, looks on-top) """
-
-        # Remove, and append to the end
-        self.card_list.remove(card)
-        self.card_list.append(card)
+        pass
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         """ Called when the user presses a mouse button. """
-
-        # Get list of cards we've clicked on
-        cards = arcade.get_sprites_at_point((x, y), self.card_list)
-
-        # Have we clicked on a card?
-        if len(cards) > 0:
-
-            # Might be a stack of cards, get the top one
-            primary_card = cards[-1]
-
-            # All other cases, grab the face-up card we are clicking on
-            self.held_cards = [primary_card]
-            # Save the position
-            self.held_cards_original_position = [self.held_cards[0].position]
-            # Put on top in drawing order
-            self.pull_to_top(self.held_cards[0])
+        pass
 
 
     def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
         """ User moves mouse """
-
-        # If we are holding cards, move them with the mouse
-        for card in self.held_cards:
-            card.center_x += dx
-            card.center_y += dy
+        pass
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
         """ Called when the user presses a mouse button. """
-
-        # If we don't have any cards, who cares
-        if len(self.held_cards) == 0:
-            return
-
-        # We are no longer holding cards
-        self.held_cards = []
+        pass
 
 
 
