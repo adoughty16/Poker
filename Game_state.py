@@ -74,7 +74,7 @@ class Game_state:
         for player in players:
             self.player_names.append(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"player_names": self.players})
+        game_state_ref.update({"player_names": self.player_names})
 
     # to set player_names based on array of strings (if collected in graphics window - do not need objects until hands)
     def set_player_names(self, names, db):
@@ -82,8 +82,9 @@ class Game_state:
         for name in names:
             self.player_names.append(name)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"player_names": self.players})
+        game_state_ref.update({"player_names": self.player_names})
 
+    # TODO: there is a bug in update here 
     # function to clear players in the event that set_player_names and set_players are used in the same game 
     def clear_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)

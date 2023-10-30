@@ -735,20 +735,23 @@ class GameView(arcade.View):
 
         # draw player_names below their mats (also get them in WelcomeView) 
         # TODO: get player names in Welcome View (and pass to game_state or just draw) 
-        names = self.game_state.get_players(self.db)
+        #names = self.game_state.get_players(self.db)
         # TODO: draw the player's round bets - can we do this as just name : bet 
+        self.game_state.set_player_names(['sydney', 'xan', 'abe', 'collin'], self.db)
+        names = self.game_state.get_players(self.db)
         '''
         for i in range(4):
             arcade.draw_text(f'{names[i]}: {self.round_bets[i]}', x, y, arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{names[2-1]}:{round_bets[1]}', MIDDLE_X_2, y, arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "4" is actually index 3 
-        arcade.draw_text(f'{names[4-1]}:{round_bets[3]}', MIDDLE_X_4, y, arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{names[1-1]}:{round_bets[0]}', MIDDLE_X, bottom + mat_height + space , arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "3" is actually index 2 
-        arcade.draw_text(f'{names[3-1]}:{round_bets[2]}', MIDDLE_X, top - mat_height - space , arcade.color.WHITE, font_size=15, anchor_x="center")
         '''
+        # player "2" is actually index 1 since indexing starts at 0 
+        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "4" is actually index 3 
+        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "1" is 0 - whatever is drawn on the bottom should be the current player 
+        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50  , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "3" is actually index 2 
+        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50  , arcade.color.WHITE, font_size=15, anchor_x="center")
+
         # actives- gray out players who have folded 
         self.actives = self.game_state.get_actives(self.db)
         # who the dealer is 
