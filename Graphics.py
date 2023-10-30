@@ -237,7 +237,7 @@ class WelcomeView(arcade.View):
                          arcade.color.WHITE, font_size=20, anchor_x="center")
         arcade.draw_text("Do you want to HOST or JOIN the game?",  190 , self.window.height /2 + 90,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
-        arcade.draw_text("How many people are playing?", 870, self.window.height / 2 + 160,
+        arcade.draw_text("How many people are playing?", 1280, self.window.height / 2 + 160,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
 
 
