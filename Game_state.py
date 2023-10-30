@@ -78,7 +78,8 @@ class Game_state:
 
     # to set player_names based on array of strings (if collected in graphics window - do not need objects until hands)
     def set_player_names(self, names, db):
-        self.clear_players(db)
+        if len(self.player_names) > 3: 
+            self.clear_players(db)
         for name in names:
             self.player_names.append(name)
         game_state_ref = db.collection("states").document(self.doc_name)

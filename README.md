@@ -4,7 +4,7 @@
 https://console.firebase.google.com/u/0/project/poker-29f47/firestore/data/~2Fflags~2Fflag_document
 
 ## Goals This Week/ These Days
-* buttons to make player decision 
+* buttons to make player decision (to update local and game_state)
 * changing the color of buttons in pyarcade 
 ** I think that there is a way to do this by updating the buttons and changing their style 
 * draw from game_state in on_update 
