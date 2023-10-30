@@ -89,6 +89,7 @@ class WelcomeView(arcade.View):
         self.host_join_box = arcade.gui.UIBoxLayout()
         self.player_box = arcade.gui.UIBoxLayout()
 
+
         ''' CREATING HOST AND JOIN BUTTON '''
         # creating HOST button
         host_button = arcade.gui.UIFlatButton(text="Host Game", width=200)
