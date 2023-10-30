@@ -62,6 +62,7 @@ class Player:
 
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
+
         combined_cards = self.hand + community_cards
         hand_type = self.get_hand_type(combined_cards)
         return hand_type
@@ -100,6 +101,7 @@ class Player:
             return HandStrength.ONE_PAIR
         else:
             return HandStrength.HIGH_CARD
+        
     def get_hand_type(self, cards):
         # Implement hand type evaluation logic
         # Return the appropriate ENUM from HandStrength

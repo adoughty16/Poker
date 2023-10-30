@@ -433,7 +433,7 @@ class GameView(arcade.View):
             if self.connected:
 				#update and upload confirmation bit
                 self.flags[self.num_players] = 1
-                self.db.collection("flags").document("flag_document").set({"values": flags})
+                self.db.collection("flags").document("flag_document").set({"values": self.flags})
 
         elif self.host and not self.game_state.get_waiting(self.db) and self.connected:
             # if it is my turn:
