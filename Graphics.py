@@ -424,7 +424,7 @@ class GameView(arcade.View):
             #first spots in flags hold 0s for players to flip to 1s when they connect.
             #last spot is host confirmation bit that host will flip when all player spots are filled
             if self.flags_not_up:
-                self.flags = [0 for _ in range(self.num_players + 1)]
+                self.flags = [0 for _ in range(self.num_players)]
                 self.db.collection("flags").document("flag_document").set({"values": self.flags})
                 self.flag_document = self.db.collection("flags").document("flag_document").get()
                 self.flags_not_up = False
