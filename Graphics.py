@@ -299,11 +299,7 @@ class GameView(arcade.View):
         self.flags_not_up = True
         self.waiting_for_host = False
         self.ready = True
-
-        #TODO: implement these two functions in Game_state
-        #self.gamestate.set_num_real_players(selected_players)
-        #self.gamestate.set_host(selected_host)
-
+        
         super().__init__()
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = None
@@ -770,6 +766,9 @@ class GameView(arcade.View):
         # in the center 
 
         # community_cards
+        self.community_cards = self.game_state.get_community_cards(self.db) 
+        # draw them in the middle on the mats there 
+        
         # round_pot
 
 
