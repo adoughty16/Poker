@@ -69,11 +69,29 @@ class Game_state:
                 "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, "waiting": self.waiting, "whose_turn": self.whose_turn, 
                 "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
 
+    # to set player_names based on Player objects array 
     def set_players(self, players, db):
         for player in players:
-            self.players.append(player.name)
+            self.player_names.append(player.name)
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_names": self.players})
+
+    # to set player_names based on array of strings (if collected in graphics window - do not need objects until hands)
+    def set_player_names(self, names, db):
+        self.clear_players(db)
+        for name in names:
+            self.player_names.append(name)
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"player_names": self.players})
+
+    # function to clear players in the event that set_player_names and set_players are used in the same game 
+    def clear_players(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        # for every player in self player_names (which will all be strings), update the db by removing that string from its array too 
+        for player in self.player_names:
+            game_state_ref.update({"player_names": firestore.ArrayRemove(player)})
+            self.player_names.remove(player)
+        
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
@@ -192,7 +210,7 @@ class Game_state:
             self.whose_turn = self.whose_turn % 4
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"whose_turn": self.whose_turn})
-    
+
         
 # getters 
     
