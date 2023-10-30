@@ -260,7 +260,14 @@ class WelcomeView(arcade.View):
         #self.window.show_view(game_view)
         pass
         # pass in self.selected_host() and self.selected_players to the next window rather than using game-state
-        # so that GameView can access those values and also create its own game-state object 
+        # so that GameView can access those values and also create its own game-state object
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ User presses key """
+        # when user presses ESCAPE key, quit program
+        if symbol == arcade.key.ESCAPE:
+            # quit
+            arcade.exit()
 
 
 
@@ -642,7 +649,8 @@ class GameView(arcade.View):
 						#merge round pot and total pot
 						#also deal more cards
 						#also change round
-                        # this would be more efficient if we get_round from the db once and then compare that stored value 
+                        # this would be more efficient if we get_round from the db once and then compare that stored value
+                        # DONE 
                         round = self.game_state.get_round(self.db)
                         self.game_state.set_total_pot(self.game_state.get_total_pot(self.db) + self.game_state.get_round_pot(self.db), self.db)
                         self.game_state.set_round_pot(0, self.db)
@@ -808,6 +816,13 @@ class GameView(arcade.View):
         #TODO: add a triangle on the end of this line! 
         arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE, 3)
         arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        """ User presses key """
+        # when user presses ESCAPE key, quit program
+        if symbol == arcade.key.ESCAPE:
+            # quit
+            arcade.exit()
 
 class Card(arcade.Sprite):
     """ Card sprite """
