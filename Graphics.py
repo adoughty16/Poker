@@ -725,26 +725,64 @@ class GameView(arcade.View):
         #NOTE! To draw the table from this player's perspective, self.me holds the correct index in the player list.
         #It should draw the 'me'th player on the bottom, and then go clockwise from there (will need to mod by 4)
 
+        # self.me is bottom ((self.me + 1) % 4) is middle left ((self.me + 2) % 4) is top and ((self.me + 3) % 4) is middle right 
+
         # get information from game_state to draw current state 
 
-        # player variables 
-        # draw player_names below their mats (commented out for now because we don't have them yet)
-        # draw the player's round_bets
+        #  PLAYER VARIABLES 
+
+        # draw player_names below their mats (also get them in WelcomeView) 
+        # TODO: get player names in Welcome View (and pass to game_state or just draw) 
+        names = self.game_state.get_players(self.db)
+        # TODO: draw the player's round bets - but where is this stored? 
+        # self.round_bets
         # actives- gray out players who have folded 
+        self.actives = self.game_state.get_actives(self.db)
         # who the dealer is 
-
-        
+        self.dealer = self.game_state.get_dealer(self.db) 
+  
         # arrow for whose_turn and minimum_call
+        arrow_to = self.game_state.get_whose_turn(self.db)
+        arrow_amount = self.game_state.get_minimum_call(self.db) 
 
-        # in the center 
-
+        # CENTER INFO 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
         # draw them in the middle on the mats there 
-        
         # round_pot
+        self.pot = self.game_state.get_round_pot(self.db) 
 
 
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        """ Called when the user presses a mouse button. """
+        # Get list of cards we've clicked on
+        cards = arcade.get_sprites_at_point((x, y), self.card_list)
+
+        # Have we clicked on a card?
+        if len(cards) > 0:
+            # Might be a stack of cards, get the top one
+            primary_card = cards[-1]
+
+            # All other cases, grab the face-up card we are clicking on
+            self.held_cards = [primary_card]
+            # Save the position
+            self.held_cards_original_position = [self.held_cards[0].position]
+            # Put on top in drawing order
+            self.pull_to_top(self.held_cards[0])
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+        """ Called when the user presses a mouse button. """
+        # If we don't have any cards, who cares
+        if len(self.held_cards) == 0:
+            return
+
+        # We are no longer holding cards
+        self.held_cards = []
+
+    def on_mouse_motion(self, x: float, y: float, dx: float, dy: float):
+        """ User moves mouse """
+        pass
 
 class Card(arcade.Sprite):
     """ Card sprite """
