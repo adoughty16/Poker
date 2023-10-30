@@ -766,6 +766,8 @@ class GameView(arcade.View):
         arrow_to = self.game_state.get_whose_turn(self.db)
         arrow_amount = self.game_state.get_minimum_call(self.db) 
 
+        self.draw_turn_arrow(arrow_to, arrow_amount) 
+
         # CENTER INFO 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
@@ -782,6 +784,29 @@ class GameView(arcade.View):
         arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + ((MAT_WIDTH + 50)/5), MIDDLE_Y - (MAT_HEIGHT / 2) - 50,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
 
+    def draw_turn_arrow(self, to, amount):
+        if to == 0:
+            start_x = MIDDLE_X_4
+            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
+            end_x = SCREEN_WIDTH / 2
+            end_y = MAT_HEIGHT + 25
+        if to == 1:
+            start_x = SCREEN_WIDTH / 2
+            start_y = MAT_HEIGHT + 25
+            end_x = MIDDLE_X_2
+            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
+        if to == 2:
+            start_x = MIDDLE_X_2
+            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
+            end_x = SCREEN_WIDTH / 2
+            end_y = SCREEN_HEIGHT - (MAT_HEIGHT + 25)
+        if to == 3:
+            start_x = SCREEN_WIDTH / 2
+            start_y = SCREEN_HEIGHT - (MAT_HEIGHT + 25)
+            end_x = MIDDLE_X_4
+            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 25
+        arcade.draw_line(start_x, start_y, end_x, end_y, arcade.color.WHITE)
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE) 
 
 class Card(arcade.Sprite):
     """ Card sprite """
