@@ -333,14 +333,11 @@ class GameView(arcade.View):
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
-        # Create the mats for player 1 (bottom)
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X, BOTTOM_Y
-        self.pile_mat_list.append(pile)
-
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
-        pile.position = START_X + X_SPACING, BOTTOM_Y
-        self.pile_mat_list.append(pile)
+        # Create player 1 (bottom)
+        for i in range(2):
+            pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, arcade.csscolor.DARK_OLIVE_GREEN)
+            pile.position = START_X + i * X_SPACING, BOTTOM_Y
+            self.pile_mat_list.append(pile)
 
         # Create player 2 (left)
         for i in range(2):
