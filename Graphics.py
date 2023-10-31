@@ -7,6 +7,7 @@ import Player
 import deck
 import random
 import time
+from cards import Card 
 
 # Screen title and size
 SCREEN_WIDTH = 1424
@@ -845,7 +846,7 @@ class Card(arcade.Sprite):
     def __init__(self, suit, value, scale=1):
         """ Card constructor """
 
-        # Attributes for suit and value
+        # Attributes for suit and value (when converting to external Card class these are already included)
         self.suit = suit
         self.value = value
 

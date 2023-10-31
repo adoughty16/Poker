@@ -18,11 +18,8 @@ class Card:
     def __init__(self, suit, value):
         self.suit=suit
         self.value=value
-        #for key in dictionary:
-         #   if key == 'suit':
-          #      self.set_suit(self, dictionary[key])
-           # if key == 'value':
-            #    self.set_value(self, dictionary[key])
+        # Image to use for the sprite when face up (from graphics to interface the two)
+        self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}
@@ -51,10 +48,13 @@ class Card:
     def get_value(self):
         return self.value
     def get_image(self):
-        pass
+        return self.image_file_name
 
+    # overridden equality operator to compare card objects using == and != (useful in Game_state and maybe other game logic)
     def __eq__(self, other):
         if self.suit == other.suit and self.value == other.value:
             return True
         else:
             return False
+    
+    # would it help to have a draw function face up and face down? 
