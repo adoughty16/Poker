@@ -7,11 +7,6 @@ takes in a document name and database connection to create the object!!
 every getter and setter interfaces with the database (to avoid conflicting information)
 '''
 
-'''
-What needs doing:
-- test the community card and hand functions after implementing to_dict and from_dict in Card
-- test all functions getters and setters 
-'''
 
 round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
 play = Enum('play', ['bet', 'check', 'fold', 'call'])
@@ -85,7 +80,6 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"player_names": self.player_names})
 
-    # TODO: there is a bug in update here 
     # function to clear players in the event that set_player_names and set_players are used in the same game 
     def clear_players(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -341,7 +335,7 @@ class Game_state:
         self.round = self.get_round(self, db)
         self.player_decision = self.get_player_decision(self, db)
 
-    # dow=wnload with player hands (wph) to be used in showdown to only retrieve player_hands then!
+    # download with player hands (wph) to be used in showdown to only retrieve player_hands then!
     def download_wph(self, db):
         self.player_names = self.get_players(self, db)
         self.player_hands = self.get_player_hands(self, db)
