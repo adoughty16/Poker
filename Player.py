@@ -5,6 +5,7 @@ from collections import Counter
 
 
 class HandStrength(Enum):
+    DEFAULT = 0
     HIGH_CARD = 1
     ONE_PAIR = 2
     TWO_PAIR = 3
@@ -22,6 +23,8 @@ class Player:
         self.hand = []
         self.stack = 0
         self.is_computer_player = True #defaults to computer player
+        self.showdown = []
+        self.handStrength = HandStrength.DEFAULT
     
     def get_name(self):
         return self.name
@@ -110,39 +113,37 @@ class Player:
     def get_hand_type(self, cards):
         # Implement hand type evaluation logic
         # Return the appropriate ENUM from HandStrength
+        pass
 
-        def is_royal_flush(self, cards):
-            # Check if it's a Royal Flush (A, K, Q, J, 10 of the same suit)
-            pass
-
-        def is_straight_flush(self, cards):
-            # Check if it's a Straight Flush
-            pass
-
-        def is_four_of_a_kind(self, counts):
-            # Check if it's Four of a Kind
-            pass
-
-        def is_full_house(self, counts):
-            # Check if it's a Full House
-            pass
-
-        def is_flush(self, cards):
-            # Check if it's a Flush
-            pass
-
-        def is_straight(self, cards):
-            # Check if it's a Straight
-            pass
-
-        def is_three_of_a_kind(self, counts):
-            # Check if it's Three of a Kind
-            pass
-
-        def is_two_pair(self, counts):
-            # Check if it's Two Pair
-            pass
-
-        def is_one_pair(self, counts):
-            # Check if it's One Pair
-            return 2 in counts.values()
+    def matching(self,cards):
+        #memory for matching cards, stores a list of a list of cards
+        matching = [[],[],[],[],[],[],[],[],[],[],[],[],[]]
+        #memory for number of pairs
+        pairs = 0
+        pair_values = []
+        #iterate through given cards and sort them by adding them to matching[[],[],...[] by index of value
+        for i in cards:
+            matching[cards[i].get_value()].append(cards[i])
+        #iterate through matching
+        for e, i in enumerate(matching):
+            #if the list of cards sorted by index contains
+            if len(i) == 4:
+                self.handStrength = HandStrength.FOUR_OF_A_KIND
+                self.showdown = i
+                return HandStrength.FOUR_OF_A_KIND
+            if len(i) == 3:
+                self.handStrength = HandStrength.THREE_OF_A_KIND
+                self.showdown = i
+                return HandStrength.THREE_OF_A_KIND
+            if len(i) == 2:
+                pairs =+1
+                pair_values.append(e)
+        if pairs == 1:
+            self.handStrength = HandStrength.ONE_PAIR
+            self.showdown = matching[pair_values.pop()]
+            return HandStrength.ONE_PAIR
+        if pairs == 2:
+            self.handStrength = HandStrength.TWO_PAIR
+            self.showdown = matching[pair_values.pop()]
+            self.showdown.append(matching[pair_values.pop()])
+            return HandStrength.TWO_PAIR
