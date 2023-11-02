@@ -335,6 +335,72 @@ class GameView(arcade.View):
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list = None
 
+        ''' For player decision buttons '''
+        self.player_decision = None
+        self.bet_chosen = False
+        self.check_chosen = False
+        self.fold_chosen = False
+        self.call_chosen = False
+
+        # --- BUTTONS: Required for all code that uses UI element,
+        # a UIManager to handle the UI.
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        # Create a horizontal BoxGroup to align buttons
+        self.player_decision_box = arcade.gui.UIBoxLayout()
+
+
+        # creating BET button
+        bet_button = arcade.gui.UIFlatButton(text="bet", width=200)
+        bet_button.text = "bet"
+        self.player_decision_box.add(bet_button.with_space_around(bottom=20))
+
+        # creating CHECK button
+        check_button = arcade.gui.UIFlatButton(text="check", width=200)
+        check_button.text = "check"
+        self.player_decision_box.add(bet_button.with_space_around(bottom=20))
+
+        # creating FOLD button
+        fold_button = arcade.gui.UIFlatButton(text="fold", width=200)
+        fold_button.text = "fold"
+        self.player_decision_box.add(fold_button.with_space_around(bottom=20))
+
+        # creating CALL button
+        call_button = arcade.gui.UIFlatButton(text="call", width=200)
+        call_button.text = "call"
+        self.player_decision_box.add(call_button.with_space_around(bottom=20))
+
+
+        bet_button.on_click = self.on_bet_click
+        check_button.on_click = self.on_check_click
+        fold_button.on_click = self.on_fold_click
+        call_button.on_click = self.on_call_click
+
+        # for positioning of bet, check, fold, call buttons
+        self.manager.add(
+            # Create a widget to hold the player_decision_box widget, that will center the bet, check, fold, call buttons
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="center_y",
+                child=self.player_decision_box)
+        )
+
+        def on_bet_click(self, event):
+            self.player_decision = True
+            self.bet_chosen = True
+        def on_check_click(self, event):
+            self.player_decision = True
+            self.check_chosen = True
+        def on_fold_click(self, event):
+            self.player_decision = True
+            self.fold_chosen = True
+        def on_call_click(self, event):
+            self.player_decision = True
+            self.call_chosen = True
+
+
+
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
