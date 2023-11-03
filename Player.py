@@ -114,35 +114,71 @@ class Player:
         # Return the appropriate ENUM from HandStrength
         pass
 
+    def flushing(self,cards):
+
+        flushing = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+
+        flushes = 0
+        flush = []
+
+        for i in cards:
+            flushing[cards[i].get_value()].append(cards[i])
+
+        for e, i in enumerate(flushing):
+            if len(i) == 0:
+                pass
+            if (len(flushing[e+1]>0)):
+                flush.append[flushing[i[0]]]
+
+
+
+
     def matching(self, cards):
         # memory for matching cards, stores a list of a list of cards
         matching = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+
         # memory for number of pairs
         pairs = 0
         pair_values = []
+
         # iterate through given cards and sort them by adding them to matching[[],[],...[] by index of value
         for i in cards:
             matching[cards[i].get_value()].append(cards[i])
+
         # iterate through matching
         for e, i in enumerate(matching):
+
             # if the list of cards sorted by index contains
             if len(i) == 4:
+
+                #set this players handstrength to four of a kind and set their showdown cards to these cards
                 self.handStrength = HandStrength.FOUR_OF_A_KIND
                 self.showdown = i
                 return HandStrength.FOUR_OF_A_KIND
+
             if len(i) == 3:
+
+                #same as before
                 self.handStrength = HandStrength.THREE_OF_A_KIND
                 self.showdown = i
                 return HandStrength.THREE_OF_A_KIND
+
             if len(i) == 2:
+
+                #if there is a pair, add it to a pair counter and store the value for later
                 pairs = +1
                 pair_values.append(e)
+
         if pairs == 1:
             self.handStrength = HandStrength.ONE_PAIR
+            #set the showdown cards to the pair by their index as stored in pair_values[]
             self.showdown = matching[pair_values.pop()]
             return HandStrength.ONE_PAIR
+
         if pairs == 2:
             self.handStrength = HandStrength.TWO_PAIR
+            #same as above but pop from pair values one more time
             self.showdown = matching[pair_values.pop()]
             self.showdown.append(matching[pair_values.pop()])
             return HandStrength.TWO_PAIR
+
