@@ -857,17 +857,31 @@ class GameView(arcade.View):
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
         # draw them in the middle on the mats there (or move them since they are all drawn already) 
-        ''' 
         for card in self.card_list:
             for comm_card in self.community_cards:
                 if card == comm_card:
                     # TODO: change the position of this so that it is on a mat 
                     card.draw()
-        '''
         # round_pot
         self.pot = self.game_state.get_round_pot(self.db) 
         arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + ((MAT_WIDTH + 50)/5), MIDDLE_Y - (MAT_HEIGHT / 2) - 50,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
+
+    def deal(self):
+        # start with the dealer and then take two cards at a time and put them on the player's mats
+        dealer = self.dealer 
+        for i in range(1, 4):
+            current = (dealer + i) % 4
+            hand = []
+            for j in range(2):
+                for card in self.card_list:
+                    hand.append(card)
+                    card.set_position()
+                self.players[current].set_hand(hand)
+        # redraw cards with new positions 
+
+        
+    # depending on the round, take one card from the pile and put it on the next community card mat 
 
     def draw_turn_arrow(self, to, amount):
         if to == 0:

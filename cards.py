@@ -1,23 +1,16 @@
 from enum import Enum
+import arcade
 
-# -Suit (ENUM)
-# -Value (ENUM?)
-# -GUI Asset
-# get_suit()
-# get_value()
-# get_image()
-
-# d = diamonds
-# c = clubs
-# h = hearts
-# s = spades
 suit = Enum('suit', ['d','c','h','s'])
 
 class Card:
     
-    def __init__(self, suit, value):
+    def __init__(self, suit, value, x, y):
         self.suit=suit
         self.value=value
+        self.card_scale = 0.6 
+        self.position_x = x
+        self.position_y = y
         # Image to use for the sprite when face up (from graphics to interface the two)
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
@@ -29,6 +22,13 @@ class Card:
     
     def set_value(self, value):
         self.value = value 
+
+    def set_position_x(self, x):
+        self.position_x = x
+
+    def set_position_y(self, y):
+        self.position_y = y
+
 
     #compare to function
     #if the card passed in is greater than this card, return 1
@@ -56,5 +56,25 @@ class Card:
             return True
         else:
             return False
-    
+    ''''
     # would it help to have a draw function face up and face down? 
+    def draw(self, arcade.Sprite):
+        super().__init__(self.image_file_name, self.card_scale, hit_box_algorithm="None")
+        self.card.draw()
+
+    class Card(arcade.Sprite):
+""" Card sprite """
+
+def __init__(self, suit, value, scale=1):
+    """ Card constructor """
+
+    # Attributes for suit and value (when converting to external Card class these are already included)
+    self.suit = suit
+    self.value = value
+
+    # Image to use for the sprite when face up
+    self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+
+    # Call the parent
+    super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+'''
