@@ -372,10 +372,10 @@ class GameView(arcade.View):
         self.player_decision_box.add(call_button.with_space_around(bottom=20))
 
 
-        bet_button.on_click = self.on_bet_click
-        check_button.on_click = self.on_check_click
-        fold_button.on_click = self.on_fold_click
-        call_button.on_click = self.on_call_click
+        #bet_button.on_click = self.on_bet_click
+        #check_button.on_click = self.on_check_click
+        #fold_button.on_click = self.on_fold_click
+        #call_button.on_click = self.on_call_click
 
         # for positioning of bet, check, fold, call buttons
         self.manager.add(
@@ -833,7 +833,8 @@ class GameView(arcade.View):
         # other idea - just add gray rectangle over their whole section of the screen
         self.actives = self.game_state.get_actives(self.db)
 
-
+        # TODO: draw this player's hand (the only hand we have access to locally) 
+        
         # who the dealer is 
         self.dealer = self.game_state.get_dealer(self.db) 
         if self.dealer == 0:

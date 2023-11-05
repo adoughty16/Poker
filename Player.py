@@ -82,103 +82,91 @@ class Player:
 
         return choice, bet_value
 
-    def calculate_strength(self, cards):
-        # Implement hand strength evaluation
-        # Sort the cards by rank (e.g., 2, 3, 4, ..., A)
-        sorted_cards = sorted(cards, key=lambda card: Card.RANK_ORDER.index(card.rank))
-        counts = Counter(card.rank for card in sorted_cards)
-
-        if self.is_royal_flush(sorted_cards):
-            return HandStrength.ROYAL_FLUSH
-        elif self.is_straight_flush(sorted_cards):
-            return HandStrength.STRAIGHT_FLUSH
-        elif self.is_four_of_a_kind(counts):
-            return HandStrength.FOUR_OF_A_KIND
-        elif self.is_full_house(counts):
-            return HandStrength.FULL_HOUSE
-        elif self.is_flush(sorted_cards):
-            return HandStrength.FLUSH
-        elif self.is_straight(sorted_cards):
-            return HandStrength.STRAIGHT
-        elif self.is_three_of_a_kind(counts):
-            return HandStrength.THREE_OF_A_KIND
-        elif self.is_two_pair(counts):
-            return HandStrength.TWO_PAIR
-        elif self.is_one_pair(counts):
-            return HandStrength.ONE_PAIR
-        else:
-            return HandStrength.HIGH_CARD
-
-    def get_hand_type(self, cards):
-        # Implement hand type evaluation logic
-        # Return the appropriate ENUM from HandStrength
+    def predict_hand_strength(self,cards):
+        #takes any size list of cards and analyzes them based on their rank, and matching suits or values
+        #returns their potential as a score or something
         pass
 
-    def flushing(self,cards):
+    #calculates the strongest hand possible for showdown
+    def calculate_strength(self, cards):
 
-        flushing = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+        #sorts the cards -- can someone explain/fix this? vvv
+        sorted_cards = sorted(cards, key=lambda card: Card.RANK_ORDER.index(card.rank))
+        #i dont know what this does
+        counts = Counter(card.rank for card in sorted_cards)
 
-        flushes = 0
-        flush = []
-
-        for i in cards:
-            flushing[cards[i].get_value()].append(cards[i])
-
-        for e, i in enumerate(flushing):
-            if len(i) == 0:
-                pass
-            if (len(flushing[e+1]>0)):
-                flush.append[flushing[i[0]]]
-
-
-
-
-    def matching(self, cards):
+        #these both can probably be consolidated into one matrix- a 13-list of a 4-list of cards
+        #columns being rank, rows being suit. but for now its this
         # memory for matching cards, stores a list of a list of cards
         matching = [[], [], [], [], [], [], [], [], [], [], [], [], []]
-
+        # memory for sequential cards, stores a list of a list of cards
+        straight = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+        flushing = [[], [], [], []]
         # memory for number of pairs
         pairs = 0
         pair_values = []
+        #memory for flush/ sequential cards
+        sequence = [[straight[0]]]
 
-        # iterate through given cards and sort them by adding them to matching[[],[],...[] by index of value
-        for i in cards:
+        #sort the cards into the memory
+        for e, i in enumerate(cards):
+            # add the card to its position in straight[] as indexed by the cards own value
+            straight[cards[i].get_value()].append(cards[e])
+            # same as above but store in matching[]
             matching[cards[i].get_value()].append(cards[i])
+            #sort cards into suits
+            if i.get_suit() == 'd':
+                flushing[0].append(i)
+            if i.get_suit() == 'c':
+                flushing[1].append(i)
+            if i.get_suit() == 'h':
+                flushing[2].append(i)
+            if i.get_suit() == 's':
+                flushing[3].append(i)
 
-        # iterate through matching
+        #find sequential cards
+        for i in range(1, len(straight)):
+            if straight[i-1][0] + 1 == straight[i][0]:
+                sequence[-1].append(straight[i][0])
+            else:
+                sequence.append([straight[i]])
+
+        # find cards sequential strength
+        if len(straight) == 5 and len(sequence) == 5:  # and minimum card in this flush is ace:
+            self.handStrength = HandStrength.FLUSH
+        if len(straight) == 5:
+            self.handStrength = HandStrength.FLUSH
+
+        #find hand strength for matching cards
         for e, i in enumerate(matching):
 
             # if the list of cards sorted by index contains
             if len(i) == 4:
-
-                #set this players handstrength to four of a kind and set their showdown cards to these cards
+                # set this players handstrength to four of a kind and set their showdown cards to these cards
                 self.handStrength = HandStrength.FOUR_OF_A_KIND
                 self.showdown = i
                 return HandStrength.FOUR_OF_A_KIND
 
             if len(i) == 3:
-
-                #same as before
+                # same as before
                 self.handStrength = HandStrength.THREE_OF_A_KIND
                 self.showdown = i
                 return HandStrength.THREE_OF_A_KIND
 
             if len(i) == 2:
-
-                #if there is a pair, add it to a pair counter and store the value for later
+                # if there is a pair, add it to a pair counter and store the value for later
                 pairs = +1
                 pair_values.append(e)
 
         if pairs == 1:
             self.handStrength = HandStrength.ONE_PAIR
-            #set the showdown cards to the pair by their index as stored in pair_values[]
+            # set the showdown cards to the pair by their index as stored in pair_values[]
             self.showdown = matching[pair_values.pop()]
             return HandStrength.ONE_PAIR
 
         if pairs == 2:
             self.handStrength = HandStrength.TWO_PAIR
-            #same as above but pop from pair values one more time
+            # same as above but pop from pair values one more time
             self.showdown = matching[pair_values.pop()]
             self.showdown.append(matching[pair_values.pop()])
             return HandStrength.TWO_PAIR
-
