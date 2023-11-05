@@ -242,7 +242,7 @@ class WelcomeView(arcade.View):
         arcade.draw_text("How many people are playing?", 1280, self.window.height / 2 + 160,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
         
-        if self.selected_players is not -1:
+        if self.selected_players != -1:
             arcade.draw_text(f'Number of Human Players: {self.selected_players}', 720, self.window.height / 2 - 160,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
 
