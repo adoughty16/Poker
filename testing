@@ -30,6 +30,14 @@ def test_game_state():
     else:
         print('FAILED COMMUNITY CARDS SETTER')
     
+    hands = [[Card('h', 1), Card('h',2 )], [Card('h', 3), Card('h', 4)], [Card('h', 5), Card('h', 6)], [Card('h', 7), Card('h', 8)]]
+    print(hands[0])
+    print(hands[0][0])
+    game_state_1.set_player_hands(hands, db)
+    if game_state_1.get_player_hands(db) == [[Card('h', 1), Card('h',2 )], [Card('h', 3), Card('h', 4)], [Card('h', 5), Card('h', 6)], [Card('h', 7), Card('h', 8)]]:
+       print('PASSED PLAYER HANDS')
+    else:
+        print('FAILED PLAYER HANDS')
     # community cards 
     if game_state_1.get_total_pot(db) != 0:
         print('FAILED TOTAL POT')

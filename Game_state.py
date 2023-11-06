@@ -60,7 +60,7 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name).set(data)
 
     def to_dict(self):
-        return {"player_names": self.player_names, "player_hand": self.player_hands, "community_cards": self.community_cards, "total_pot": self.total_pot, 
+        return {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, "total_pot": self.total_pot, 
                 "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, "waiting": self.waiting, "whose_turn": self.whose_turn, 
                 "bet": self.bet, "minimum_call": self.minimum_call, "dealer": self.dealer, "actives": self.actives, "round": self.round, "player_decision": self.player_decision}
 
@@ -114,14 +114,34 @@ class Game_state:
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
-        self.player_hands = player_hands 
+        self.clear_player_hands(db)
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"player_hands": self.player_hands})
-    
+        player_hands_dict = []
+        for i in range(len(player_hands)):
+            self.player_hands.append([])
+            player_hands_dict.append([])
+            for j in range(len(player_hands[i])):
+                self.player_hands[i].append(player_hands[i][j])
+                player_hands_dict[i].append(Card.to_dict(player_hands[i][j]))
+            game_state_ref.update({"player_hands": firestore.ArrayUnion(player_hands_dict[i])})
+
+        #game_state_ref.update({"player_hands": player_hands_dict})
+
+    def clear_player_hands(self, db):
+        game_state_ref = db.collection("states").document(self.doc_name)
+        for i in range(len(self.player_hands)):
+            for j in range(len(self.player_hands[i])):
+                game_state_ref.update({"player_hands": firestore.ArrayRemove(Card.to_dict(self.player_hands[i][j]))})
+                self.community_cards.remove(self.player_hands[i][j])
+
     def set_player_hand(self, player_index, hand, db):
-        self.player_hands[player_index] = hand
         game_state_ref = db.collection("states").document(self.doc_name)
-        game_state_ref.update({"player_hands": self.player_hands})
+        cards_dict = []
+        for card in hand: 
+            self.player_hands.append(card)
+            cards_dict.append(Card.to_dict(card))
+        game_state_ref.update({"player_hands": cards_dict})
+
     
     def set_total_pot(self, pot, db):
         self.total_pot = pot
