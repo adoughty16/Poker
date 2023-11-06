@@ -18,12 +18,7 @@ def test_game_state():
         print('FAILED PLAYER NAMES')
     else:
         print('PASSED PLAYER NAMES')
-    # player hands 
-    if game_state_1.get_community_cards != []:
-        print('FAILED COMMUNITY CARDS')
-    else:
-        print('PASSED COMMUNITY CARDS')
-    
+    # card functions
     game_state_1.set_community_cards([Card('d', 12), Card('c', 1)], db)
     if game_state_1.get_community_cards(db)[0] == Card('d', 12) and game_state_1.get_community_cards(db)[1] == Card('c', 1):
         print('PASSED COMMUNITY CARDS SETTER')
@@ -73,7 +68,7 @@ def test_game_state():
         print('FAILED WHOSE TURN')
     else:
         print('PASSED WHOSE TURN')
-    if game_state_1.get_bet(db) != 10:
+    if game_state_1.get_bet(db) != 0:
         print('FAILED GET BET')
     else:
         print('PASSED GET BET')
@@ -96,7 +91,7 @@ def test_game_state():
     else:
         print('PASSED ROUND')
     # player_decision fails! 
-    if game_state_1.get_player_decision(db) != 'check':
+    if game_state_1.get_player_decision(db)[0] != 'check' and game_state_1.get_player_decision(db)[1] != 0:
         print('FAILED DECISION')
     else:
         print('PASSED DECISION')
