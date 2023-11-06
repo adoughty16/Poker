@@ -411,7 +411,7 @@ class GameView(arcade.View):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-
+                
         # ---  Create the mats the cards go on
 
         # Sprite list with all the mats tha cards lay on.
@@ -812,6 +812,21 @@ class GameView(arcade.View):
         # Draw the cards
         self.card_list.draw()
 
+        # draw player names
+        #TODO: take these hard-coded values out after we implement player name input 
+
+        names = ['sydney', 'xan', 'abe', 'collin']
+        # player "2" is actually index 1 since indexing starts at 0 
+        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "4" is actually index 3 
+        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "1" is 0 - whatever is drawn on the bottom should be the current player 
+        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        # player "3" is actually index 2 
+        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+
+
+
         #NOTE! To draw the table from this player's perspective, self.me holds the correct index in the player list.
         #It should draw the 'me'th player on the bottom, and then go clockwise from there (will need to mod by 4)
 
@@ -822,21 +837,6 @@ class GameView(arcade.View):
         #  PLAYER VARIABLES 
 
         # draw player_names and round_bets below their mats (also get them in WelcomeView) 
-
-
-        #TODO: take these hard-coded values out after we implement player name input 
-        self.game_state.set_player_names(['sydney', 'xan', 'abe', 'collin'], self.db)
-
-
-        names = self.game_state.get_players(self.db)
-        # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "4" is actually index 3 
-        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
-        # player "3" is actually index 2 
-        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
         # actives- gray out players who have folded 
         #TODO: implement actives graphics 
