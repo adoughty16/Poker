@@ -1,5 +1,5 @@
 import random
-import cards
+from cards import Card
 # DECK:
 # -Cards[]
 # get_deck()
@@ -19,7 +19,7 @@ class Deck:
             #for e less than 13
             for value in range(13):
             #add card to the list these_cards, passing in card variables
-                these_cards.append((suit,value))
+                these_cards.append(Card(suit,value))
         #shuffle this deck
         random.shuffle(these_cards)
         self.deck = these_cards
@@ -35,17 +35,17 @@ class Deck:
         h3 = [self.deck.pop() for _ in range(2)]
         h4 = [self.deck.pop() for _ in range(2)]
 
-        return (h1, h2, h3, h4)
+        return [h1, h2, h3, h4]
 
     #returns list of 3 cards and removes them from Cards
     def flop(self):
         this_flop=[]
-        this_flop.append(deck.pop())
-        this_flop.append(deck.pop())
-        this_flop.append(deck.pop())
+        this_flop.append(self.deck.pop())
+        this_flop.append(self.deck.pop())
+        this_flop.append(self.deck.pop())
         return this_flop
 
     #returns 1 card and removes it from deck[]
     def turn(self):
-        return deck.pop()
+        return self.deck.pop()
  
