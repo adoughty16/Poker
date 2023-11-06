@@ -1,5 +1,7 @@
 import random
-from cards import Card
+from enum import Enum
+from cards import Card 
+
 # DECK:
 # -Cards[]
 # get_deck()
@@ -7,7 +9,7 @@ from cards import Card
 # flop() returns list of 3 cards and removes them from Cards[]
 # turn() returns 1 card and removes it from Cards[]
 
-
+suit = Enum('suit', ['d','c','h','s'])
 deck = []
 
 class Deck:
@@ -15,11 +17,12 @@ class Deck:
     def __init__(self):
         these_cards=[]
         #for i less than 4
-        for suit in range(4):
+        suit = ['d','c','h','s']
+        for i in range(4):
             #for e less than 13
-            for value in range(13):
+            for value in range(14):
             #add card to the list these_cards, passing in card variables
-                these_cards.append(Card(suit,value))
+                these_cards.append(Card(suit[i],value))
         #shuffle this deck
         random.shuffle(these_cards)
         self.deck = these_cards

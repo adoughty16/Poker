@@ -2,6 +2,7 @@
 from Game_state import Game_state 
 import db_connect as database
 from cards import Card
+from deck import Deck 
 
 # function to test game_state class 
 
@@ -96,7 +97,15 @@ def test_game_state():
     else:
         print('PASSED DECISION')
 
+def test_deck():
+    deck = Deck()
+    print(deck.deal())
+    if len(deck.get_deck()) != 52:
+        print('deck too small')
+        print(len(deck.get_deck()))
+
 def main():
-    test_game_state()
+    #test_game_state()
+    test_deck()
 
 main()
