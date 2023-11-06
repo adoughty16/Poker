@@ -99,10 +99,20 @@ def test_game_state():
 
 def test_deck():
     deck = Deck()
-    print(deck.deal())
+    #print(deck.deal())
     if len(deck.get_deck()) != 52:
-        print('deck too small')
+        print('FAILED DECK WRONG SIZE')
         print(len(deck.get_deck()))
+    else:
+        print('PASSED DECK LENGTH')
+    dealt = deck.deal()
+    if len(dealt) != 4:
+        print('FAILED DEAL')
+    if len(dealt[0]) != 2:
+        print('FAILED DEAL')
+    else:
+        print('PASSED DEAL')
+    print(dealt) 
 
 def main():
     #test_game_state()
