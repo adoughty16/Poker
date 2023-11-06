@@ -580,11 +580,11 @@ class GameView(arcade.View):
                                 #add the bet_amount to the round_bets for the current player
                                 self.round_bets[self.current] += bet_amount
                                 #subtract that amount from the player's stack
-                                self.players[self.current].set_stack(self.players[self.current].get_stack - bet_amount)
+                                self.players[self.current].set_stack(self.players[self.current].get_stack() - bet_amount)
                                 #update local stacks
                                 self.stacks[self.current] = self.players[self.current].get_stack()
                                 #now reflect those changes in the gamestate
-                                self.set_player_stacks(self.stacks)
+                                self.game_state.set_player_stacks(self.stacks, self.db)
                                 self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
                                 self.game_state.set_bet(value, self.db)
                                 self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
