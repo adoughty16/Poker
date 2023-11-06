@@ -319,6 +319,8 @@ class GameView(arcade.View):
         self.flags_not_up = True
         self.waiting_for_host = False
         self.ready = False
+        self.bet_value = 0
+        self.bet_value_chosen = False
 
         
         super().__init__()
@@ -372,10 +374,10 @@ class GameView(arcade.View):
         self.player_decision_box.add(call_button.with_space_around(bottom=20))
 
 
-        #bet_button.on_click = self.on_bet_click
-        #check_button.on_click = self.on_check_click
-        #fold_button.on_click = self.on_fold_click
-        #call_button.on_click = self.on_call_click
+        bet_button.on_click = self.on_bet_click
+        check_button.on_click = self.on_check_click
+        fold_button.on_click = self.on_fold_click
+        call_button.on_click = self.on_call_click
 
         # for positioning of bet, check, fold, call buttons
         self.manager.add(
@@ -386,18 +388,28 @@ class GameView(arcade.View):
                 child=self.player_decision_box)
         )
 
-        def on_bet_click(self, event):
-            self.player_decision = True
-            self.bet_chosen = True
-        def on_check_click(self, event):
-            self.player_decision = True
-            self.check_chosen = True
-        def on_fold_click(self, event):
-            self.player_decision = True
-            self.fold_chosen = True
-        def on_call_click(self, event):
-            self.player_decision = True
-            self.call_chosen = True
+        # Rather than setting boolean values with these buttons, we should just directly update the game state
+        # with the decision. Otherwise we need to add even more logic to the on_update.
+    def on_bet_click(self, event):
+        # should only do stuff if a value has been chosen
+        if self.bet_value_chosen:
+            self.game_state.set_player_decision('bet', self.db)
+            self.game_state.set_bet(self.bet_value, self.db)
+            self.game_state.flip_waiting(self.db)
+            self.bet_value_chosen = False
+    def on_check_click(self, event):
+        # should only do stuff if checking is an option
+        if self.game_state.get_minimum_call(self.db) == 0:
+            self.game_state.set_player_decision('check', self.db)
+            self.game_state.flip_waiting(self.db)
+    def on_fold_click(self, event):
+        # update game_state from here
+        self.game_state.set_player_decision('fold', self.db)
+        self.game_state.flip_waiting(self.db)
+    def on_call_click(self, event):
+        # update game_state from here
+        self.game_state.set_player_decision('call', self.db)
+        self.game_state.flip_waiting(self.db)
 
 
 
@@ -535,9 +547,8 @@ class GameView(arcade.View):
                     #deal from the deck
                     hands = self.deck.deal()
                     for player, hand in zip(self.players, hands):
-                        player.set_hand(hand)       
-                    for player, hand in zip(self.game_state.get_players(self.db), hands):
                         player.set_hand(hand)
+                    self.game_state.set_player_hands(hands, self.db)
 
                     #establish dealer/blinds by adding to the pot and removing the values from the players in the blind positions
                     #(blind positions are determined relative to the dealer position)
@@ -743,6 +754,8 @@ class GameView(arcade.View):
                         self.all_called = False
                 
                 if self.game_state.get_round(self.db) == 'showdown':
+
+                    #send hands to game state
                     #TODO: determine winner (waiting on player functions)
 
                     #award winner stack from pot
@@ -833,7 +846,7 @@ class GameView(arcade.View):
         # other idea - just add gray rectangle over their whole section of the screen
         self.actives = self.game_state.get_actives(self.db)
 
-        # TODO: draw this player's hand (the only hand we have access to locally) 
+        # TODO: draw this player's hand (using self.me and game_state's get_player_hands) 
         
         # who the dealer is 
         self.dealer = self.game_state.get_dealer(self.db) 
