@@ -31,7 +31,7 @@ class Deck:
     def get_deck(self):
         return self.deck
     
-    #returns 4-tuple of lists of 2 cards for each hand (h) and removes them from cards
+    #returns list of lists of 2 cards for each hand (h) and removes them from cards
     def deal(self):
         h1 = [self.deck.pop() for _ in range(2)]
         h2 = [self.deck.pop() for _ in range(2)]
