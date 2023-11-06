@@ -445,8 +445,8 @@ class GameView(arcade.View):
         # Create every card
         for card_suit in CARD_SUITS:
             for card_value in CARD_VALUES:
-                card = Card(card_suit, card_value, CARD_SCALE)
-                card.position = START_X, BOTTOM_Y
+                card = Card(card_suit, card_value, START_X, BOTTOM_Y)
+                card = Card_arcade()
                 self.card_list.append(card)
 
 
@@ -921,10 +921,9 @@ class GameView(arcade.View):
             # quit
             arcade.exit()
 
-class Card(arcade.Sprite):
-    """ Card sprite """
+class Card_arcade(arcade.Sprite):
 
-    def __init__(self, suit, value, scale=1):
+    def __init__(self, suit, value, image_file_name, scale=CARD_SCALE):
         """ Card constructor """
 
         # Attributes for suit and value (when converting to external Card class these are already included)
@@ -932,11 +931,10 @@ class Card(arcade.Sprite):
         self.value = value
 
         # Image to use for the sprite when face up
-        self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+        self.image_file_name = image_file_name
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
-
 
 # add parameters to main: num_players, host, game_state, ready, lock
 def main():
