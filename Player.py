@@ -95,78 +95,56 @@ class Player:
         #i dont know what this does
         counts = Counter(card.rank for card in sorted_cards)
 
-        #these both can probably be consolidated into one matrix- a 13-list of a 4-list of cards
-        #columns being rank, rows being suit. but for now its this
-        # memory for matching cards, stores a list of a list of cards
-        matching = [[], [], [], [], [], [], [], [], [], [], [], [], []]
-        # memory for sequential cards, stores a list of a list of cards
-        straight = [[], [], [], [], [], [], [], [], [], [], [], [], []]
-        flushing = [[], [], [], []]
-        # memory for number of pairs
+        #rows being rank, columns being suit
+        # memory for cards, sorted by value, holding a 5-tuple, first item holds bool representing whether or not a card with this
+        #rank exists in this hand, the next 4 each representing a suit and holding a card of that suit
+        memory = [[[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]], [[False],[],[],[],[]],
+                  [[False],[],[],[],[]]]
         pairs = 0
         pair_values = []
-        #memory for flush/ sequential cards
-        sequence = [[straight[0]]]
+        flush = [[],[],[],[]]
+        straight = []
+        straight_flush = [[], [], [], []]
+
+        def retrieve(lst):
+            for e, i in enumerate(lst):
+                pass
 
         #sort the cards into the memory
         for e, i in enumerate(cards):
-            # add the card to its position in straight[] as indexed by the cards own value
-            straight[cards[i].get_value()].append(cards[e])
-            # same as above but store in matching[]
-            matching[cards[i].get_value()].append(cards[i])
+            memory[i.get_value()][0] = True
             #sort cards into suits
-            if i.get_suit() == 'd':
-                flushing[0].append(i)
-            if i.get_suit() == 'c':
-                flushing[1].append(i)
-            if i.get_suit() == 'h':
-                flushing[2].append(i)
-            if i.get_suit() == 's':
-                flushing[3].append(i)
+            memory[i.get_value()][i.suit_val()] = i
 
-        #find sequential cards
-        for i in range(1, len(straight)):
-            if straight[i-1][0] + 1 == straight[i][0]:
-                sequence[-1].append(straight[i][0])
-            else:
-                sequence.append([straight[i]])
 
-        # find cards sequential strength
-        if len(straight) == 5 and len(sequence) == 5:  # and minimum card in this flush is ace:
-            self.handStrength = HandStrength.FLUSH
-        if len(straight) == 5:
-            self.handStrength = HandStrength.FLUSH
 
-        #find hand strength for matching cards
-        for e, i in enumerate(matching):
+        def straightSequence(cards):
+            res = [[cards[0]]]
 
-            # if the list of cards sorted by index contains
-            if len(i) == 4:
-                # set this players handstrength to four of a kind and set their showdown cards to these cards
-                self.handStrength = HandStrength.FOUR_OF_A_KIND
-                self.showdown = i
-                return HandStrength.FOUR_OF_A_KIND
+            for i in range (1,len(cards)):
+                if cards[i-1].get_value() + 1 == cards[i].get_value():
+                    res[-1].append(cards[i])
+                else:
+                    res.append([cards[i]])
+            return res
 
-            if len(i) == 3:
-                # same as before
-                self.handStrength = HandStrength.THREE_OF_A_KIND
-                self.showdown = i
-                return HandStrength.THREE_OF_A_KIND
+        #e is the value, i is the list of cards in that value
+        for e, i in enumerate(memory):
+            #f > 0 is the suit (0 is the flag) and h is the card itself
+            for f, h in enumerate(i):
+                #memory[value][i] // i[suit][card]
+                #so memory[value][suit][card]
+                #suit value 0 is a flag for if a card of this value exists
 
-            if len(i) == 2:
-                # if there is a pair, add it to a pair counter and store the value for later
-                pairs = +1
-                pair_values.append(e)
+                #if this card is an increment of the last one
+                if f > 0 and e > 0 and memory[e-1][i][0] and memory[e][i][0]:
+                    straight.append(h)
 
-        if pairs == 1:
-            self.handStrength = HandStrength.ONE_PAIR
-            # set the showdown cards to the pair by their index as stored in pair_values[]
-            self.showdown = matching[pair_values.pop()]
-            return HandStrength.ONE_PAIR
 
-        if pairs == 2:
-            self.handStrength = HandStrength.TWO_PAIR
-            # same as above but pop from pair values one more time
-            self.showdown = matching[pair_values.pop()]
-            self.showdown.append(matching[pair_values.pop()])
-            return HandStrength.TWO_PAIR
+
+

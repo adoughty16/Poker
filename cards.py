@@ -41,8 +41,17 @@ class Card:
             return -1
         if (this_card.value==self.card.value):
             return 0
-        
-    
+
+    #returns integer suit value
+    def suit_val(self):
+        if self.suit == 'd':
+            return 1
+        if self.suit == 'c':
+            return 2
+        if self.suit == 'h':
+            return 3
+        if self.suit == 's':
+            return 4
     def get_suit(self):
         return self.suit
     def get_value(self):
