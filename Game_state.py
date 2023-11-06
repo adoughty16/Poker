@@ -326,15 +326,17 @@ class Game_state:
         doc = game_state_ref.get()
         player_hands = []
         # for every player's hand stored in the database
-        for hand in doc.player_hands:
-            # for every card in that hand 
-            for card in hand:
-                current_hand = []
+        # the to_dict() gives it as one array of length 8 (not of length 4 of length 2 nested)
+        doc_player_hands = doc.to_dict()["player_hands"]
+        for i in range(4):
+            # for every card in that hand
+            current_hand = [] 
+            for j in range(2):
                 # add the card to the curent hand (an array to store the hand) 
                 # by converting the card to a Card object using the from_dict (similar to get_community_cards)
-                current_hand.append(Card.from_dict(card))
+                current_hand.append(Card(doc_player_hands[(2*i) + j]['suit'], doc_player_hands[(2*i) + j]['value']))
             # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
-            player_hands.append(Card.from_dict(card))
+            player_hands.append(current_hand)
         return player_hands 
 
     # def download - to get updated version of game_state from database 

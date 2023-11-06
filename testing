@@ -25,7 +25,7 @@ def test_game_state():
         print('PASSED COMMUNITY CARDS')
     
     game_state_1.set_community_cards([Card('d', 12), Card('c', 1)], db)
-    if game_state_1.get_community_cards(db)[0] == Card('d', 12) and game_state_1.get_community_cards(db)[0] == Card('c', 1):
+    if game_state_1.get_community_cards(db)[0] == Card('d', 12) and game_state_1.get_community_cards(db)[1] == Card('c', 1):
         print('PASSED COMMUNITY CARDS SETTER')
     else:
         print('FAILED COMMUNITY CARDS SETTER')
