@@ -112,26 +112,37 @@ class Player:
     def get_hand_type(self, cards):
         # Implement hand type evaluation logic
         # Return the appropriate ENUM from HandStrength
+
+        # high card logic
         pass
 
-    def flushing(self,cards):
+    #returns a list of all possible hands from cards, winning hand to be deciphered
+    def strength(self, cards):
 
-        flushing = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+        straight = [[], [], [], [], [], [], [], [], [], [], [], [], []]
 
-        flushes = 0
-        flush = []
+        flushes = [[],[],[],[]]
+        player_straights = []
+        player_straight_flushes = []
+        pair_values = []
 
         for i in cards:
-            flushing[cards[i].get_value()].append(cards[i])
+            straight[cards[i].get_value()].append(cards[i])
+        # e + 1 = value, i = list of cards in that value
+        for value, lst in enumerate(straight):
+            # suit = straight[value][i][card].get_suit()
+            for card in lst:
+                if value > 0 and straight[value - 1][lst][card] and straight[value][lst][card]:
+                    if straight[value - 1][lst][card].get_suit() == straight[value][lst][card].get_suit():
+                        player_straight_flushes.append(straight[value - 1][lst][card])
+                    else:
+                        player_straights.append(straight[value - 1][lst][card])
+                flushes[card.suit_value()].append(card)
 
-        for e, i in enumerate(flushing):
-            if len(i) == 0:
-                pass
-            if (len(flushing[e+1]>0)):
-                flush.append[flushing[i[0]]]
+            if len(lst) > 1:
+                pair_values.append(lst)
 
-
-
+        return []
 
     def matching(self, cards):
         # memory for matching cards, stores a list of a list of cards
@@ -150,35 +161,33 @@ class Player:
 
             # if the list of cards sorted by index contains
             if len(i) == 4:
-
-                #set this players handstrength to four of a kind and set their showdown cards to these cards
+                # set this players handstrength to four of a kind and set their showdown cards to these cards
                 self.handStrength = HandStrength.FOUR_OF_A_KIND
                 self.showdown = i
                 return HandStrength.FOUR_OF_A_KIND
 
             if len(i) == 3:
-
-                #same as before
+                # same as before
                 self.handStrength = HandStrength.THREE_OF_A_KIND
                 self.showdown = i
                 return HandStrength.THREE_OF_A_KIND
+            # if there is a 3 pair and a 2 pair
+            # ]full house
 
             if len(i) == 2:
-
-                #if there is a pair, add it to a pair counter and store the value for later
+                # if there is a pair, add it to a pair counter and store the value for later
                 pairs = +1
                 pair_values.append(e)
 
         if pairs == 1:
             self.handStrength = HandStrength.ONE_PAIR
-            #set the showdown cards to the pair by their index as stored in pair_values[]
+            # set the showdown cards to the pair by their index as stored in pair_values[]
             self.showdown = matching[pair_values.pop()]
             return HandStrength.ONE_PAIR
 
         if pairs == 2:
             self.handStrength = HandStrength.TWO_PAIR
-            #same as above but pop from pair values one more time
+            # same as above but pop from pair values one more time
             self.showdown = matching[pair_values.pop()]
             self.showdown.append(matching[pair_values.pop()])
             return HandStrength.TWO_PAIR
-

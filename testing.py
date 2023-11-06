@@ -11,6 +11,8 @@ from cards import Card
 - get bet
 - decision 
 - '''
+def test_player():
+    cards_one = [cards(suit.d)]
 def test_game_state():
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
