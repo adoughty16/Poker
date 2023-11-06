@@ -31,23 +31,19 @@ class Deck:
     def get_deck(self):
         return self.deck
     
-    #returns list of lists of 2 cards for each hand (h) and removes them from cards
+    #returns 4-tuple of lists of 2 cards for each hand (h) and removes them from cards
     def deal(self):
-        hands = []
-        for i in range(4):
-            hands.append([])
-            for j in range(2):
-                hands[i].append(self.deck.pop())
-        return hands
+        h1 = [self.deck.pop() for _ in range(2)]
+        h2 = [self.deck.pop() for _ in range(2)]
+        h3 = [self.deck.pop() for _ in range(2)]
+        h4 = [self.deck.pop() for _ in range(2)]
 
+        return [h1, h2, h3, h4]
 
     #returns list of 3 cards and removes them from Cards
     def flop(self):
-        this_flop=[]
-        this_flop.append(deck.pop())
-        this_flop.append(deck.pop())
-        this_flop.append(deck.pop())
-        return this_flop
+        flop=[self.deck.pop() for _ in range(3)]
+        return flop
 
 
     #returns 1 card and removes it from deck[]
