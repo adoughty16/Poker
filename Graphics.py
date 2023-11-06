@@ -939,7 +939,7 @@ class Card(arcade.Sprite):
 def main():
     """ Main function """
 
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, update_rate = 1)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, update_rate = 1/10)
     start_view = WelcomeView()
     window.show_view(start_view)
     arcade.run()
