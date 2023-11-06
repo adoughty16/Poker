@@ -10,6 +10,9 @@ def init():
     # full path to the key
     cred = credentials.Certificate("poker-29f47-firebase-adminsdk-2dx1i-1877cc63ac.json")
 
-    # Connects to the database using the credentials
-    firebase_admin.initialize_app(cred)
+    if not firebase_admin._apps:
+        # Connects to the database using the credentials
+        firebase_admin.initialize_app(cred)
+    else:
+        firebase_admin.get_app(name='[DEFAULT]')
     return firestore.client()
