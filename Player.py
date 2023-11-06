@@ -82,69 +82,74 @@ class Player:
 
         return choice, bet_value
 
-    def predict_hand_strength(self,cards):
-        #takes any size list of cards and analyzes them based on their rank, and matching suits or values
-        #returns their potential as a score or something
+    def predict_hand_strength(self, cards):
+        # takes any size list of cards and analyzes them based on their rank, and matching suits or values
+        # returns their potential as a score or something
         pass
 
-    #calculates the strongest hand possible for showdown
+    # calculates the strongest hand possible for showdown
     def calculate_strength(self, cards):
 
-        #sorts the cards -- can someone explain/fix this? vvv
+        # sorts the cards -- can someone explain/fix this? vvv
         sorted_cards = sorted(cards, key=lambda card: Card.RANK_ORDER.index(card.rank))
-        #i dont know what this does
+        # i dont know what this does
         counts = Counter(card.rank for card in sorted_cards)
 
-        #rows being rank, columns being suit
+        # rows being rank, columns being suit
         # memory for cards, sorted by value, holding a 5-tuple, first item holds bool representing whether or not a card with this
-        #rank exists in this hand, the next 4 each representing a suit and holding a card of that suit
-        memory = [[[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]], [[False],[],[],[],[]],
-                  [[False],[],[],[],[]]]
-        pairs = 0
+        # rank exists in this hand, the next 4 each representing a suit and holding a card of that suit
+        memory = [[[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []], [[False], [], [], [], []],
+                  [[False], [], [], [], []]]
+        pairs = []
         pair_values = []
         flush = [[],[],[],[]]
         straight = []
-        straight_flush = [[], [], [], []]
+        straight_flush = []
 
         def retrieve(lst):
             for e, i in enumerate(lst):
                 pass
 
-        #sort the cards into the memory
+        # sort the cards into the memory
         for e, i in enumerate(cards):
             memory[i.get_value()][0] = True
-            #sort cards into suits
+            # sort cards into suits
             memory[i.get_value()][i.suit_val()] = i
-
-
 
         def straightSequence(cards):
             res = [[cards[0]]]
 
-            for i in range (1,len(cards)):
-                if cards[i-1].get_value() + 1 == cards[i].get_value():
+            for i in range(1, len(cards)):
+                if cards[i - 1].get_value() + 1 == cards[i].get_value():
                     res[-1].append(cards[i])
                 else:
                     res.append([cards[i]])
             return res
 
-        #e is the value, i is the list of cards in that value
+        # e is the value, i is the list of cards in that value
         for e, i in enumerate(memory):
-            #f > 0 is the suit (0 is the flag) and h is the card itself
+            # f > 0 is the suit (0 is the flag) and h is the card itself
             for f, h in enumerate(i):
-                #memory[value][i] // i[suit][card]
-                #so memory[value][suit][card]
-                #suit value 0 is a flag for if a card of this value exists
+                # memory[value][i] // i[suit][card]
+                # so memory[value][suit][card]
+                # suit value 0 is a flag for if a card of this value exists
 
-                #if this card is an increment of the last one
-                if f > 0 and e > 0 and memory[e-1][i][0] and memory[e][i][0]:
+                # e = value, #i = list, i[0] = bool
+                #f = suit, h = card
+
+                if h:
+                    pair_values.append(h)
+                flush[h.suit_val()].append(h)
+                # if this card is an increment of the last one
+                if f > 0 and i > 0 and memory[e][i-1][0] and memory[e][i][0]:
+                    if f > 0 and e > 0 and memory[e - 1][i][f-1].get_suit() == h.get_suit():
+                        straight_flush.append(memory[e - 1][i][f-1])
                     straight.append(h)
 
-
-
-
+            if len(pair_values) > 1:
+                pairs.append(pair_values)
