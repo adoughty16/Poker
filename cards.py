@@ -45,13 +45,13 @@ class Card:
     #returns integer suit value
     def suit_val(self):
         if self.suit == 'd':
-            return 1
+            return 0
         if self.suit == 'c':
-            return 2
+            return 1
         if self.suit == 'h':
-            return 3
+            return 2
         if self.suit == 's':
-            return 4
+            return 3
     def get_suit(self):
         return self.suit
     def get_value(self):
