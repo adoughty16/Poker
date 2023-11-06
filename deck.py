@@ -42,11 +42,8 @@ class Deck:
 
     #returns list of 3 cards and removes them from Cards
     def flop(self):
-        this_flop=[]
-        this_flop.append(self.deck.pop())
-        this_flop.append(self.deck.pop())
-        this_flop.append(self.deck.pop())
-        return this_flop
+        flop=[self.deck.pop() for _ in range(3)]
+        return flop
 
     #returns 1 card and removes it from deck[]
     def turn(self):
