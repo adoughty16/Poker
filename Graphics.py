@@ -216,7 +216,6 @@ class WelcomeView(arcade.View):
 
 
 
-
     def on_show_view(self):
         """ This is run once when we switch to this view """
         arcade.set_background_color(arcade.csscolor.BROWN)
@@ -338,16 +337,11 @@ class GameView(arcade.View):
         self.pile_mat_list = None
 
         ''' For player decision buttons '''
-        self.player_decision = None
-        self.bet_chosen = False
-        self.check_chosen = False
-        self.fold_chosen = False
-        self.call_chosen = False
 
         # --- BUTTONS: Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
+        self.manager2 = arcade.gui.UIManager()
+        self.manager2.enable()
 
         # Create a horizontal BoxGroup to align buttons
         self.player_decision_box = arcade.gui.UIBoxLayout()
@@ -380,16 +374,16 @@ class GameView(arcade.View):
         call_button.on_click = self.on_call_click
 
         # for positioning of bet, check, fold, call buttons
-        self.manager.add(
+        self.manager2.add(
             # Create a widget to hold the player_decision_box widget, that will center the bet, check, fold, call buttons
             arcade.gui.UIAnchorWidget(
                 anchor_x="left",
                 anchor_y="center_y",
+                align_y=(-210),
                 child=self.player_decision_box)
         )
 
-        # Rather than setting boolean values with these buttons, we should just directly update the game state
-        # with the decision. Otherwise we need to add even more logic to the on_update.
+
     def on_bet_click(self, event):
         # should only do stuff if a value has been chosen
         if self.bet_value_chosen:
@@ -807,6 +801,7 @@ class GameView(arcade.View):
         """ Render the screen. """
         # Clear the screen
         self.clear()
+        self.manager2.draw()
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
@@ -869,8 +864,8 @@ class GameView(arcade.View):
         # TODO: draw the community_cards 
         # community_cards
         self.community_cards = self.game_state.get_community_cards(self.db) 
-        # draw them in the middle on the mats there (or move them since they are all drawn already) 
-        ''' 
+        # draw them in the middle on the mats there (or move them since they are all drawn already)
+        '''
         for card in self.card_list:
             for comm_card in self.community_cards:
                 if card == comm_card:
