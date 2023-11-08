@@ -115,7 +115,7 @@ def test_deck():
     print(dealt) 
 
 def main():
-    #test_game_state()
-    test_deck()
+    test_game_state()
+    #test_deck()
 
 main()

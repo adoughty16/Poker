@@ -1,12 +1,9 @@
 from enum import Enum
 
-# -Suit (ENUM)
-# -Value (ENUM?)
-# -GUI Asset
-# get_suit()
-# get_value()
-# get_image()
-
+'''
+Card class needs to interface with Card sprite in Graphics
+- rather than keep file images and import arcade here, maybe just function with getters and setters
+'''
 # d = diamonds
 # c = clubs
 # h = hearts
@@ -19,7 +16,7 @@ class Card:
         self.suit=suit
         self.value=value
         # Image to use for the sprite when face up (from graphics to interface the two)
-        self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+        #self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}
@@ -56,8 +53,7 @@ class Card:
         return self.suit
     def get_value(self):
         return self.value
-    def get_image(self):
-        return self.image_file_name
+
 
     # overridden equality operator to compare card objects using == and != (useful in Game_state and maybe other game logic)
     def __eq__(self, other):
