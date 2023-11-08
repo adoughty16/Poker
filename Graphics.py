@@ -1,6 +1,7 @@
 
 import arcade
 import arcade.gui
+import arcade.gui.widgets 
 from Game_state import  Game_state
 import db_connect
 import Player
@@ -453,9 +454,9 @@ class GameView(arcade.View):
         # Create every card
         for card_suit in CARD_SUITS:
             for card_value in CARD_VALUES:
-                card = Card(card_suit, card_value, CARD_SCALE)
-                card.position = START_X, BOTTOM_Y
-                self.card_list.append(card)
+                card = Card(card_suit, card_value)
+                card_arc = Card_arcade(card)
+                self.card_list.append(card_arc)
 
 
         # Shuffle the cards
@@ -587,7 +588,7 @@ class GameView(arcade.View):
                                 self.game_state.set_player_stacks(self.stacks, self.db)
                                 self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
                                 self.game_state.set_bet(value, self.db)
-                                self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
+                                self.game_state.set_total_call(self.game_state.get_total_call(self.db) + value, self.db)
                                 self.game_state.set_player_decision(choice, self.db)
                                 self.game_state.increment_whose_turn(self.db)
                             
@@ -918,15 +919,15 @@ class GameView(arcade.View):
             # quit
             arcade.exit()
 
-class Card(arcade.Sprite):
+class Card_arcade(arcade.Sprite):
     """ Card sprite """
 
-    def __init__(self, suit, value, scale=1):
+    def __init__(self, card, scale=CARD_SCALE):
         """ Card constructor """
 
         # Attributes for suit and value (when converting to external Card class these are already included)
-        self.suit = suit
-        self.value = value
+        self.suit = card.get_suit()
+        self.value = card.get_value()
 
         # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
