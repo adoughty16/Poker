@@ -21,6 +21,9 @@ class Card:
         # Image to use for the sprite when face up (from graphics to interface the two)
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
+    def __str__(self):
+        return self.suit + " " + self.value
+
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}
 
@@ -52,6 +55,7 @@ class Card:
             return 2
         if self.suit == 's':
             return 3
+
     def get_suit(self):
         return self.suit
     def get_value(self):

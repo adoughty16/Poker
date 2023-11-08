@@ -2,7 +2,8 @@
 from Game_state import Game_state 
 import db_connect as database
 from cards import Card
-from deck import Deck 
+from deck import Deck
+from Player import Player
 
 # function to test game_state class 
 
@@ -12,6 +13,22 @@ from deck import Deck
 - get bet
 - decision 
 - '''
+
+def test_strength():
+
+    player = Player()
+
+    #four of a kind
+    set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
+    # # two pair
+    # set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,9),Card(0,7),Card(1,0),Card(2,2)]
+    #
+    player.set_hand(set_one)
+    # if player.strength() != [["0 1", "1 1"],["0 1", "0 2"],player_straights, flushes]
+
+    # [pair_values,player_straight_flushes,player_straights, flushes]
+    print(player.strength(set_one))
+
 def test_game_state():
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
@@ -116,6 +133,7 @@ def test_deck():
 
 def main():
     #test_game_state()
-    test_deck()
+    # test_deck()
+    test_strength()
 
 main()
