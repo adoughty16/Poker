@@ -588,7 +588,7 @@ class GameView(arcade.View):
                                 self.game_state.set_player_stacks(self.stacks, self.db)
                                 self.game_state.set_round_pot(self.game_state.get_round_pot(self.db) + bet_amount, self.db)
                                 self.game_state.set_bet(value, self.db)
-                                self.game_state.set_total_call(self.game_state.get_total_call() + value, self.db)
+                                self.game_state.set_total_call(self.game_state.get_total_call(self.db) + value, self.db)
                                 self.game_state.set_player_decision(choice, self.db)
                                 self.game_state.increment_whose_turn(self.db)
                             
