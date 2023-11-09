@@ -66,9 +66,9 @@ class Card:
         return self.value
 
     def get_value_for_sprite(self):
-        if self.value == 0:
+        if self.value == 1:
             return 'A'
-        if self.value > 0 and self.value < 10:
+        if self.value > 1 and self.value < 10:
             return self.value
         if self.value > 10:
             if self.value == 11:
