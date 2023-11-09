@@ -370,11 +370,24 @@ class GameView(arcade.View):
         call_button.text = "call"
         self.player_decision_box.add(call_button.with_space_around(bottom=10))
 
+        # creating bet value buttons (increase)
+        increase_bet_button = arcade.gui.UIFlatButton(text="increase", width=100)
+        increase_bet_button.text = "increase"
+        self.player_decision_box.add(increase_bet_button.with_space_around(bottom=10))
+
+        # creating bet value buttons (decrease)
+        decrease_bet_button = arcade.gui.UIFlatButton(text="decrease", width=100)
+        decrease_bet_button.text = "decrease"
+        self.player_decision_box.add(decrease_bet_button.with_space_around(bottom=10))
+
 
         bet_button.on_click = self.on_bet_click
         check_button.on_click = self.on_check_click
         fold_button.on_click = self.on_fold_click
         call_button.on_click = self.on_call_click
+
+        increase_bet_button.on_click = self.on_increase_click
+        decrease_bet_button.on_click = self.on_decrease_click
 
         # for positioning of bet, check, fold, call buttons
         self.manager2.add(
@@ -407,6 +420,12 @@ class GameView(arcade.View):
         # update game_state from here
         self.game_state.set_player_decision('call', self.db)
         self.game_state.flip_waiting(self.db)
+
+    def on_increase_click(self, event):
+        pass
+    def on_decrease_click(self, event):
+        pass
+
 
 
 
