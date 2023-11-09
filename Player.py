@@ -91,9 +91,7 @@ class Player:
         pass
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
-    def strength(self, lst_cards):
-
-
+    def possible_hands(self, lst_cards):
 
         # memory to sort lst_cards by value
         memory = [[], [], [], [], [], [], [], [], [], [], [], [], []]

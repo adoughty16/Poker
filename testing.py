@@ -14,10 +14,10 @@ from Player import Player
 - decision 
 - '''
 
-def test_strength():
+def test_possible_hands():
 
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
-    def strength_to_string(lst):
+    def possible_hands_to_string(lst):
         # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
         for j, i in enumerate(lst):
             for e in i:
@@ -159,6 +159,6 @@ def test_deck():
 def main():
     #test_game_state()
     # test_deck()
-    test_strength()
+    test_possible_hands()
 
 main()
