@@ -358,17 +358,17 @@ class GameView(arcade.View):
         # creating CHECK button
         check_button = arcade.gui.UIFlatButton(text="check", width=200)
         check_button.text = "check"
-        self.player_decision_box.add(bet_button.with_space_around(bottom=20))
+        self.player_decision_box.add(bet_button.with_space_around(bottom=10))
 
         # creating FOLD button
         fold_button = arcade.gui.UIFlatButton(text="fold", width=200)
         fold_button.text = "fold"
-        self.player_decision_box.add(fold_button.with_space_around(bottom=20))
+        self.player_decision_box.add(fold_button.with_space_around(bottom=10))
 
         # creating CALL button
         call_button = arcade.gui.UIFlatButton(text="call", width=200)
         call_button.text = "call"
-        self.player_decision_box.add(call_button.with_space_around(bottom=20))
+        self.player_decision_box.add(call_button.with_space_around(bottom=10))
 
 
         bet_button.on_click = self.on_bet_click
