@@ -276,6 +276,7 @@ class GameView(arcade.View):
 
     def __init__(self, selected_players, selected_host):
         self.db = db_connect.init()
+        # TODO: is there a way to generate this based on time or something? Cannot have more than one game going on if there use the same doc 
         self.game_state = Game_state(self.db, 'doc1')
 
         self.num_players = selected_players
@@ -288,6 +289,9 @@ class GameView(arcade.View):
             self.players[i].set_computer_player(False)
 		#the deck
         self.deck = deck.Deck()
+        # deal the cards
+        # TODO: find a better place for this since this happens every round 
+        self.hands = self.deck.deal()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -319,8 +323,7 @@ class GameView(arcade.View):
         self.bet_value_chosen = False
         #keeps on_update from overlapping itself
         self.working = False
-        # deal the cards
-        self.hands = self.deck.deal()
+
 
         
         super().__init__()

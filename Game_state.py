@@ -91,7 +91,7 @@ class Game_state:
 
     # rather than appending this will just take a new array of cards and set that in the database
     def set_community_cards(self, community_cards, db):
-        self.clear_community_cards(db)
+        #self.clear_community_cards(db)
         game_state_ref = db.collection("states").document(self.doc_name)
         cards_dic = []
         for card in community_cards:
@@ -114,7 +114,7 @@ class Game_state:
 
     # function only to be used during showdown
     def set_player_hands(self, player_hands, db):
-        self.clear_player_hands(db)
+        #self.clear_player_hands(db)
         game_state_ref = db.collection("states").document(self.doc_name)
         player_hands_dict = []
         for i in range(len(player_hands)):
