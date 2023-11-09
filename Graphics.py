@@ -824,16 +824,17 @@ class GameView(arcade.View):
         position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
         position_y = [BOTTOM_Y, MIDDLE_Y, TOP_Y, MIDDLE_Y]
         # TODO: comment this out when we confirm self.me is working correctly 
-        self.me = 2
+        self.me = 0
+        up = True
         for i in range(len(hands)):
             # for every card 
             for j in range(len(hands[i])):
                 # hands[i][j] is a Card object
-                card_arc = Card_arcade(hands[i][j])
+                if i != self.me:
+                    up = False
+                card_arc = Card_arcade(hands[i][j], up)
                 card_arc.position = position_x[i] + j*X_SPACING, position_y[i]
                 # the way the superconstructor is called after the filename makes this difficult to change 
-                if i != self.me:
-                    card_arc.image_file_name = FACE_DOWN_IMAGE
                 self.card_list.append(card_arc)
 
     def on_draw(self):
@@ -962,14 +963,17 @@ class GameView(arcade.View):
 class Card_arcade(arcade.Sprite):
     """ Card sprite """
 
-    def __init__(self, card, scale=CARD_SCALE):
+    def __init__(self, card, up, scale=CARD_SCALE):
         """ Card constructor """
 
         # Attributes for suit and value (when converting to external Card class these are already included)
         self.suit = card.get_suit_for_sprite()
         self.value = card.get_value_for_sprite()
         # Image to use for the sprite when face up
-        self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+        if up:
+            self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
+        else:
+            self.image_file_name = FACE_DOWN_IMAGE
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
