@@ -482,9 +482,11 @@ class GameView(arcade.View):
         '''
 
         # Shuffle the cards
+        '''
         for pos1 in range(len(self.card_list)):
             pos2 = random.randrange(len(self.card_list))
             self.card_list.swap(pos1, pos2)
+        '''
 
     def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
@@ -969,7 +971,6 @@ class Card_arcade(arcade.Sprite):
         # Attributes for suit and value (when converting to external Card class these are already included)
         self.suit = card.get_suit()
         self.value = card.get_value()
-        self.position = START_X, BOTTOM_Y
         # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
