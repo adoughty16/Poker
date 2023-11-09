@@ -114,13 +114,17 @@ class Player:
             for suit, card in enumerate(lst):
                 # if there exists a card of the last rank and there exists a card in this rank
                 if value > 0 and memory[value - 1] and memory[value][suit]:
+                    val = value
+                    last_val_men = memory[value-1]
+                    this_val_mem = memory[value][suit]
                     # if the card of the last rank has the same suit of the card of this rank
                     if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
+                        print(memory[value - 1][suit].get_suit())
+                        print(memory[value][suit].get_suit())
                         # add the last card to straight_flushes
                         player_straight_flushes.append([memory[value - 1][suit]])
-                    else:
-                        # add to straights
-                        player_straights.append([memory[value - 1][suit]])
+                    # add to straights
+                    player_straights.append([memory[value - 1][suit]])
                 # add card to flushes array by index of suit
                 flushes[card.suit].append(card)
             # if the list of cards of this rank is greater than 1, append it as a list to the list of pairs, pair_values

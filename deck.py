@@ -9,7 +9,7 @@ from cards import Card
 # flop() returns list of 3 cards and removes them from Cards[]
 # turn() returns 1 card and removes it from Cards[]
 
-suit = Enum('suit', ['d','c','h','s'])
+# suit = Enum('suit', ['d','c','h','s'])
 deck = []
 
 class Deck:
