@@ -228,7 +228,6 @@ class WelcomeView(arcade.View):
     def on_update(self, delta_time):
         pass
 
-
     def on_draw(self):
         """ Draw this view """
         self.clear()
@@ -471,12 +470,13 @@ class GameView(arcade.View):
         self.card_list = arcade.SpriteList()
 
         # Create every card
+        '''
         for card_suit in CARD_SUITS:
             for card_value in CARD_VALUES:
                 card = Card(card_suit, card_value)
                 card_arc = Card_arcade(card)
                 self.card_list.append(card_arc)
-
+        '''
 
         # Shuffle the cards
         for pos1 in range(len(self.card_list)):
@@ -621,6 +621,7 @@ class GameView(arcade.View):
                             #if AI decides to fold
                             elif choice == 'fold':
                                 #remove their index from actives[]
+                                # THIS IS THROWING AN ERROR! 
                                 self.actives.remove(self.current)
                                 #tell gamestate
                                 self.game_state.remove_player(self.current, self.db)
@@ -819,6 +820,19 @@ class GameView(arcade.View):
         pass
 
 
+    def deal(self):
+        hands = self.deck.deal()
+        # for every hand (1-4) 
+        # should this somehow connect to our list of cards ? 
+        for i in range(len(hands)):
+            # for every card 
+            for j in range(len(hands[i])):
+                # how to connect the Card object and its place in the Card_arcade list
+                # could we make a function that takes in the card and acts on the Card_arcade 
+                # hands[i][j] is a Card object
+                card_arc = Card_arcade(hands[i][j])
+                card_arc.position = MIDDLE_X_2, MIDDLE_Y
+                self.card_list.append(card_arc)
 
     def on_draw(self):
         """ Render the screen. """
@@ -830,6 +844,7 @@ class GameView(arcade.View):
         self.pile_mat_list.draw()
 
         # Draw the cards
+        self.deal()
         self.card_list.draw()
 
         # draw player names
@@ -837,9 +852,9 @@ class GameView(arcade.View):
 
         names = ['sydney', 'xan', 'abe', 'collin']
         # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
         # player "4" is actually index 3 
-        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 - (MAT_HEIGHT/2) - 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
         # player "1" is 0 - whatever is drawn on the bottom should be the current player 
         arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
         # player "3" is actually index 2 
@@ -947,13 +962,16 @@ class Card_arcade(arcade.Sprite):
         # Attributes for suit and value (when converting to external Card class these are already included)
         self.suit = card.get_suit()
         self.value = card.get_value()
-
+        self.position = START_X, BOTTOM_Y
         # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
+    def set_position(self, x, y):
+        self.position = x, y
+        
 
 # add parameters to main: num_players, host, game_state, ready, lock
 def main():
