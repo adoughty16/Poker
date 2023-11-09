@@ -977,10 +977,6 @@ class Card_arcade(arcade.Sprite):
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
-    def set_position(self, x, y):
-        self.position = x, y
-        
-
 # add parameters to main: num_players, host, game_state, ready, lock
 def main():
     """ Main function """
