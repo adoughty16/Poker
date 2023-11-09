@@ -422,9 +422,12 @@ class GameView(arcade.View):
         self.game_state.flip_waiting(self.db)
 
     def on_increase_click(self, event):
-        pass
+        # increase value by 10
+        self.bet_value += 10
+
     def on_decrease_click(self, event):
-        pass
+        # decrease value by 10
+        self.bet_value -= 10
 
 
 
