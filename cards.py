@@ -43,15 +43,15 @@ class Card:
             return 0
 
     #returns integer suit value
-    def suit_val(self):
-        if self.suit == 'd':
-            return 0
-        if self.suit == 'c':
-            return 1
-        if self.suit == 'h':
-            return 2
-        if self.suit == 's':
-            return 3
+    def suit_to_str(self):
+        if self.suit == 0:
+            return 'Diamonds'
+        if self.suit == 1:
+            return 'Clubs'
+        if self.suit == 2:
+            return 'Hearts'
+        if self.suit == 3:
+            return 'Spades'
 
     def get_suit(self):
         return self.suit

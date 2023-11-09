@@ -1,5 +1,5 @@
 
-from Game_state import Game_state 
+from Game_state import Game_state
 import db_connect as database
 from cards import Card
 from deck import Deck
@@ -16,6 +16,31 @@ from Player import Player
 
 def test_strength():
 
+    # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
+    def strength_to_string(lst):
+        # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
+        for j, i in enumerate(lst):
+            for e in i:
+                for f in e:
+                    if isinstance(f, list):
+                        for g in f:
+                            if j == 0:
+                                print(f'pair values: {g.value} of {g.suit_to_str()}')
+                            if j == 1:
+                                print(f'straight flushes: {g.value} of {g.suit_to_str()}')
+                            if j == 2:
+                                print(f'straights: {g.value} of {g.suit_to_str()}')
+                    if isinstance(f, Card):
+                        if j == 0:
+                            print(f'pair values: {f.value} of {f.suit_to_str()}')
+                        if j == 1:
+                            print(f'straight flushes: {f.value} of {f.suit_to_str()}')
+                        if j == 2:
+                            print(f'straights: {f.value} of {f.suit_to_str()}')
+                        if j == 3:
+                            print(f'flushes: {f.value} of {f.suit_to_str()}')
+
+
     player = Player()
 
     #four of a kind
@@ -26,8 +51,8 @@ def test_strength():
     player.set_hand(set_one)
     # if player.strength() != [["0 1", "1 1"],["0 1", "0 2"],player_straights, flushes]
 
-    # [pair_values,player_straight_flushes,player_straights, flushes]
-    print(player.strength(set_one))
+    # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
+    print(strength_to_string(player.strength(set_one)))
 
 def test_game_state():
     db = database.init()
@@ -42,7 +67,7 @@ def test_game_state():
         print('PASSED COMMUNITY CARDS SETTER')
     else:
         print('FAILED COMMUNITY CARDS SETTER')
-    
+
     hands = [[Card('h', 1), Card('h',2 )], [Card('h', 3), Card('h', 4)], [Card('h', 5), Card('h', 6)], [Card('h', 7), Card('h', 8)]]
     print(hands[0])
     print(hands[0][0])
@@ -66,13 +91,13 @@ def test_game_state():
         print(game_state_1.get_player_stacks(db))
     else:
         print('PASSED PLAYER STACKS')
-    expected_total_call = 0 
+    expected_total_call = 0
     if game_state_1.get_total_call(db) != expected_total_call:
         print('FAILED TOTAL CALL')
         print(game_state_1.get_total_call(db))
     else:
         print('PASSED TOTAL_CALL')
-    expected_waiting = False 
+    expected_waiting = False
     if game_state_1.get_waiting(db) != expected_waiting:
         print('FAILED WAITING')
     else:
@@ -129,7 +154,7 @@ def test_deck():
         print('FAILED DEAL')
     else:
         print('PASSED DEAL')
-    print(dealt) 
+    print(dealt)
 
 def main():
     #test_game_state()
