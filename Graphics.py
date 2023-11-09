@@ -832,6 +832,9 @@ class GameView(arcade.View):
         # Draw the cards
         self.card_list.draw()
 
+        # draw bet value
+        arcade.draw_text(str(self.bet_value), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, arcade.color.BLACK, font_size=24, anchor_x="center", anchor_y="center")
+
         # draw player names
         #TODO: take these hard-coded values out after we implement player name input 
 
