@@ -52,7 +52,7 @@ def test_possible_hands():
     # if player.strength() != [["0 1", "1 1"],["0 1", "0 2"],player_straights, flushes]
 
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
-    print(strength_to_string(player.strength(set_one)))
+    print(possible_hands_to_string(player.possible_hands(set_one)))
 
 def test_game_state():
     db = database.init()
