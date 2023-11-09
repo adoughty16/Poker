@@ -810,6 +810,10 @@ class GameView(arcade.View):
         """ Called when the user presses a mouse button. """
         pass
 
+    #def draw_community(self):
+       # position_x = MIDDLE_X_COMMUNITYCARDS
+       # position_y = MIDDLE_Y
+
 
     def draw_deal(self, hands):
         # for every hand (1-4) 
