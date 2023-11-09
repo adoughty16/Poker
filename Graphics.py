@@ -969,8 +969,8 @@ class Card_arcade(arcade.Sprite):
         """ Card constructor """
 
         # Attributes for suit and value (when converting to external Card class these are already included)
-        self.suit = card.get_suit()
-        self.value = card.get_value()
+        self.suit = card.get_suit_for_sprite()
+        self.value = card.get_value_for_sprite()
         # Image to use for the sprite when face up
         self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 

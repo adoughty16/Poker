@@ -51,9 +51,37 @@ class Card:
             return 3
     def get_suit(self):
         return self.suit
+
+    def get_suit_for_sprite(self):
+        if self.suit == 'd':
+            return 'Diamonds'
+        if self.suit == 'c':
+            return 'Clubs'
+        if self.suit == 'h':
+            return 'Hearts'
+        if self.suit == 's':
+            return 'Spades'
+        
     def get_value(self):
         return self.value
 
+    def get_value_for_sprite(self):
+        if self.value == 0:
+            return 'A'
+        if self.value > 0 and self.value < 10:
+            return self.value
+        if self.value > 10:
+            if self.value == 11:
+                return 'J'
+            elif self.value == 12:
+                return 'Q'
+            elif self.value == 13:
+                return 'K'
+        else:
+            return 'A'
+    
+    def get_filename(self):
+        return f":resources:images/cards/card{self.get_suit_for_sprite()}{self.get_value_for_sprite()}.png"
 
     # overridden equality operator to compare card objects using == and != (useful in Game_state and maybe other game logic)
     def __eq__(self, other):

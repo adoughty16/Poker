@@ -113,9 +113,11 @@ def test_deck():
     else:
         print('PASSED DEAL')
     print(dealt) 
+    for card in deck.get_deck():
+        print(card.get_filename())
 
 def main():
-    test_game_state()
+    #test_game_state()
     test_deck()
 
 main()
