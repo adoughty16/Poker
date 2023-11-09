@@ -50,3 +50,6 @@ class Deck:
     def turn(self):
         return self.deck.pop()
  
+     #returns 1 card and removes it from deck[]
+    def river(self):
+        return self.deck.pop()

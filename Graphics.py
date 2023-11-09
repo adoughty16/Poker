@@ -816,14 +816,17 @@ class GameView(arcade.View):
         # should this somehow connect to our list of cards ? 
         position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
         position_y = [BOTTOM_Y, MIDDLE_Y, TOP_Y, MIDDLE_Y]
+        # TODO: comment this out when we confirm self.me is working correctly 
+        self.me = 2
         for i in range(len(hands)):
             # for every card 
             for j in range(len(hands[i])):
-                # how to connect the Card object and its place in the Card_arcade list
-                # could we make a function that takes in the card and acts on the Card_arcade 
                 # hands[i][j] is a Card object
                 card_arc = Card_arcade(hands[i][j])
                 card_arc.position = position_x[i] + j*X_SPACING, position_y[i]
+                # the way the superconstructor is called after the filename makes this difficult to change 
+                if i != self.me:
+                    card_arc.image_file_name = FACE_DOWN_IMAGE
                 self.card_list.append(card_arc)
 
     def on_draw(self):
