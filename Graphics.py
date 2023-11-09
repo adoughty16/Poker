@@ -421,9 +421,12 @@ class GameView(arcade.View):
         self.game_state.flip_waiting(self.db)
 
     def on_increase_click(self, event):
-        pass
+        # increase value by 10
+        self.bet_value += 10
+
     def on_decrease_click(self, event):
-        pass
+        # decrease value by 10
+        self.bet_value -= 10
 
 
 
@@ -846,6 +849,10 @@ class GameView(arcade.View):
         # Draw the cards
         self.deal()
         self.card_list.draw()
+
+        self.bet_value = self.game_state.get_minimum_call(self.db)
+        # draw bet value
+        arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 155, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names
         #TODO: take these hard-coded values out after we implement player name input 
