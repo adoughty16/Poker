@@ -829,6 +829,8 @@ class GameView(arcade.View):
         hands = self.deck.deal()
         # for every hand (1-4) 
         # should this somehow connect to our list of cards ? 
+        position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
+        position_y = [BOTTOM_Y, MIDDLE_Y, TOP_Y, MIDDLE_Y]
         for i in range(len(hands)):
             # for every card 
             for j in range(len(hands[i])):
@@ -836,7 +838,7 @@ class GameView(arcade.View):
                 # could we make a function that takes in the card and acts on the Card_arcade 
                 # hands[i][j] is a Card object
                 card_arc = Card_arcade(hands[i][j])
-                card_arc.position = MIDDLE_X_2, MIDDLE_Y
+                card_arc.position = position_x[i] + j*X_SPACING, position_y[i]
                 self.card_list.append(card_arc)
 
     def on_draw(self):
