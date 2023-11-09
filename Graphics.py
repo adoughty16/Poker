@@ -322,6 +322,8 @@ class GameView(arcade.View):
         self.bet_value_chosen = False
         #keeps on_update from overlapping itself
         self.working = False
+        # deal the cards
+        self.hands = self.deck.deal()
 
         
         super().__init__()
@@ -472,21 +474,8 @@ class GameView(arcade.View):
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
 
-        # Create every card
-        '''
-        for card_suit in CARD_SUITS:
-            for card_value in CARD_VALUES:
-                card = Card(card_suit, card_value)
-                card_arc = Card_arcade(card)
-                self.card_list.append(card_arc)
-        '''
-
-        # Shuffle the cards
-        '''
-        for pos1 in range(len(self.card_list)):
-            pos2 = random.randrange(len(self.card_list))
-            self.card_list.swap(pos1, pos2)
-        '''
+        # call deal
+        hands = self.deck.deal()
 
     def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
@@ -825,8 +814,7 @@ class GameView(arcade.View):
         pass
 
 
-    def deal(self):
-        hands = self.deck.deal()
+    def draw_deal(self, hands):
         # for every hand (1-4) 
         # should this somehow connect to our list of cards ? 
         position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
@@ -851,7 +839,7 @@ class GameView(arcade.View):
         self.pile_mat_list.draw()
 
         # Draw the cards
-        self.deal()
+        self.draw_deal(self.hands)
         self.card_list.draw()
 
         self.bet_value = self.game_state.get_minimum_call(self.db)
