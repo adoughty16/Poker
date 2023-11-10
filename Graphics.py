@@ -232,10 +232,10 @@ class WelcomeView(arcade.View):
         """ Draw this view """
         self.clear()
         self.manager.draw()
-        arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 50,
-                         arcade.color.WHITE, font_size=48, anchor_x="center")
-        arcade.draw_text("Answer the 2 questions below, then click START", self.window.width / 2, self.window.height - 100,
-                         arcade.color.WHITE, font_size=20, anchor_x="center")
+        arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 75,
+                         arcade.color.WHITE, font_size=48, anchor_x="center", font_name="Kenney Pixel Square")
+        arcade.draw_text("Answer the 2 questions below, then click START", self.window.width / 2, self.window.height - 150,
+                         arcade.color.WHITE, font_size=20, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Do you want to HOST or JOIN the game?",  190 , self.window.height /2 + 90,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
         arcade.draw_text("How many people are playing?", 1280, self.window.height / 2 + 160,
