@@ -359,7 +359,7 @@ class GameView(arcade.View):
         # creating BET button
         bet_button = arcade.gui.UIFlatButton(text="bet", width=200)
         bet_button.text = "bet"
-        self.player_decision_box.add(bet_button.with_space_around(bottom=20))
+        self.player_decision_box.add(bet_button.with_space_around(bottom=10))
 
         # creating CHECK button
         check_button = arcade.gui.UIFlatButton(text="check", width=200)
@@ -399,9 +399,10 @@ class GameView(arcade.View):
         self.manager2.add(
             # Create a widget to hold the player_decision_box widget, that will center the bet, check, fold, call buttons
             arcade.gui.UIAnchorWidget(
-                anchor_x="left",
+                anchor_x="center",
                 anchor_y="center_y",
-                align_y=(-210),
+                align_y=(-205),
+                align_x=(-592),
                 child=self.player_decision_box)
         )
 
