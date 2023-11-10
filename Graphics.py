@@ -246,14 +246,14 @@ class WelcomeView(arcade.View):
         
         if self.selected_players != -1:
             arcade.draw_text(f'Number of Human Players: {self.selected_players}', 720, self.window.height / 2 - 160,
-                         arcade.color.WHITE, font_size=15, anchor_x="center")
+                         arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
 
         if self.selected_host == True:
-            arcade.draw_text(f'I am the Host', 655, self.window.height / 2 - 100,
-                         arcade.color.WHITE, font_size=15, anchor_x="left")
+            arcade.draw_text(f'I am the Host', 715, self.window.height / 2 - 100,
+                         arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
         if self.selected_host == False:
-            arcade.draw_text(f'I am not the Host', 640, self.window.height / 2 - 100,
-                         arcade.color.WHITE, font_size=15, anchor_x="left")
+            arcade.draw_text(f'I am not the Host', 715, self.window.height / 2 - 100,
+                         arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
 
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
