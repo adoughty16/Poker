@@ -162,8 +162,9 @@ class WelcomeView(arcade.View):
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="center",
-                anchor_y="center_y",
-                align_x= (500),
+                anchor_y="center",
+                align_x= (470),
+                align_y= (-68),
                 child=self.player_box)
         )
 
@@ -235,12 +236,12 @@ class WelcomeView(arcade.View):
         self.clear()
         self.manager.draw()
         arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 75,
-                         arcade.color.WHITE, font_size=48, anchor_x="center", font_name="Kenney Pixel Square")
+                         arcade.color.GOLDENROD, font_size=48, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Answer the 2 questions below, then click START", self.window.width / 2, self.window.height - 150,
                          arcade.color.GAINSBORO, font_size=20, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Do you want to HOST or JOIN the game?",  250 , self.window.height /2 + 100,
                          arcade.color.GOLDENROD, font_size=18, anchor_x="center", font_name="Kenney Mini Square")
-        arcade.draw_text("How many people are playing?", 1210, self.window.height / 2 + 160,
+        arcade.draw_text("How many people are playing?", 1170, self.window.height / 2 + 100,
                          arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
         
         if self.selected_players != -1:
