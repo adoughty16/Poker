@@ -830,6 +830,16 @@ class GameView(arcade.View):
             #MIDDLE_X_COMMUNITYCARDS + i * X_SPACING
             self.card_list.append(card_arc)
 
+    def draw_turn_round(self, card):
+        card_arc = Card_arcade(card, True)
+        card_arc.position = MIDDLE_X_COMMUNITYCARDS + 3*X_SPACING, MIDDLE_Y
+        self.card_list.append(card_arc)
+
+    def draw_river_round(self, card):
+        card_arc = Card_arcade(card, True)
+        card_arc.position = MIDDLE_X_COMMUNITYCARDS + 4*X_SPACING, MIDDLE_Y
+        self.card_list.append(card_arc)
+
     def draw_deal(self, hands):
         # for every hand (1-4) 
         # should this somehow connect to our list of cards ? 
