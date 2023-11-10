@@ -113,6 +113,7 @@ class WelcomeView(arcade.View):
             arcade.gui.UIAnchorWidget(
                 anchor_x="left",
                 anchor_y="center_y",
+                align_x= (100),
                 child=self.host_join_box)
         )
 
@@ -235,7 +236,7 @@ class WelcomeView(arcade.View):
         arcade.draw_text("Welcome to Texas Hold'em Poker!", self.window.width / 2, self.window.height - 75,
                          arcade.color.WHITE, font_size=48, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Answer the 2 questions below, then click START", self.window.width / 2, self.window.height - 150,
-                         arcade.color.WHITE, font_size=20, anchor_x="center", font_name="Kenney Pixel Square")
+                         arcade.color.GAINSBORO, font_size=20, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Do you want to HOST or JOIN the game?",  190 , self.window.height /2 + 90,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
         arcade.draw_text("How many people are playing?", 1280, self.window.height / 2 + 160,
