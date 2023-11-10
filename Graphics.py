@@ -858,9 +858,9 @@ class GameView(arcade.View):
 
         self.bet_value = self.game_state.get_minimum_call(self.db)
         # draw bet value word
-        arcade.draw_text("Bet Value:", MIDDLE_X_2 + 155, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
+        arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
-        arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 155, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
+        arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names
         #TODO: take these hard-coded values out after we implement player name input 
