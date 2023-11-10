@@ -297,6 +297,7 @@ class GameView(arcade.View):
         # deal the cards
         # TODO: find a better place for this since this happens every round 
         self.hands = self.deck.deal()
+        self.flop = self.deck.flop()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -819,10 +820,15 @@ class GameView(arcade.View):
         """ Called when the user presses a mouse button. """
         pass
 
-    #def draw_community(self):
-       # position_x = MIDDLE_X_COMMUNITYCARDS
-       # position_y = MIDDLE_Y
-
+    def draw_community(self, flop):
+        position_x = MIDDLE_X_COMMUNITYCARDS
+        position_y = MIDDLE_Y
+        # 0, 1, 2 need to be at middle_x - 2*mat_width, middle_x - 1*mat_width, middle_x - 0*mat_width
+        for i in range(len(flop)):
+            card_arc = Card_arcade(flop[i], True)
+            card_arc.position = position_x + (i)*(X_SPACING), position_y
+            #MIDDLE_X_COMMUNITYCARDS + i * X_SPACING
+            self.card_list.append(card_arc)
 
     def draw_deal(self, hands):
         # for every hand (1-4) 
@@ -854,6 +860,7 @@ class GameView(arcade.View):
 
         # Draw the cards
         self.draw_deal(self.hands)
+        self.draw_community(self.flop)
         self.card_list.draw()
 
         self.bet_value = self.game_state.get_minimum_call(self.db)
