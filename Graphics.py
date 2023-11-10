@@ -243,6 +243,8 @@ class WelcomeView(arcade.View):
                          arcade.color.GOLDENROD, font_size=18, anchor_x="center", font_name="Kenney Mini Square")
         arcade.draw_text("How many people are playing?", 1170, self.window.height / 2 + 100,
                          arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
+        arcade.draw_text("Press 'esc' to quit the game", 720, self.window.height / 2 - 350,
+                         arcade.color.GOLDENROD, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
         
         if self.selected_players != -1:
             arcade.draw_text(f'Number of Human Players: {self.selected_players}', 720, self.window.height / 2 - 160,
