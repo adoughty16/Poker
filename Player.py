@@ -2,6 +2,7 @@ import cards
 import random
 from enum import Enum
 from cards import Card
+from itertools import groupby, count
 from collections import Counter
 
 
@@ -120,12 +121,15 @@ class Player:
 
                     # if the card of the last rank has the same suit of the card of this rank
                     if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
-                        print(memory[value - 1][suit])
-                        print(memory[value][suit].get_suit())
+
                         # add the last card to straight_flushes
                         player_straight_flushes.append([memory[value - 1][suit]])
+                        # if card not in player_straight_flushes:
+                        #     player_straight_flushes.append(card)
                     # add to straights
                     player_straights.append([memory[value - 1][suit]])
+                    # if card not in player_straights:
+                    #     player_straights.append(card)
                 # add card to flushes array by index of suit
                 flushes[card.suit].append(card)
             # if the list of cards of this rank is greater than 1, append it as a list to the list of pairs, pair_values

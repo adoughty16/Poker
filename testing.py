@@ -47,12 +47,16 @@ def test_possible_hands():
     set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
     # # two pair
     # set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,9),Card(0,7),Card(1,0),Card(2,2)]
-    #
+    # flush
+    set_three = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,5),Card(0,6),Card(0,7)]
     player.set_hand(set_one)
     # if player.strength() != [["0 1", "1 1"],["0 1", "0 2"],player_straights, flushes]
 
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
+    print('Test one --------------------- four of a kind')
     print(possible_hands_to_string(player.possible_hands(set_one)))
+    print('Test two ----------------------- straight')
+    print(possible_hands_to_string(player.possible_hands(set_three)))
 
 def test_game_state():
     db = database.init()
