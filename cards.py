@@ -19,7 +19,7 @@ class Card:
         #self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
     def __str__(self):
-        return self.suit + " " + self.value
+        return (f'{str(self.value)} of {self.suit_to_str()}')
 
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}

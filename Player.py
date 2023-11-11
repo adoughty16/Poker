@@ -113,13 +113,14 @@ class Player:
             # iterate through cards of this rank
             for suit, card in enumerate(lst):
                 # if there exists a card of the last rank and there exists a card in this rank
+                val = value
+                last_val_men = memory[value - 1]
+                this_val_mem = memory[value][suit]
                 if value > 0 and memory[value - 1] and memory[value][suit]:
-                    val = value
-                    last_val_men = memory[value-1]
-                    this_val_mem = memory[value][suit]
+
                     # if the card of the last rank has the same suit of the card of this rank
                     if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
-                        print(memory[value - 1][suit].get_suit())
+                        print(memory[value - 1][suit])
                         print(memory[value][suit].get_suit())
                         # add the last card to straight_flushes
                         player_straight_flushes.append([memory[value - 1][suit]])
