@@ -879,18 +879,31 @@ class GameView(arcade.View):
         # draw bet value
         arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
-        # draw player names
-        #TODO: take these hard-coded values out after we implement player name input 
-
+        # draw player names (and gray for those that are inactive) 
+        
         names = ['sydney', 'xan', 'abe', 'collin']
+        self.actives = self.game_state.get_actives(self.db)
+        # the player name at the index of the value of the actives array is active 
+        # short cut: draw them all in gray, then draw over them in white! 
+
         # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "4" is actually index 3 
-        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "3" is actually index 2 
-        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+
+        for index in self.actives:
+            if index == 0:
+                arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+            elif index == 1:
+                arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+            elif index == 2:
+                arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+            elif index == 3:
+                arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
 
 
@@ -904,14 +917,6 @@ class GameView(arcade.View):
         #  PLAYER VARIABLES 
 
         # draw player_names and round_bets below their mats (also get them in WelcomeView) 
-
-        # actives- gray out players who have folded 
-        #TODO: implement actives graphics 
-        # one idea - turn their cards and name gray 
-        # other idea - just add gray rectangle over their whole section of the screen
-        self.actives = self.game_state.get_actives(self.db)
-
-        # TODO: draw this player's hand (using self.me and game_state's get_player_hands) 
         
         # who the dealer is 
         self.dealer = self.game_state.get_dealer(self.db) 
@@ -924,24 +929,11 @@ class GameView(arcade.View):
         else:
             arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
 
-  
         # arrow for whose_turn and minimum_call
         arrow_to = self.game_state.get_whose_turn(self.db)
         arrow_amount = self.game_state.get_minimum_call(self.db) 
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
-        # CENTER INFO 
-        # TODO: draw the community_cards 
-        # community_cards
-        self.community_cards = self.game_state.get_community_cards(self.db) 
-        # draw them in the middle on the mats there (or move them since they are all drawn already)
-        '''
-        for card in self.card_list:
-            for comm_card in self.community_cards:
-                if card == comm_card:
-                    # TODO: change the position of this so that it is on a mat 
-                    card.draw()
-        '''
         # round_pot
         self.pot = self.game_state.get_round_pot(self.db) 
         arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + ((MAT_WIDTH + 50)/5), MIDDLE_Y - (MAT_HEIGHT / 2) - 50,
