@@ -295,9 +295,11 @@ class GameView(arcade.View):
 		#the deck
         self.deck = deck.Deck()
         # deal the cards
-        # TODO: find a better place for this since this happens every round 
+        # TODO: find a better place for this since this happens every round (or delete if handled in game logic)
         self.hands = self.deck.deal()
         self.flop = self.deck.flop()
+        self.turn = self.deck.turn()
+        self.river = self.deck.river()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -481,8 +483,6 @@ class GameView(arcade.View):
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
 
-        # call deal
-        hands = self.deck.deal()
 
     def on_update(self, delta_time):
         #GAME LOGIC SIMULATES HERE
@@ -864,25 +864,38 @@ class GameView(arcade.View):
         # Clear the screen
         self.clear()
         self.manager2.draw()
+        # TODO: dependning on game logic and where game_state updates, download may need to be called before drawing 
+        # self.game_state.download_wph()
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
 
-        # Draw the cards
+        # Draw the cards - certain things like hands will not need to be accessed every time 
         self.draw_deal(self.hands)
-        self.draw_community(self.flop)
+        # technically after flop the three ccs should be stored locally and can be accessed that way 
+        comm_cards = self.game_state.get_community_cards_ad()
+        if len(comm_cards) == 3:
+            self.draw_community(comm_cards)
+        elif len(comm_cards) == 4:
+            self.draw_community([comm_cards[0], comm_cards[1], comm_cards[2]])
+            self.draw_turn_round(comm_cards[3])
+        elif len(comm_cards) == 5:
+            self.draw_community([comm_cards[0], comm_cards[1], comm_cards[2]])
+            self.draw_turn_round(comm_cards[3])
+            self.draw_river_round(comm_cards[4])
+
         self.card_list.draw()
 
-        self.bet_value = self.game_state.get_minimum_call(self.db)
+        self.bet_value = self.game_state.get_minimum_call_ad()
         # draw bet value word
         arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
         arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names (and gray for those that are inactive) 
-        
+        # names = self.game_state.get_player_names_ad()
         names = ['sydney', 'xan', 'abe', 'collin']
-        self.actives = self.game_state.get_actives(self.db)
+        self.actives = self.game_state.get_actives_ad()
         # the player name at the index of the value of the actives array is active 
         # short cut: draw them all in gray, then draw over them in white! 
 
@@ -911,15 +924,9 @@ class GameView(arcade.View):
         #It should draw the 'me'th player on the bottom, and then go clockwise from there (will need to mod by 4)
 
         # self.me is bottom ((self.me + 1) % 4) is middle left ((self.me + 2) % 4) is top and ((self.me + 3) % 4) is middle right 
-
-        # get information from game_state to draw current state 
-
-        #  PLAYER VARIABLES 
-
-        # draw player_names and round_bets below their mats (also get them in WelcomeView) 
         
         # who the dealer is 
-        self.dealer = self.game_state.get_dealer(self.db) 
+        self.dealer = self.game_state.get_dealer_ad() 
         if self.dealer == 0:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 15, arcade.color.RED)
         elif self.dealer == 1:
@@ -930,12 +937,12 @@ class GameView(arcade.View):
             arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
 
         # arrow for whose_turn and minimum_call
-        arrow_to = self.game_state.get_whose_turn(self.db)
-        arrow_amount = self.game_state.get_minimum_call(self.db) 
+        arrow_to = self.game_state.get_whose_turn_ad()
+        arrow_amount = self.game_state.get_minimum_call_ad() 
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
         # round_pot
-        self.pot = self.game_state.get_round_pot(self.db) 
+        self.pot = self.game_state.get_round_pot_ad() 
         arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + ((MAT_WIDTH + 50)/5), MIDDLE_Y - (MAT_HEIGHT / 2) - 50,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
 

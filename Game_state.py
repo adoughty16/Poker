@@ -51,7 +51,6 @@ class Game_state:
 
         # create a document in the database for the game's gamestate
         # ultimately, we decided to make one document and update it as needed to theoretically support multiple games at once
-        # NOTE: player_hands and comunity_cards means that the card class with need a to_dict and from_dict 
 
         data = {"player_names": self.player_names, "player_hands": self.player_hands, "community_cards": self.community_cards, 
         "total_pot": self.total_pot, "round_pot": self.round_pot, "player_stacks": self.player_stacks, "total_call": self.total_call, 
@@ -374,3 +373,42 @@ class Game_state:
         self.actives = self.get_actives(self, db)
         self.round = self.get_round(self, db)
         self.player_decision = self.get_player_decision(self, db)
+
+    '''
+    getters that can be called without accessing the database for speed
+    NOTE: these methods MUST be called AFTER a self.game_state.download() function
+    (either wph or without) to ensure the most up-to-date and accurate information is being returned
+    mostly for use in on_draw and game logic where game_state can be downloaded (automatically refreshes all values)
+    and then udpated based on individual needs with setters that still access the database
+    AD = after download 
+    '''
+
+    def get_player_names_ad(self):
+        return self.player_names
+
+    def get_community_cards_ad(self):
+        return self.community_cards 
+    
+    def get_round_pot_ad(self):
+        return self.round_pot
+
+    def get_minimum_call_ad(self):
+        return self.minimum_call 
+
+    def get_dealer_ad(self):
+        return self.dealer 
+
+    def get_actives_ad(self):
+        return self.actives
+
+    def get_round_ad(self):
+        return self.round
+    
+    def get_player_stacks_ad(self):
+        return self.player_stacks
+
+    def get_whose_turn_ad(self):
+        return self.whose_turn 
+
+    def get_player_hands_ad(self):
+        return self.player_hands 
