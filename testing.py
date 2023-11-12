@@ -20,43 +20,48 @@ def test_possible_hands():
     def possible_hands_to_string(lst):
         # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
         for j, i in enumerate(lst):
-            for e in i:
-                for f in e:
-                    if isinstance(f, list):
-                        for g in f:
-                            if j == 0:
-                                print(f'pair values: {g.value} of {g.suit_to_str()}')
-                            if j == 1:
-                                print(f'straight flushes: {g.value} of {g.suit_to_str()}')
-                            if j == 2:
-                                print(f'straights: {g.value} of {g.suit_to_str()}')
-                    if isinstance(f, Card):
+            for f in i:
+                if isinstance(f, list):
+                    for g in f:
                         if j == 0:
-                            print(f'pair values: {f.value} of {f.suit_to_str()}')
+                            print(f'pair values: {g.value} of {g.suit_to_str()}')
                         if j == 1:
-                            print(f'straight flushes: {f.value} of {f.suit_to_str()}')
+                            print(f'straight flushes: {g.value} of {g.suit_to_str()}')
                         if j == 2:
-                            print(f'straights: {f.value} of {f.suit_to_str()}')
-                        if j == 3:
-                            print(f'flushes: {f.value} of {f.suit_to_str()}')
+                            print(f'straights: {g.value} of {g.suit_to_str()}')
+                if isinstance(f, Card):
+                    if j == 0:
+                        print(f'pair values: {f.value} of {f.suit_to_str()}')
+                    if j == 1:
+                        print(f'straight flushes: {f.value} of {f.suit_to_str()}')
+                    if j == 2:
+                        print(f'straights: {f.value} of {f.suit_to_str()}')
+                    if j == 3:
+                        print(f'flushes: {f.value} of {f.suit_to_str()}')
 
 
     player = Player()
 
     #four of a kind
     set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
-    # # two pair
-    # set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,9),Card(0,7),Card(1,0),Card(2,2)]
-    # flush
+    # player.set_hand(set_one)
+    # pairs
+    set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
+    # straight flush
     set_three = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,5),Card(0,6),Card(0,7)]
-    player.set_hand(set_one)
-    # if player.strength() != [["0 1", "1 1"],["0 1", "0 2"],player_straights, flushes]
+    # two flushes
+    set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
 
+    hand = player.possible_hands(set_four)
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
     print('Test one --------------------- four of a kind')
     print(possible_hands_to_string(player.possible_hands(set_one)))
     print('Test two ----------------------- straight')
     print(possible_hands_to_string(player.possible_hands(set_three)))
+    print('Test three ----------------------- two flushes')
+    print(possible_hands_to_string(player.possible_hands(set_four)))
+    print('Test four ----------------------- two flushes')
+    print(possible_hands_to_string(player.possible_hands(set_two)))
 
 def test_game_state():
     db = database.init()

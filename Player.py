@@ -84,11 +84,13 @@ class Player:
 
         return choice, bet_value
 
-    def get_hand_type(self, cards):
-        # Implement hand type evaluation logic
-        # Return the appropriate ENUM from HandStrength
+    def get_hand_type(self, possible_hands):
 
-        # high card logic
+        # takes in a lst from strength() [pair_values[],player_straight_flushes[],player_straights, flushes]
+        pair_values = possible_hands[0]
+        straight_flushes = possible_hands[1]
+        straights = possible_hands[2]
+        flushes = possible_hands[3]
         pass
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
@@ -123,11 +125,11 @@ class Player:
                     if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
 
                         # add the last card to straight_flushes
-                        player_straight_flushes.append([memory[value - 1][suit]])
+                        player_straight_flushes.append(memory[value - 1][suit])
                         # if card not in player_straight_flushes:
                         #     player_straight_flushes.append(card)
                     # add to straights
-                    player_straights.append([memory[value - 1][suit]])
+                    player_straights.append(memory[value - 1][suit])
                     # if card not in player_straights:
                     #     player_straights.append(card)
                 # add card to flushes array by index of suit
