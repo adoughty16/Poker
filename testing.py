@@ -16,6 +16,12 @@ from Player import Player
 
 def test_possible_hands():
 
+    # def itertools_test(lst):
+    #     [list(g) for k, g in groupby()]
+    #
+
+
+
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
     def possible_hands_to_string(lst):
         # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value

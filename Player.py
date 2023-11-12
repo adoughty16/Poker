@@ -96,6 +96,7 @@ class Player:
     # returns a list of all possible hands from cards, winning hand to be deciphered
     def possible_hands(self, lst_cards):
 
+        lst_cards = sorted(lst_cards,key=lambda card: card.value)
         # memory to sort lst_cards by value
         memory = [[], [], [], [], [], [], [], [], [], [], [], [], []]
 
@@ -109,6 +110,20 @@ class Player:
         for i in lst_cards:
             memory[i.get_value()].append(i)
 
+        current_sf_subset = [lst_cards[0]]
+        current_straight_subset = [lst_cards[0]]
+        for i in range(1, len(lst_cards)):
+            if lst_cards[i].value == current_straight_subset[-1].value + 1:
+                current_straight_subset.append(lst_cards[i])
+                if lst_cards[i].suit == current_straight_subset[-1].suit:
+                    current_sf_subset.append(lst_cards[i])
+            else:
+                player_straights.append(current_straight_subset)
+                current_straight_subset = [lst_cards[i]]
+
+        player_straight_flushes.append(current_sf_subset)
+        player_straights.append(current_straight_subset)
+
         # value = card rank, lst = list of cards in that rank
         # iterate through memory[]
         for value, lst in enumerate(memory):
@@ -119,17 +134,17 @@ class Player:
                 val = value
                 last_val_men = memory[value - 1]
                 this_val_mem = memory[value][suit]
-                if value > 0 and memory[value - 1] and memory[value][suit]:
-
-                    # if the card of the last rank has the same suit of the card of this rank
-                    if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
-
-                        # add the last card to straight_flushes
-                        player_straight_flushes.append(memory[value - 1][suit])
-                        # if card not in player_straight_flushes:
-                        #     player_straight_flushes.append(card)
-                    # add to straights
-                    player_straights.append(memory[value - 1][suit])
+                # if value > 0 and memory[value - 1] and memory[value][suit]:
+                #
+                #     # if the card of the last rank has the same suit of the card of this rank
+                #     if memory[value - 1][suit].get_suit() == memory[value][suit].get_suit():
+                #
+                #         # add the last card to straight_flushes
+                #         player_straight_flushes.append(memory[value - 1][suit])
+                #         # if card not in player_straight_flushes:
+                #         #     player_straight_flushes.append(card)
+                #     # add to straights
+                #     player_straights.append(memory[value - 1][suit])
                     # if card not in player_straights:
                     #     player_straights.append(card)
                 # add card to flushes array by index of suit
