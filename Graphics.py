@@ -949,25 +949,25 @@ class GameView(arcade.View):
 
     def draw_turn_arrow(self, to, amount):
         if to == 0:
-            start_x = MIDDLE_X_4 - 25
-            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
-            end_x = (SCREEN_WIDTH / 2) + 65
-            end_y = MAT_HEIGHT + 65
+            start_x = MIDDLE_X_4 - MAT_WIDTH - 65
+            start_y = (SCREEN_HEIGHT / 2)
+            end_x = (SCREEN_WIDTH / 2) + MAT_WIDTH + 65
+            end_y = MAT_HEIGHT/2
         if to == 1:
-            start_x = (SCREEN_WIDTH / 2) + 65
-            start_y = MAT_HEIGHT + 65
-            end_x = MIDDLE_X_2 + 25
-            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
+            start_x = (SCREEN_WIDTH / 2) - MAT_WIDTH - 65
+            start_y = MAT_HEIGHT/2
+            end_x = MIDDLE_X_2 + MAT_WIDTH + X_SPACING
+            end_y = (SCREEN_HEIGHT / 2)
         if to == 2:
-            start_x = MIDDLE_X_2 + 25 
-            start_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
-            end_x = (SCREEN_WIDTH / 2) - 25
-            end_y = SCREEN_HEIGHT - (MAT_HEIGHT + 65)
+            start_x = MIDDLE_X_2 + MAT_WIDTH + X_SPACING
+            start_y = (SCREEN_HEIGHT / 2)
+            end_x = (SCREEN_WIDTH / 2) - MAT_WIDTH - 65
+            end_y = SCREEN_HEIGHT - (MAT_HEIGHT/2)
         if to == 3:
-            start_x = (SCREEN_WIDTH / 2) - 25
-            start_y = SCREEN_HEIGHT - (MAT_HEIGHT + 65)
-            end_x = MIDDLE_X_4 - 25
-            end_y = (SCREEN_HEIGHT / 2) - (MAT_HEIGHT/2) - 65
+            start_x = (SCREEN_WIDTH / 2) + MAT_WIDTH + 65
+            start_y = SCREEN_HEIGHT - (MAT_HEIGHT/2)
+            end_x = MIDDLE_X_4 - MAT_WIDTH - 65
+            end_y = (SCREEN_HEIGHT / 2)
         rise = end_y - start_y
         run = end_x - start_x 
         #adding triangle to line 
