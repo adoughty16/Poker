@@ -59,18 +59,12 @@ class Player:
         decision = self.make_decision(community_cards)
         return decision
 
-    # def evaluate_strength(self, community_cards):
-    #     # takes community_cards, combines with self.hand, returns strength
-    #     combined_cards = self.hand + community_cards
-    #     hand_strength = self.calculate_strength(combined_cards)
-    #     return hand_strength
-
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
 
         combined_cards = self.hand + community_cards
 
-        self.best_hands(self.possible_hands(combined_cards))
+        hand_type = self.best_hand(self.possible_hands(combined_cards))
 
         return hand_type
 
@@ -85,9 +79,26 @@ class Player:
         else:
             bet_value = 0
 
+        # ------------------------------------------ AI PSEUDOCODE
+
+        # lst_cards = self.hand + community_cards
+        # if first round, buy in
+        # if second round
+            # possible_hands(lst_cards)
+            # if returns straight flush > 2
+                # if straight flush has a high card
+                    # raise = current_pot * 2/3
+                # raise = current_ pot * 1/2
+            # if returns flush > 2
+                # raise = current_pot * 1/3
+            # if returns straight > 2/ royals > 2/ straight flush > 1 / pair > 1
+                # raise = current_pot * 1/5
+            # if none
+                # random: 50/50% chance btwn match or raise current_pot * 1/10
+
         return choice, bet_value
 
-    def best_hands(self, possible_hands):
+    def best_hand(self, possible_hands):
 
         # takes in a lst from strength()
         # strength() = [
@@ -99,6 +110,7 @@ class Player:
 
         maximums = [[],[],[],[]]
 
+        # current 'None' bug needs to be fixed before this can work
         for e, i in enumerate(possible_hands):
             if len(maximums[e]) > len(i):
                 maximums[e] == i
@@ -106,6 +118,8 @@ class Player:
         best = max(maximums)
 
         self.handRank = best[0]
+
+        return best
 
 
 
