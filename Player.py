@@ -97,29 +97,15 @@ class Player:
         # flushes[[]], a list of all suits of card (all flushes)
         # ]
 
-        max_pair = []
-        max_flush = []
-        max_sf = []
-        max_straight = []
+        maximums = [[],[],[],[]]
 
-        for i in possible_hands:
-            if i == 0:
-                for e in i:
-                    if len(e) > len(max_pair):
-                        max_pair == e
-            if i == 1:
-                for e in i:
-                    if len(e) > len(max_sf):
-                        max_sf == e
-            if i == 2:
-                for e in i:
-                    if len(e) > len(max_straight):
-                        max_straight == e
-            if i == 3:
-                for e in i:
-                    if len(e) > len(max_flush):
-                        max_flush == e
+        for e, i in enumerate(possible_hands):
+            if len(maximums[e]) > len(i):
+                maximums[e] == i
 
+        best = max(maximums)
+
+        self.handRank = best[0]
 
 
 
@@ -168,7 +154,9 @@ class Player:
                     current_sf_subset.append(lst_cards[i])
             else:
                 player_straights.append(current_straight_subset)
+                player_straight_flushes.append(current_sf_subset)
                 current_straight_subset = [lst_cards[i]]
+                current_sf_subset = [lst_cards[i]]
 
         player_straight_flushes.append(current_sf_subset)
         player_straights.append(current_straight_subset)

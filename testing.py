@@ -35,6 +35,8 @@ def test_possible_hands():
                             print(f'straight flushes: {g.value} of {g.suit_to_str()}')
                         if j == 2:
                             print(f'straights: {g.value} of {g.suit_to_str()}')
+                        if j == 3:
+                            print(f'flushes: {g.value} of {g.suit_to_str()}')
                 if isinstance(f, Card):
                     if j == 0:
                         print(f'pair values: {f.value} of {f.suit_to_str()}')
@@ -44,6 +46,16 @@ def test_possible_hands():
                         print(f'straights: {f.value} of {f.suit_to_str()}')
                     if j == 3:
                         print(f'flushes: {f.value} of {f.suit_to_str()}')
+                print('---')
+                if i == None:
+                    if j == 0:
+                        print(f'NO PAIRS!')
+                    if j == 1:
+                        print(f'NO STRAIGHT FLUSHES!')
+                    if j == 2:
+                        print(f'NO STRAIGHTS!')
+                    if j == 3:
+                        print(f'NO FLUSHES!')
 
 
     player = Player()
@@ -60,12 +72,12 @@ def test_possible_hands():
 
     hand = player.possible_hands(set_four)
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
-    print('Test one --------------------- four of a kind')
-    print(possible_hands_to_string(player.possible_hands(set_one)))
-    print('Test two ----------------------- straight')
-    print(possible_hands_to_string(player.possible_hands(set_three)))
-    print('Test three ----------------------- two flushes')
-    print(possible_hands_to_string(player.possible_hands(set_four)))
+    # print('Test one --------------------- four of a kind')
+    # print(possible_hands_to_string(player.possible_hands(set_one)))
+    # print('Test two ----------------------- straight')
+    # print(possible_hands_to_string(player.possible_hands(set_three)))
+    # print('Test three ----------------------- two flushes')
+    # print(possible_hands_to_string(player.possible_hands(set_four)))
     print('Test four ----------------------- two flushes')
     print(possible_hands_to_string(player.possible_hands(set_two)))
 
