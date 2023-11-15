@@ -1,6 +1,8 @@
 import cards
 import random
 from enum import Enum
+from cards import Card
+from itertools import groupby, count
 from collections import Counter
 
 
@@ -25,6 +27,7 @@ class Player:
         self.stack = 0
         self.is_computer_player = True  # defaults to computer player
         self.showdown = []
+        self.handRank = 0
         self.handStrength = HandStrength.DEFAULT
 
     def get_name(self):
@@ -45,8 +48,8 @@ class Player:
     def set_name(self, name):
         self.name = name
 
-    def set_hand(self, hand):
-        self.hand = hand
+    def set_hand(self, lst_cards: [Card]):
+        self.hand = lst_cards
 
     def set_computer_player(self, boolean_value):
         self.is_computer_player = boolean_value
@@ -56,17 +59,13 @@ class Player:
         decision = self.make_decision(community_cards)
         return decision
 
-    def evaluate_strength(self, community_cards):
-        # takes community_cards, combines with self.hand, returns strength
-        combined_cards = self.hand + community_cards
-        hand_strength = self.calculate_strength(combined_cards)
-        return hand_strength
-
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
 
         combined_cards = self.hand + community_cards
-        hand_type = self.get_hand_type(combined_cards)
+
+        hand_type = self.best_hand(self.possible_hands(combined_cards))
+
         return hand_type
 
     def make_decision(self, community_cards):
@@ -80,67 +79,102 @@ class Player:
         else:
             bet_value = 0
 
+        # ------------------------------------------ AI PSEUDOCODE
+
+        # lst_cards = self.hand + community_cards
+        # if first round, buy in
+        # if second round
+            # possible_hands(lst_cards)
+            # if returns straight flush > 2
+                # if straight flush has a high card
+                    # raise = current_pot * 2/3
+                # raise = current_ pot * 1/2
+            # if returns flush > 2
+                # raise = current_pot * 1/3
+            # if returns straight > 2/ royals > 2/ straight flush > 1 / pair > 1
+                # raise = current_pot * 1/5
+            # if none
+                # random: 50/50% chance btwn match or raise current_pot * 1/10
+
         return choice, bet_value
 
-    def calculate_strength(self, cards):
-        # Implement hand strength evaluation
-        # Sort the cards by rank (e.g., 2, 3, 4, ..., A)
-        sorted_cards = sorted(cards, key=lambda card: Card.RANK_ORDER.index(card.rank))
-        counts = Counter(card.rank for card in sorted_cards)
+    def best_hand(self, possible_hands):
 
-        if self.is_royal_flush(sorted_cards):
-            return HandStrength.ROYAL_FLUSH
-        elif self.is_straight_flush(sorted_cards):
-            return HandStrength.STRAIGHT_FLUSH
-        elif self.is_four_of_a_kind(counts):
-            return HandStrength.FOUR_OF_A_KIND
-        elif self.is_full_house(counts):
-            return HandStrength.FULL_HOUSE
-        elif self.is_flush(sorted_cards):
-            return HandStrength.FLUSH
-        elif self.is_straight(sorted_cards):
-            return HandStrength.STRAIGHT
-        elif self.is_three_of_a_kind(counts):
-            return HandStrength.THREE_OF_A_KIND
-        elif self.is_two_pair(counts):
-            return HandStrength.TWO_PAIR
-        elif self.is_one_pair(counts):
-            return HandStrength.ONE_PAIR
-        else:
-            return HandStrength.HIGH_CARD
+        # takes in a lst from strength()
+        # strength() = [
+        # pair_values[[]], a list of all pairs of cards
+        # player_straight_flushes[[]], a list of all straight flushes of cards
+        # player_straights[[]], a list of all straight cards
+        # flushes[[]], a list of all suits of card (all flushes)
+        # ]
 
-    def get_hand_type(self, cards):
-        # Implement hand type evaluation logic
-        # Return the appropriate ENUM from HandStrength
+        maximums = [[],[],[],[]]
 
-        # high card logic
-        pass
+        # current 'None' bug needs to be fixed before this can work
+        for e, i in enumerate(possible_hands):
+            if len(maximums[e]) > len(i):
+                maximums[e] == i
 
-    #returns a list of all possible hands from cards, winning hand to be deciphered
-    def strength(self, cards):
+        best = max(maximums)
 
-        straight = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+        self.handRank = best[0]
 
-        flushes = [[],[],[],[]]
+        return best
+
+
+
+    # returns a list of all possible hands from cards, winning hand to be deciphered
+    def possible_hands(self, lst_cards):
+
+        # sort the cards by value
+        lst_cards = sorted(lst_cards, key=lambda card: card.value)
+
+        # memory to sort lst_cards by value
+        memory = [[], [], [], [], [], [], [], [], [], [], [], [], []]
+
+        flushes = [[], [], [], []]
         player_straights = []
         player_straight_flushes = []
         pair_values = []
 
-        for i in cards:
-            straight[cards[i].get_value()].append(cards[i])
-        # e + 1 = value, i = list of cards in that value
-        for value, lst in enumerate(straight):
-            # suit = straight[value][i][card].get_suit()
-            for card in lst:
-                if value > 0 and straight[value - 1][lst][card] and straight[value][lst][card]:
-                    if straight[value - 1][lst][card].get_suit() == straight[value][lst][card].get_suit():
-                        player_straight_flushes.append(straight[value - 1][lst][card])
-                    else:
-                        player_straights.append(straight[value - 1][lst][card])
-                flushes[card.suit_value()].append(card)
+        # sort input lst_cards into memory[] by index of value
+        for i in lst_cards:
+            memory[i.get_value()].append(i)
 
+        # iterate through memory[]
+        for lst in memory:
+            # iterate through cards of this rank
+            for card in lst:
+                # add card to flushes array by index of suit
+                flushes[card.suit].append(card)
+            # if the list of cards of this rank is greater than 1, append it as a list to the list of pairs, pair_values
             if len(lst) > 1:
                 pair_values.append(lst)
 
-        return []
+        # mem for straight flush
+        current_sf_subset = [lst_cards[0]]
+        # mem for straight
+        current_straight_subset = [lst_cards[0]]
+
+        # iterate through given lsit of cards
+        for i in range(1, len(lst_cards)):
+            # if this cards value equals the last card value plus one
+            if lst_cards[i].value == current_straight_subset[-1].value + 1:
+                # add it to a subset of straights
+                current_straight_subset.append(lst_cards[i])
+                # if this card suit equals the last cards suit as well,
+                if lst_cards[i].suit == current_straight_subset[-1].suit:
+                    # add it to the straight flush mem
+                    current_sf_subset.append(lst_cards[i])
+            else:
+                player_straights.append(current_straight_subset)
+                player_straight_flushes.append(current_sf_subset)
+                current_straight_subset = [lst_cards[i]]
+                current_sf_subset = [lst_cards[i]]
+
+        player_straight_flushes.append(current_sf_subset)
+        player_straights.append(current_straight_subset)
+
+        return [pair_values, player_straight_flushes, player_straights, flushes]
+
 

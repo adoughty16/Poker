@@ -18,6 +18,9 @@ class Card:
         # Image to use for the sprite when face up (from graphics to interface the two)
         #self.image_file_name = f":resources:images/cards/card{self.suit}{self.value}.png"
 
+    def __str__(self):
+        return (f'{str(self.value)} of {self.suit_to_str()}')
+
     def to_dict(self):
         return {"suit": self.suit, "value": self.value}
 
@@ -40,15 +43,16 @@ class Card:
             return 0
 
     #returns integer suit value
-    def suit_val(self):
-        if self.suit == 'd':
-            return 0
-        if self.suit == 'c':
-            return 1
-        if self.suit == 'h':
-            return 2
-        if self.suit == 's':
-            return 3
+    def suit_to_str(self):
+        if self.suit == 0:
+            return 'Diamonds'
+        if self.suit == 1:
+            return 'Clubs'
+        if self.suit == 2:
+            return 'Hearts'
+        if self.suit == 3:
+            return 'Spades'
+
     def get_suit(self):
         return self.suit
 

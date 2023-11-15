@@ -1,8 +1,9 @@
 
-from Game_state import Game_state 
+from Game_state import Game_state
 import db_connect as database
 from cards import Card
-from deck import Deck 
+from deck import Deck
+from Player import Player
 
 # function to test game_state class 
 
@@ -12,6 +13,74 @@ from deck import Deck
 - get bet
 - decision 
 - '''
+
+def test_possible_hands():
+
+    # def itertools_test(lst):
+    #     [list(g) for k, g in groupby()]
+    #
+
+
+
+    # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
+    def possible_hands_to_string(lst):
+        # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
+        for j, i in enumerate(lst):
+            for f in i:
+                if isinstance(f, list):
+                    for g in f:
+                        if j == 0:
+                            print(f'pair values: {g.value} of {g.suit_to_str()}')
+                        if j == 1:
+                            print(f'straight flushes: {g.value} of {g.suit_to_str()}')
+                        if j == 2:
+                            print(f'straights: {g.value} of {g.suit_to_str()}')
+                        if j == 3:
+                            print(f'flushes: {g.value} of {g.suit_to_str()}')
+                if isinstance(f, Card):
+                    if j == 0:
+                        print(f'pair values: {f.value} of {f.suit_to_str()}')
+                    if j == 1:
+                        print(f'straight flushes: {f.value} of {f.suit_to_str()}')
+                    if j == 2:
+                        print(f'straights: {f.value} of {f.suit_to_str()}')
+                    if j == 3:
+                        print(f'flushes: {f.value} of {f.suit_to_str()}')
+                print('---')
+                if i == None:
+                    if j == 0:
+                        print(f'NO PAIRS!')
+                    if j == 1:
+                        print(f'NO STRAIGHT FLUSHES!')
+                    if j == 2:
+                        print(f'NO STRAIGHTS!')
+                    if j == 3:
+                        print(f'NO FLUSHES!')
+
+
+    player = Player()
+
+    #four of a kind
+    set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
+    # player.set_hand(set_one)
+    # pairs
+    set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
+    # straight flush
+    set_three = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,5),Card(0,6),Card(0,7)]
+    # two flushes
+    set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
+
+    hand = player.possible_hands(set_four)
+    # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
+    # print('Test one --------------------- four of a kind')
+    # print(possible_hands_to_string(player.possible_hands(set_one)))
+    # print('Test two ----------------------- straight')
+    # print(possible_hands_to_string(player.possible_hands(set_three)))
+    # print('Test three ----------------------- two flushes')
+    # print(possible_hands_to_string(player.possible_hands(set_four)))
+    print('Test four ----------------------- two flushes')
+    print(possible_hands_to_string(player.possible_hands(set_two)))
+
 def test_game_state():
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
@@ -25,7 +94,7 @@ def test_game_state():
         print('PASSED COMMUNITY CARDS SETTER')
     else:
         print('FAILED COMMUNITY CARDS SETTER')
-    
+
     hands = [[Card('h', 1), Card('h',2 )], [Card('h', 3), Card('h', 4)], [Card('h', 5), Card('h', 6)], [Card('h', 7), Card('h', 8)]]
     print(hands[0])
     print(hands[0][0])
@@ -49,13 +118,13 @@ def test_game_state():
         print(game_state_1.get_player_stacks(db))
     else:
         print('PASSED PLAYER STACKS')
-    expected_total_call = 0 
+    expected_total_call = 0
     if game_state_1.get_total_call(db) != expected_total_call:
         print('FAILED TOTAL CALL')
         print(game_state_1.get_total_call(db))
     else:
         print('PASSED TOTAL_CALL')
-    expected_waiting = False 
+    expected_waiting = False
     if game_state_1.get_waiting(db) != expected_waiting:
         print('FAILED WAITING')
     else:
@@ -112,12 +181,15 @@ def test_deck():
         print('FAILED DEAL')
     else:
         print('PASSED DEAL')
-    print(dealt) 
+    print(dealt)
     for card in deck.get_deck():
         print(card.get_filename())
 
 def main():
     #test_game_state()
     test_deck()
+    #test_game_state()
+    # test_deck()
+    test_possible_hands()
 
 main()
