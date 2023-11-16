@@ -82,7 +82,9 @@ class Player:
         # ------------------------------------------ AI PSEUDOCODE
 
         # lst_cards = self.hand + community_cards
+        lst_cards = self.hand
         # if first round, buy in
+        # if len(community_cards)
         # if second round
             # possible_hands(lst_cards)
             # if returns straight flush > 2
@@ -99,14 +101,6 @@ class Player:
         return choice, bet_value
 
     def best_hand(self, possible_hands):
-
-        # takes in a lst from strength()
-        # strength() = [
-        # pair_values[[]], a list of all pairs of cards
-        # player_straight_flushes[[]], a list of all straight flushes of cards
-        # player_straights[[]], a list of all straight cards
-        # flushes[[]], a list of all suits of card (all flushes)
-        # ]
 
         maximums = [[],[],[],[]]
 
@@ -174,6 +168,17 @@ class Player:
 
         player_straight_flushes.append(current_sf_subset)
         player_straights.append(current_straight_subset)
+
+        def prune(by, lst):
+            for e, i in enumerate(lst):
+                if len(i) < by:
+                    lst.remove(i)
+            return lst
+
+        pair_values = prune(1, pair_values)
+        player_straight_flushes = prune(3, player_straight_flushes)
+        player_straights = prune(3, player_straights)
+        flushes = prune(3, flushes)
 
         return [pair_values, player_straight_flushes, player_straights, flushes]
 

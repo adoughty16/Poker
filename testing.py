@@ -16,16 +16,13 @@ from Player import Player
 
 def test_possible_hands():
 
-    # def itertools_test(lst):
-    #     [list(g) for k, g in groupby()]
-    #
-
-
 
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
     def possible_hands_to_string(lst):
         # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
         for j, i in enumerate(lst):
+            if not i:
+                continue
             for f in i:
                 if isinstance(f, list):
                     for g in f:
@@ -71,6 +68,7 @@ def test_possible_hands():
     set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
 
     hand = player.possible_hands(set_four)
+
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
     # print('Test one --------------------- four of a kind')
     # print(possible_hands_to_string(player.possible_hands(set_one)))
