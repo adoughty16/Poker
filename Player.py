@@ -5,6 +5,7 @@ from cards import Card
 from itertools import groupby, count
 from collections import Counter
 
+# for reference- https://en.wikipedia.org/wiki/List_of_poker_hands#Full_house
 
 class HandStrength(Enum):
     DEFAULT = 0
@@ -102,16 +103,7 @@ class Player:
 
     def best_hand(self, possible_hands):
 
-        maximums = [[],[],[],[]]
-
-        # current 'None' bug needs to be fixed before this can work
-        for e, i in enumerate(possible_hands):
-            if len(maximums[e]) > len(i):
-                maximums[e] == i
-
-        best = max(maximums)
-
-        self.handRank = best[0]
+        best = []
 
         return best
 
@@ -170,16 +162,17 @@ class Player:
         player_straights.append(current_straight_subset)
 
         def prune(by, lst):
-            for e, i in enumerate(lst):
-                if len(i) < by:
-                    lst.remove(i)
-            return lst
+            prune = []
+            for i in lst:
+                if len(i) > by:
+                    prune.append(i)
+            return prune
 
-        pair_values = prune(1, pair_values)
-        player_straight_flushes = prune(3, player_straight_flushes)
-        player_straights = prune(3, player_straights)
-        flushes = prune(3, flushes)
+        pruned_pair_values = prune(1, pair_values)
+        pruned_player_straight_flushes = prune(3, player_straight_flushes)
+        pruned_player_straights = prune(3, player_straights)
+        pruned_flushes = prune(3, flushes)
 
-        return [pair_values, player_straight_flushes, player_straights, flushes]
+        return [pruned_pair_values, pruned_player_straight_flushes, pruned_player_straights, pruned_flushes]
 
 

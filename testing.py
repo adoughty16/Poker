@@ -67,7 +67,7 @@ def test_possible_hands():
     # two flushes
     set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
 
-    hand = player.possible_hands(set_four)
+    hand = player.possible_hands(set_two)
 
     # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
     # print('Test one --------------------- four of a kind')
@@ -185,7 +185,7 @@ def test_deck():
 
 def main():
     #test_game_state()
-    test_deck()
+    # test_deck()
     #test_game_state()
     # test_deck()
     test_possible_hands()
