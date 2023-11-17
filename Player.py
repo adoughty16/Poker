@@ -127,6 +127,8 @@ class Player:
         for i in lst_cards:
             memory[i.get_value()].append(i)
 
+        # finding pairs and flushes ----------------------------------------------------------
+
         # iterate through memory[]
         for lst in memory:
             # iterate through cards of this rank
@@ -136,6 +138,8 @@ class Player:
             # if the list of cards of this rank is greater than 1, append it as a list to the list of pairs, pair_values
             if len(lst) > 1:
                 pair_values.append(lst)
+
+        # finding straights and straight flushes --------------------------------------
 
         # mem for straight flush
         current_sf_subset = [lst_cards[0]]
@@ -161,9 +165,20 @@ class Player:
         player_straight_flushes.append(current_sf_subset)
         player_straights.append(current_straight_subset)
 
+        # high card ----------------------------------------------
+        max_val = 0
+        for i in lst_cards:
+            if i.get_value() > max_val:
+                max_val = i.get_value()
+                highest_card = i
+
+
+        # pruning ------------------------------------------------
         def prune(by, lst):
             prune = []
-            for i in lst:
+            for e, i in enumerate(lst):
+                if len(i) > 5:
+                    i = i[-5:]
                 if len(i) > by:
                     prune.append(i)
             return prune
@@ -172,6 +187,38 @@ class Player:
         pruned_player_straight_flushes = prune(3, player_straight_flushes)
         pruned_player_straights = prune(3, player_straights)
         pruned_flushes = prune(3, flushes)
+
+        # deciding -----------------------------------------
+        possiblilities = [pruned_pair_values, pruned_player_straight_flushes, pruned_player_straights, pruned_flushes, highest_card]
+        max_len = 2
+
+        for e, i in enumerate(possiblilities):
+            for f in i:
+                if e == 1 and len(f) == 5:
+                    return [f[0].value, HandStrength.STRAIGHT_FLUSH]
+                if e == 0 and len(f) == 4:
+                    return [f[0].value, HandStrength.FOUR_OF_A_KIND]
+                if e == 0 and len(i) == 2 and len(f[0]) + len(f[1]) == 5:
+                    return [f[0].value, HandStrength.FULL_HOUSE]
+                if e == 3 and len(f) == 5:
+                    return [f[0].value, HandStrength.FLUSH]
+                if e == 2 and len(f) == 5:
+                    return [f[0].value, HandStrength.STRAIGHT]
+                if e == 0 and len(f) == 3:
+                    return [f[0].value, HandStrength.THREE_OF_A_KIND]
+                if e == 0 and len(i) == 2:
+                    return [f[1].value, HandStrength.TWO_PAIR]
+                if e == 0 and len(i) == 1:
+                    return [f[0].value, HandStrength.ONE_PAIR]
+
+
+
+
+
+
+
+
+
 
         return [pruned_pair_values, pruned_player_straight_flushes, pruned_player_straights, pruned_flushes]
 

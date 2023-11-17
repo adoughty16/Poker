@@ -59,7 +59,11 @@ def test_possible_hands():
 
     #four of a kind
     set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
-    # player.set_hand(set_one)
+    result = possible_hands_to_string(player.possible_hands(set_one))
+    if result != []:
+        print('FAILED PLAYER NAMES')
+    else:
+        print('PASSED PLAYER NAMES')
     # pairs
     set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
     # straight flush
@@ -67,17 +71,7 @@ def test_possible_hands():
     # two flushes
     set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
 
-    hand = player.possible_hands(set_two)
 
-    # [pair_values[[]],player_straight_flushes[],player_straights[[]], flushes[[],[],[],[]]
-    # print('Test one --------------------- four of a kind')
-    # print(possible_hands_to_string(player.possible_hands(set_one)))
-    # print('Test two ----------------------- straight')
-    # print(possible_hands_to_string(player.possible_hands(set_three)))
-    # print('Test three ----------------------- two flushes')
-    # print(possible_hands_to_string(player.possible_hands(set_four)))
-    print('Test four ----------------------- two flushes')
-    print(possible_hands_to_string(player.possible_hands(set_two)))
 
 def test_game_state():
     db = database.init()
