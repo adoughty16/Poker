@@ -44,15 +44,6 @@ def test_possible_hands():
                     if j == 3:
                         print(f'flushes: {f.value} of {f.suit_to_str()}')
                 print('---')
-                if i == None:
-                    if j == 0:
-                        print(f'NO PAIRS!')
-                    if j == 1:
-                        print(f'NO STRAIGHT FLUSHES!')
-                    if j == 2:
-                        print(f'NO STRAIGHTS!')
-                    if j == 3:
-                        print(f'NO FLUSHES!')
 
 
     player = Player()
@@ -72,15 +63,15 @@ def test_possible_hands():
         print('FAILED STRAIGHT FLUSH')
     else:
         print('PASSED STRAIGHT FLUSH')
+
     #full house
     set_three= [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
-    result = (player.possible_hands(set_two))
-    if result != [3, HandStrength.STRAIGHT_FLUSH]:
+    result = (player.possible_hands(set_three))
+    if result != [11, HandStrength.FULL_HOUSE]:
         print('FAILED FULL HOUSE')
     else:
         print('PASSED FULL HOUSE')
     # straight flush
-    set_three = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,5),Card(0,6),Card(0,7)]
     # two flushes
     set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
 

@@ -198,8 +198,8 @@ class Player:
                     return [f[0].value, HandStrength.STRAIGHT_FLUSH]
                 if e == 0 and len(f) == 4:
                     return [f[0].value, HandStrength.FOUR_OF_A_KIND]
-                if e == 0 and len(i) == 2 and len(f[0]) + len(f[1]) == 5:
-                    return [f[0].value, HandStrength.FULL_HOUSE]
+                if e == 0 and len(i[-1]) == 3 and len(i[-2]) == 2:
+                    return [i[-1][0].value, HandStrength.FULL_HOUSE]
                 if e == 3 and len(f) == 5:
                     return [f[0].value, HandStrength.FLUSH]
                 if e == 2 and len(f) == 5:
