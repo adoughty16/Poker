@@ -3,7 +3,7 @@ from Game_state import Game_state
 import db_connect as database
 from cards import Card
 from deck import Deck
-from Player import Player
+from Player import Player, HandStrength
 
 # function to test game_state class 
 
@@ -59,13 +59,26 @@ def test_possible_hands():
 
     #four of a kind
     set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
-    result = possible_hands_to_string(player.possible_hands(set_one))
-    if result != []:
-        print('FAILED PLAYER NAMES')
+    result = (player.possible_hands(set_one))
+    if result != [1, HandStrength.FOUR_OF_A_KIND]:
+        print('FAILED FOUR OF A KIND')
     else:
-        print('PASSED PLAYER NAMES')
-    # pairs
-    set_two = [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
+        print('PASSED FOUR OF A KIND')
+
+    # straight flush
+    set_two = [Card(0,1),Card(0,2),Card(0,3), Card(0,4), Card(0,5), Card(0,6), Card(0,7), ]
+    result = (player.possible_hands(set_two))
+    if result != [3, HandStrength.STRAIGHT_FLUSH]:
+        print('FAILED STRAIGHT FLUSH')
+    else:
+        print('PASSED STRAIGHT FLUSH')
+    #full house
+    set_three= [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
+    result = (player.possible_hands(set_two))
+    if result != [3, HandStrength.STRAIGHT_FLUSH]:
+        print('FAILED FULL HOUSE')
+    else:
+        print('PASSED FULL HOUSE')
     # straight flush
     set_three = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,5),Card(0,6),Card(0,7)]
     # two flushes
