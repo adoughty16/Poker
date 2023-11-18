@@ -92,7 +92,20 @@ def test_possible_hands():
         print('FAILED THREE OF A KIND')
     else:
         print('PASSED THREE OF A KIND')
-
+    # two pair
+    set_seven = [Card(1, 1), Card(2, 1), Card(0, 4), Card(2, 10), Card(1, 4), Card(3, 5), Card(2, 12)]
+    result = (player.possible_hands(set_seven))
+    if result != [4, HandStrength.TWO_PAIR]:
+        print('FAILED TWO PAIR')
+    else:
+        print('PASSED TWO PAIR')
+    # high card
+    set_seven = [Card(1, 1), Card(2, 11), Card(0, 3), Card(2, 10), Card(1, 4), Card(3, 5), Card(2, 12)]
+    result = (player.possible_hands(set_seven))
+    if result != [12, HandStrength.HIGH_CARD]:
+        print('FAILED HIGH CARD')
+    else:
+        print('PASSED HIGH CARD')
 
 def test_game_state():
     db = database.init()
