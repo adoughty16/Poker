@@ -153,7 +153,7 @@ class Player:
                 # add it to a subset of straights
                 current_straight_subset.append(lst_cards[i])
                 # if this card suit equals the last cards suit as well,
-                if lst_cards[i].suit == current_straight_subset[-1].suit:
+                if lst_cards[i].suit == current_sf_subset[-1].suit:
                     # add it to the straight flush mem
                     current_sf_subset.append(lst_cards[i])
             else:
@@ -181,35 +181,57 @@ class Player:
                     i = i[-5:]
                 if len(i) > by:
                     prune.append(i)
+
             return prune
 
-        pruned_pair_values = prune(1, pair_values)
+        def maxed(lst):
+            maxed = []
+            if len(lst) > 0:
+                maxed.append(max(lst, key=len))
+            return maxed
+
+        def denest(lst):
+            if len(lst) == 1 and isinstance(lst,list):
+                return lst[0]
+
+        pair_values = prune(1, pair_values)
         pruned_player_straight_flushes = prune(3, player_straight_flushes)
         pruned_player_straights = prune(3, player_straights)
         pruned_flushes = prune(3, flushes)
+        straight = denest(maxed(pruned_player_straights))
+        flush = denest(maxed(pruned_flushes))
+        straight_flush = denest(maxed(pruned_player_straight_flushes))
+
+
+
 
         # deciding -----------------------------------------
-        possiblilities = [pruned_pair_values, pruned_player_straight_flushes, pruned_player_straights, pruned_flushes, highest_card]
-        max_len = 2
 
-        for e, i in enumerate(possiblilities):
-            for f in i:
-                if e == 1 and len(f) == 5:
-                    return [f[0].value, HandStrength.STRAIGHT_FLUSH]
-                if e == 0 and len(f) == 4:
-                    return [f[0].value, HandStrength.FOUR_OF_A_KIND]
-                if e == 0 and len(i[-1]) == 3 and len(i[-2]) == 2:
-                    return [i[-1][0].value, HandStrength.FULL_HOUSE]
-                if e == 3 and len(f) == 5:
-                    return [f[0].value, HandStrength.FLUSH]
-                if e == 2 and len(f) == 5:
-                    return [f[0].value, HandStrength.STRAIGHT]
-                if e == 0 and len(f) == 3:
-                    return [f[0].value, HandStrength.THREE_OF_A_KIND]
-                if e == 0 and len(i) == 2:
-                    return [f[1].value, HandStrength.TWO_PAIR]
-                if e == 0 and len(i) == 1:
-                    return [f[0].value, HandStrength.ONE_PAIR]
+        if straight_flush and len(straight_flush) == 5:
+            return [straight_flush[0].value, HandStrength.STRAIGHT_FLUSH]
+        if pair_values:
+            max_pair = max(pair_values, key=len)
+            if len(max_pair) == 4:
+                return [max_pair[0].value, HandStrength.FOUR_OF_A_KIND]
+            if len(pair_values) > 1 and len(pair_values[-1]) == 3 and len(pair_values[-2]) == 2:
+                return [pair_values[-1][0].value, HandStrength.FULL_HOUSE]
+        if flush:
+            if len(flush) == 5:
+                flush_rank = max(flush, key=lambda card: card.value)
+                return [flush_rank.value, HandStrength.FLUSH]
+        if straight:
+            if len(straight) == 5:
+                return [straight[0].value, HandStrength.STRAIGHT]
+        if pair_values:
+            max_pair = max(pair_values, key=len)
+            if len(max_pair) == 3:
+                return [max_pair[0].value, HandStrength.THREE_OF_A_KIND]
+            if len(pair_values) == 2:
+                return [pair_values[-1][0].value, HandStrength.TWO_PAIR]
+            if len(pair_values) == 1:
+                return [pair_values[-1][0].value, HandStrength.ONE_PAIR]
+
+        return [highest_card.value, HandStrength.HIGH_CARD]
 
 
 

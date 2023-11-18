@@ -71,10 +71,27 @@ def test_possible_hands():
         print('FAILED FULL HOUSE')
     else:
         print('PASSED FULL HOUSE')
-    # straight flush
-    # two flushes
-    set_four = [Card(0,1),Card(0,2),Card(0,3),Card(0,4),Card(0,8),Card(0,9),Card(0,10)]
-
+    # flush
+    set_four = [Card(2, 1), Card(2, 3), Card(2, 11), Card(2, 11), Card(2, 6), Card(2, 0), Card(2, 8)]
+    result = (player.possible_hands(set_four))
+    if result != [11, HandStrength.FLUSH]:
+        print('FAILED FLUSH')
+    else:
+        print('PASSED FLUSH')
+    # straight
+    set_five = [Card(1, 1), Card(2, 3), Card(0, 4), Card(2, 2), Card(1, 6), Card(3, 5), Card(0, 8)]
+    result = (player.possible_hands(set_five))
+    if result != [2, HandStrength.STRAIGHT]:
+        print('FAILED STRAIGHT')
+    else:
+        print('PASSED STRAIGHT')
+    # three of a kind
+    set_six = [Card(1, 1), Card(2, 3), Card(0, 4), Card(2, 2), Card(1, 4), Card(3, 5), Card(2, 4)]
+    result = (player.possible_hands(set_six))
+    if result != [4, HandStrength.THREE_OF_A_KIND]:
+        print('FAILED THREE OF A KIND')
+    else:
+        print('PASSED THREE OF A KIND')
 
 
 def test_game_state():
