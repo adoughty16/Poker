@@ -341,38 +341,38 @@ class Game_state:
     # def download - to get updated version of game_state from database 
     # takes in self and returns nothing because it is updating all of the values 
     def download(self, db):
-        self.player_names = self.get_players(self, db)
-        self.community_cards = self.get_community_cards(self, db)
-        self.total_pot = self.get_total_pot(self, db)
-        self.round_pot = self.get_round_pot(self, db)
-        self.player_stacks = self.get_player_stacks(self, db)
-        self.total_call = self.get_total_call(self, db)
-        self.waiting = self.get_waiting(self, db)
-        self.whose_turn = self.get_whose_turn(self, db)
-        self.bet = self.get_bet(self, db)
-        self.minimum_call = self.get_minimum_call(self, db)
-        self.dealer = self.get_dealer(self, db)
-        self.actives = self.get_actives(self, db)
-        self.round = self.get_round(self, db)
-        self.player_decision = self.get_player_decision(self, db)
+        self.player_names = self.get_players(db)
+        self.community_cards = self.get_community_cards(db)
+        self.total_pot = self.get_total_pot(db)
+        self.round_pot = self.get_round_pot(db)
+        self.player_stacks = self.get_player_stacks(db)
+        self.total_call = self.get_total_call(db)
+        self.waiting = self.get_waiting(db)
+        self.whose_turn = self.get_whose_turn(db)
+        self.bet = self.get_bet(db)
+        self.minimum_call = self.get_minimum_call(db)
+        self.dealer = self.get_dealer(db)
+        self.actives = self.get_actives(db)
+        self.round = self.get_round(db)
+        self.player_decision = self.get_player_decision(db)
 
     # download with player hands (wph) to be used in showdown to only retrieve player_hands then!
     def download_wph(self, db):
-        self.player_names = self.get_players(self, db)
-        self.player_hands = self.get_player_hands(self, db)
-        self.community_cards = self.get_community_cards(self, db)
-        self.total_pot = self.get_total_pot(self, db)
-        self.round_pot = self.get_round_pot(self, db)
-        self.player_stacks = self.get_player_stacks(self, db)
-        self.total_call = self.get_total_call(self, db)
-        self.waiting = self.get_waiting(self, db)
-        self.whose_turn = self.get_whose_turn(self, db)
-        self.bet = self.get_bet(self, db)
-        self.minimum_call = self.get_minimum_call(self, db)
-        self.dealer = self.get_dealer(self, db)
-        self.actives = self.get_actives(self, db)
-        self.round = self.get_round(self, db)
-        self.player_decision = self.get_player_decision(self, db)
+        self.player_names = self.get_players(db)
+        self.player_hands = self.get_player_hands(db)
+        self.community_cards = self.get_community_cards(db)
+        self.total_pot = self.get_total_pot(db)
+        self.round_pot = self.get_round_pot(db)
+        self.player_stacks = self.get_player_stacks(db)
+        self.total_call = self.get_total_call(db)
+        self.waiting = self.get_waiting(db)
+        self.whose_turn = self.get_whose_turn(db)
+        self.bet = self.get_bet(db)
+        self.minimum_call = self.get_minimum_call(db)
+        self.dealer = self.get_dealer(db)
+        self.actives = self.get_actives(db)
+        self.round = self.get_round(db)
+        self.player_decision = self.get_player_decision(db)
 
     '''
     getters that can be called without accessing the database for speed
@@ -412,3 +412,6 @@ class Game_state:
 
     def get_player_hands_ad(self):
         return self.player_hands 
+
+    def get_waiting_ad(self):
+        return self.waiting

@@ -57,13 +57,13 @@ class Card:
         return self.suit
 
     def get_suit_for_sprite(self):
-        if self.suit == 'd':
+        if self.suit == 0:
             return 'Diamonds'
-        if self.suit == 'c':
+        if self.suit == 1:
             return 'Clubs'
-        if self.suit == 'h':
+        if self.suit == 2:
             return 'Hearts'
-        if self.suit == 's':
+        if self.suit == 3:
             return 'Spades'
         
     def get_value(self):

@@ -2,7 +2,6 @@ import cards
 import random
 from enum import Enum
 from cards import Card
-from Game_state import Game_state
 from itertools import groupby, count
 from collections import Counter
 
@@ -26,12 +25,11 @@ class Player:
     def __init__(self):
         self.name = None
         self.hand = []
-        self.stack = 0
+        self.stack = 1000
         self.is_computer_player = True  # defaults to computer player
         self.showdown = []
         self.handRank = 0
         self.handStrength = HandStrength.DEFAULT
-        self.possiblehands = []
 
     def get_name(self):
         return self.name
@@ -71,6 +69,22 @@ class Player:
 
         return hand_type
 
+    def make_decision(self, community_cards):
+        # could use evaluate_strength and evaluate_hand as part of decision
+        # random decision for now
+        # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
+
+        #JUST FOR NOW
+        return "call", 0
+
+        decisions = ["bet", "check", "fold", "call"]
+        choice = random.choice(decisions)
+        if choice == "bet":
+            bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
+        else:
+            bet_value = 0
+
+        # ------------------------------------------ AI PSEUDOCODE
 
 
     def best_hand(self, possible_hands):
@@ -174,7 +188,7 @@ class Player:
         flush = denest(maxed(pruned_flushes))
         straight_flush = denest(maxed(pruned_player_straight_flushes))
 
-        self.possiblehands = [pair_values, player_straight_flushes, player_straights, flushes]
+
 
 
         # deciding -----------------------------------------
