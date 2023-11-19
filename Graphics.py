@@ -784,8 +784,9 @@ class GameView(arcade.View):
                 
                 if self.game_state.get_round(self.db) == 'showdown':
 
-                    #send hands to game state
-                    #TODO: determine winner (waiting on player functions)
+                    final_hands = [self.players[idx].possible_hands(self.community_cards) for idx in self.actives]
+
+                    print("Final hands! ", final_hands)
 
                     #award winner stack from pot
 
