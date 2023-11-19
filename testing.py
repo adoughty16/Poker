@@ -13,9 +13,10 @@ from Player import Player, HandStrength
 - get bet
 - decision 
 - '''
+def test_ai():
+    db = database.init()
 
 def test_possible_hands():
-
 
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
     def possible_hands_to_string(lst):
@@ -106,6 +107,20 @@ def test_possible_hands():
         print('FAILED HIGH CARD')
     else:
         print('PASSED HIGH CARD')
+    # 4 cards- pair
+    set_eight = [Card(1, 1), Card(2, 1), Card(0, 3), Card(2, 10)]
+    result = (player.possible_hands(set_eight))
+    if result != [1, HandStrength.ONE_PAIR]:
+        print('FAILED 4-CARD PAIR')
+    else:
+        print('PASSED 4-CARD PAIR')
+    # 3 cards- high card
+    set_nine = [Card(1, 1), Card(2, 12), Card(0, 3)]
+    result = (player.possible_hands(set_nine))
+    if result != [12, HandStrength.HIGH_CARD]:
+        print('FAILED 3-CARD HIGH CARD')
+    else:
+        print('PASSED 3-CARD HIGH CARD')
 
 def test_game_state():
     db = database.init()
