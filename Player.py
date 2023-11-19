@@ -25,7 +25,7 @@ class Player:
     def __init__(self):
         self.name = None
         self.hand = []
-        self.stack = 0
+        self.stack = 1000
         self.is_computer_player = True  # defaults to computer player
         self.showdown = []
         self.handRank = 0
@@ -73,7 +73,11 @@ class Player:
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
         # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        decisions = ["bet", "check", "fold"]
+
+        #JUST FOR NOW
+        return "call", 0
+
+        decisions = ["bet", "check", "fold", "call"]
         choice = random.choice(decisions)
         if choice == "bet":
             bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
