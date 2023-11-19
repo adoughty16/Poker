@@ -69,30 +69,6 @@ class Player:
 
         return hand_type
 
-    def make_decision(self, community_cards):
-        # could use evaluate_strength and evaluate_hand as part of decision
-        # random decision for now
-        # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-
-        #JUST FOR NOW
-        return "call", 0
-
-        decisions = ["bet", "check", "fold", "call"]
-        choice = random.choice(decisions)
-        if choice == "bet":
-            bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
-        else:
-            bet_value = 0
-
-        # ------------------------------------------ AI PSEUDOCODE
-
-
-    def best_hand(self, possible_hands):
-
-        best = []
-
-        return best
-
 
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
@@ -220,6 +196,10 @@ class Player:
         return [highest_card.value, HandStrength.HIGH_CARD]
 
     def make_decision(self, community_cards, db):
+
+        #for now
+        return "call", 0
+
         # could use evaluate_strength and evaluate_hand as part of decision
         # random decision for now
         # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
