@@ -410,12 +410,10 @@ class GameView(arcade.View):
 
 
     def on_bet_click(self, event):
-        # should only do stuff if a value has been chosen
-        if self.bet_value_chosen:
-            self.game_state.set_player_decision('bet', self.db)
-            self.game_state.set_bet(self.bet_value, self.db)
-            self.game_state.flip_waiting(self.db)
-            self.bet_value_chosen = False
+        self.game_state.set_player_decision('bet', self.db)
+        self.game_state.set_bet(self.bet_value, self.db)
+        self.game_state.flip_waiting(self.db)
+        self.bet_value_chosen = False
     def on_check_click(self, event):
         # should only do stuff if checking is an option
         if self.game_state.get_minimum_call(self.db) == 0:
@@ -913,23 +911,23 @@ class GameView(arcade.View):
         # short cut: draw them all in gray, then draw over them in white! 
 
         # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{self.names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[2-1]} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "4" is actually index 3 
-        arcade.draw_text(f'{self.names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[4-1]} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{self.names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[1-1]} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "3" is actually index 2 
-        arcade.draw_text(f'{self.names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[3-1]} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
 
         for index in self.actives:
             if index == 0:
-                arcade.draw_text(f'{self.names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[1-1]} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 1:
-                arcade.draw_text(f'{self.names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[2-1]} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 2:
-                arcade.draw_text(f'{self.names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[3-1]} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 3:
-                arcade.draw_text(f'{self.names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[4-1]} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
 
 

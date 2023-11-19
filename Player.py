@@ -72,8 +72,9 @@ class Player:
 
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
-    def possible_hands(self, lst_cards):
+    def possible_hands(self, hand, community_cards):
 
+        lst_cards = hand + community_cards
         # sort the cards by value
         lst_cards = sorted(lst_cards, key=lambda card: card.value)
 
