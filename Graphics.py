@@ -341,8 +341,6 @@ class GameView(arcade.View):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-
-
         # Don't show the mouse cursor
         # self.window.set_mouse_visible(False)
 
@@ -445,11 +443,16 @@ class GameView(arcade.View):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-                
+
+        self.names = [f'Player {num}' for num in range(1, self.num_players+1)]
+        for num in range(1, 5-self.num_players):
+            self.names.append(f'Computer Player {num}')
+
         # ---  Create the mats the cards go on
 
         # Sprite list with all the mats tha cards lay on.
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
+
 
         # Create player 1 (bottom)
         for i in range(2):
@@ -773,7 +776,7 @@ class GameView(arcade.View):
 
                         #reset betting/round values
                         self.current = (self.dealer + 3) % 4
-                        self.total_call = 10
+                        self.total_call = 0
                         self.round_bets = [0, 0, 0, 0]
                         self.all_called = False
                 
@@ -905,29 +908,28 @@ class GameView(arcade.View):
 
         # draw player names (and gray for those that are inactive) 
         # names = self.game_state.get_player_names_ad()
-        names = ['sydney', 'xan', 'abe', 'collin']
         self.actives = self.game_state.get_actives_ad()
         # the player name at the index of the value of the actives array is active 
         # short cut: draw them all in gray, then draw over them in white! 
 
         # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "4" is actually index 3 
-        arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "3" is actually index 2 
-        arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
 
         for index in self.actives:
             if index == 0:
-                arcade.draw_text(f'{names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[1-1]}:{self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 1:
-                arcade.draw_text(f'{names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[2-1]}:{self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 2:
-                arcade.draw_text(f'{names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[3-1]}:{self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 3:
-                arcade.draw_text(f'{names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[4-1]}:{self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
 
 
