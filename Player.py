@@ -7,7 +7,7 @@ from Game_state import Game_state
 # for reference- https://en.wikipedia.org/wiki/List_of_poker_hands#Full_house
 
 
-class HandStrength(Enum):
+class HandStrength(IntEnum):
     DEFAULT = 0
     HIGH_CARD = 1
     ONE_PAIR = 2
