@@ -226,6 +226,11 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         game_state_ref.update({"whose_turn": self.whose_turn})
 
+    def set_whose_turn(self, idx, db):
+        self.whose_turn = idx
+        game_state_ref = db.collection("states").document(self.doc_name)
+        game_state_ref.update({"whose_turn": self.whose_turn})
+
         
 # getters 
     
