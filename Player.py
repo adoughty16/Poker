@@ -73,8 +73,9 @@ class Player:
 
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
-    def possible_hands(self, lst_cards):
+    def possible_hands(self, community_cards):
 
+        lst_cards = self.hand + community_cards
         # sort the cards by value
         lst_cards = sorted(lst_cards, key=lambda card: card.value)
 
@@ -197,7 +198,7 @@ class Player:
 
         return [highest_card.value, HandStrength.HIGH_CARD]
 
-    def make_decision(self, community_cards, db):
+    def make_decision(self, community_cards):
 
         #for now
         return "call", 0
