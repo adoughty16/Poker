@@ -226,10 +226,11 @@ class Player:
                 decision = "bet"
                 bet_value = Game_state.get_total_pot(db) * (1 + random.randint(5, 10))
             if decided[1] > 3:
+                decision = "bet"
                 bet_value = decided[0] * (1 + random.randint(5, 10))
             if decided[1] > 1:
-
-
+                decision = "bet"
+                bet_value = decided[0] * (1 + random.randint(1, 5))
 
         if len(lst_cards) == 4:
 
@@ -240,7 +241,7 @@ class Player:
                 else:
                     decision = "bet"
                     bet_value = decided[0] * random.randint(1, 5)
-        if len(lst_cards) > 4:
+        if len(lst_cards) < 4:
 
             # if rank is two pair or greater
             if decided[1] > 6:
@@ -258,9 +259,17 @@ class Player:
                 decision = "bet"
             # raise = current_pot * 1/3
                 bet_value = Game_state.get_total_pot(db) * (1 + 1/3)
-        # if first round, buy in
-        if len(lst_cards) == 2:
-            bet_value = 10
+            if decided[1] < 2:
+                decisions = ["bet", "check", "fold"]
+                choice = random.choice(decisions)
 
+            # if first round, check
+        if len(lst_cards) == 2:
+            decision = "check"
+            choice = random.choice(decision)
+            if choice == "bet":
+                bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
+            else:
+                bet_value = 0
 
         return choice, bet_value
