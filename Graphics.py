@@ -909,8 +909,13 @@ class GameView(arcade.View):
 
         # round_pot
         self.pot = self.game_state.get_round_pot_ad() 
-        arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + ((MAT_WIDTH + 50)/5), MIDDLE_Y - (MAT_HEIGHT / 2) - 50,
+        arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + MAT_WIDTH/2, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
+        # total pot 
+        total_pot = self.game_state.get_total_pot_ad()
+        arcade.draw_text(f'Total pot: {total_pot}', MIDDLE_X_COMMUNITYCARDS + 3*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
+                    arcade.color.WHITE, font_size=15, anchor_x="center")
+
 
     def draw_turn_arrow(self, to, amount):
         if to == 0:

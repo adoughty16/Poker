@@ -396,6 +396,10 @@ class Game_state:
     
     def get_round_pot_ad(self):
         return self.round_pot
+        
+    def get_total_pot_ad(self):
+        return self.total_pot
+
 
     def get_minimum_call_ad(self):
         return self.minimum_call 
