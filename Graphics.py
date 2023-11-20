@@ -483,6 +483,7 @@ class GameView(arcade.View):
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
         self.coins = arcade.SpriteList()
+        self.total_coins = arcade.SpriteList()
 
 
     def on_update(self, delta_time):
@@ -925,7 +926,9 @@ class GameView(arcade.View):
         total_pot = self.game_state.get_total_pot_ad()
         arcade.draw_text(f'Total pot: {total_pot}', MIDDLE_X_COMMUNITYCARDS + 3*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
                     arcade.color.WHITE, font_size=15, anchor_x="center")
+        self.total_pot_coins(total_pot)
         self.coins.draw()
+        self.total_coins.draw()
     
     def round_coins(self):
         for coin in self.coins:
@@ -950,6 +953,45 @@ class GameView(arcade.View):
         else:
             pass
 
+    def total_pot_coins(self, total):
+        for coin in self.total_coins:
+            self.total_coins.remove(coin)
+        if total > 700:
+            coin_8 = Coin_t()
+            coin_8.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 40, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_8)
+        if total > 600:
+            coin_7 = Coin_t()
+            coin_7.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 35, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_7)
+        if total > 500:
+            coin_6 = Coin_t()
+            coin_6.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 30, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_6)
+        if total > 400:
+            coin_5 = Coin_t()
+            coin_5.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 25, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_5)
+        if total > 300:
+            coin_4 = Coin_t()
+            coin_4.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 20, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_4)
+        if total > 200:
+            coin_3 = Coin_t()
+            coin_3.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 15, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_3)
+        if total > 100:
+            # draw two coins
+            coin_2 = Coin_t()
+            coin_2.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 5, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_2)
+        if total > 0:
+            # DRAW ONE COIN
+            coin_1 = Coin_t()
+            coin_1.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_1)
+        else:
+            pass
 
     def draw_turn_arrow(self, to, amount):
         if to == 0:
@@ -1010,6 +1052,10 @@ class Card_arcade(arcade.Sprite):
 class Coin(arcade.Sprite):
     def __init__(self):
         super().__init__(":resources:images/items/gold_2.png", 0.5, hit_box_algorithm="None")
+
+class Coin_t(arcade.Sprite):
+    def __init__(self):
+        super().__init__(":resources:images/items/gold_3.png", 0.5, hit_box_algorithm="None")
 
 # add parameters to main: num_players, host, game_state, ready, lock
 def main():
