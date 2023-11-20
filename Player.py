@@ -30,6 +30,7 @@ class Player:
         self.showdown = []
         self.handRank = 0
         self.handStrength = HandStrength.DEFAULT
+        self.possiblehands = []
 
     def get_name(self):
         return self.name
@@ -164,7 +165,8 @@ class Player:
         flush = denest(maxed(pruned_flushes))
         straight_flush = denest(maxed(pruned_player_straight_flushes))
 
-
+        # for AI use
+        self.possiblehands = [pair_values,player_straight_flushes,player_straights,flushes,highest_card]
 
 
         # deciding -----------------------------------------
@@ -215,18 +217,18 @@ class Player:
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand
         # if first round, buy in
-        if lst_cards == 2:
+        if len(lst_cards) == 2:
             bet_value = 10
         # if len(community_cards)
         # if second round
-        if lst_cards == 4:
+        if len(lst_cards) == 4:
             decided = self.possible_hands(lst_cards)
             if decided[1] == HandStrength.HIGH_CARD:
                 if decided[0] > 9:
                     bet_value = decided[0] * random.randint(5, 10)
                 else:
                     bet_value = decided[0] * random.randint(1, 5)
-        if lst_cards > 4:
+        if len(lst_cards) > 4:
 
             # possible_hands(lst_cards)
             decided = self.possible_hands(lst_cards)
@@ -236,9 +238,12 @@ class Player:
                 # if straight flush has a high card
                 if decided[0] > 7:
                     # raise = current_pot * 2/3
-                    bet_value = Game_state.get_total_pot(db) * 1 + random.randint(1, 4)/3
+                    #              vvvvvvvvvvvvvvvvvvvvvvvv  how get total pot?
+                    bet_value = Game_state.get_total_pot(db) * (1 + random.randint(1, 4)/3)
                 # raise = current_ pot * 1/2
+                bet_value = Game_state.get_total_pot(db) * 1.5
             # if returns flush > 2
+
                 # raise = current_pot * 1/3
             # if returns straight > 2/ royals > 2/ straight flush > 1 / pair > 1
                 # raise = current_pot * 1/5
