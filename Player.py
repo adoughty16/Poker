@@ -195,20 +195,20 @@ class Player:
 
     def make_decision(self, community_cards):
 
-        # for now
-        return "call", 0
-
-        # could use evaluate_strength and evaluate_hand as part of decision
-        # random decision for now
-        # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        decisions = ["bet", "check", "fold"]
-        choice = random.choice(decisions)
-        if choice == "bet":
-            bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
-        else:
-            bet_value = 0
-
-        # ------------------------------------------ AI PSEUDOCODE
+        # # for now
+        # return "call", 0
+        #
+        # # could use evaluate_strength and evaluate_hand as part of decision
+        # # random decision for now
+        # # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
+        # decisions = ["bet", "check", "fold"]
+        # choice = random.choice(decisions)
+        # if choice == "bet":
+        #     bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
+        # else:
+        #     bet_value = 0
+        #
+        # # ------------------------------------------ AI PSEUDOCODE
 
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand + community_cards
