@@ -594,7 +594,7 @@ class GameView(arcade.View):
                 elif self.game_state.get_round_ad() == 'pre-flop' or 'flop' or 'turn' or 'river':
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
-                        choice, value = self.players[self.current].turn(self.community_cards)
+                        choice, value = self.players[self.current].turn(self.community_cards,self.db)
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
                     #if bet

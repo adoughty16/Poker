@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 from cards import Card
+from Game_state import Game_state
 
 
 # for reference- https://en.wikipedia.org/wiki/List_of_poker_hands#Full_house
@@ -55,9 +56,9 @@ class Player:
     def set_computer_player(self, boolean_value):
         self.is_computer_player = boolean_value
 
-    def turn(self, community_cards):
+    def turn(self, community_cards, db):
         # return decision (bet, check, fold)
-        decision = self.make_decision(community_cards)
+        decision = self.make_decision(community_cards, db)
         return decision
 
     def evaluate_hand(self, community_cards):
@@ -193,7 +194,7 @@ class Player:
 
         return [highest_card.value, HandStrength.HIGH_CARD]
 
-    def make_decision(self, community_cards):
+    def make_decision(self, community_cards, db):
 
         # # for now
         # return "call", 0
