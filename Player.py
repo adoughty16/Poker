@@ -1,11 +1,10 @@
-import cards
 import random
 from enum import Enum
 from cards import Card
-from itertools import groupby, count
-from collections import Counter
+
 
 # for reference- https://en.wikipedia.org/wiki/List_of_poker_hands#Full_house
+
 
 class HandStrength(Enum):
     DEFAULT = 0
@@ -66,11 +65,9 @@ class Player:
 
         combined_cards = self.hand + community_cards
 
-        hand_type = self.best_hand(self.possible_hands(combined_cards))
+        hand_type = self.possible_hands(combined_cards)
 
         return hand_type
-
-
 
     # returns a list of all possible hands from cards, winning hand to be deciphered
     def possible_hands(self, community_cards):
@@ -110,7 +107,7 @@ class Player:
         # mem for straight
         current_straight_subset = [lst_cards[0]]
 
-        # iterate through given lsit of cards
+        # iterate through given list of cards
         for i in range(1, len(lst_cards)):
             # if this cards value equals the last card value plus one
             if lst_cards[i].value == current_straight_subset[-1].value + 1:
@@ -136,11 +133,10 @@ class Player:
                 max_val = i.get_value()
                 highest_card = i
 
-
         # pruning ------------------------------------------------
-        def prune(by, lst):
+        def prune(by, to_prune):
             prune = []
-            for e, i in enumerate(lst):
+            for e, i in enumerate(to_prune):
                 if len(i) > 5:
                     i = i[-5:]
                 if len(i) > by:
@@ -155,7 +151,7 @@ class Player:
             return maxed
 
         def denest(lst):
-            if len(lst) == 1 and isinstance(lst,list):
+            if len(lst) == 1 and isinstance(lst, list):
                 return lst[0]
 
         pair_values = prune(1, pair_values)
@@ -167,8 +163,7 @@ class Player:
         straight_flush = denest(maxed(pruned_player_straight_flushes))
 
         # for AI use
-        self.possiblehands = [pair_values,player_straight_flushes,player_straights,flushes,highest_card]
-
+        self.possiblehands = [pair_values, player_straight_flushes, player_straights, flushes, highest_card]
 
         # deciding -----------------------------------------
 
@@ -200,7 +195,7 @@ class Player:
 
     def make_decision(self, community_cards):
 
-        #for now
+        # for now
         return "call", 0
 
         # could use evaluate_strength and evaluate_hand as part of decision
@@ -216,39 +211,56 @@ class Player:
         # ------------------------------------------ AI PSEUDOCODE
 
         # lst_cards = self.hand + community_cards
-        lst_cards = self.hand
-        # if first round, buy in
-        if len(lst_cards) == 2:
-            bet_value = 10
+        lst_cards = self.hand + community_cards
+        # [pair_values, player_straight_flushes, player_straights, flushes, highest_card]
+        decided = self.possible_hands(lst_cards)
+
         # if len(community_cards)
         # if second round
+        if len(lst_cards) == 7:
+            if decided[1] > 6:
+                if decided[0] > 9:
+                    decision = "bet"
+                    # ALL IN!
+                    bet_value = Game_state.get_total_pot(db)
+                decision = "bet"
+                bet_value = Game_state.get_total_pot(db) * (1 + random.randint(5, 10))
+            if decided[1] > 3:
+                bet_value = decided[0] * (1 + random.randint(5, 10))
+            if decided[1] > 1:
+
+
+
         if len(lst_cards) == 4:
-            decided = self.possible_hands(lst_cards)
+
             if decided[1] == HandStrength.HIGH_CARD:
                 if decided[0] > 9:
-                    bet_value = decided[0] * random.randint(5, 10)
+                    decision = "bet"
+                    bet_value = decided[0] * random.randint(0, 5)
                 else:
+                    decision = "bet"
                     bet_value = decided[0] * random.randint(1, 5)
         if len(lst_cards) > 4:
-
-            # possible_hands(lst_cards)
-            decided = self.possible_hands(lst_cards)
 
             # if rank is two pair or greater
             if decided[1] > 6:
                 # if straight flush has a high card
                 if decided[0] > 7:
                     # raise = current_pot * 2/3
+                    decision = "bet"
                     #              vvvvvvvvvvvvvvvvvvvvvvvv  how get total pot?
-                    bet_value = Game_state.get_total_pot(db) * (1 + random.randint(1, 4)/3)
+                    bet_value = Game_state.get_total_pot(db) * (1 + random.randint(1, 4) / 3)
                 # raise = current_ pot * 1/2
+                decision = "bet"
                 bet_value = Game_state.get_total_pot(db) * 1.5
             # if returns flush > 2
+            if decided[1] == HandStrength.ONE_PAIR:
+                decision = "bet"
+            # raise = current_pot * 1/3
+                bet_value = Game_state.get_total_pot(db) * (1 + 1/3)
+        # if first round, buy in
+        if len(lst_cards) == 2:
+            bet_value = 10
 
-                # raise = current_pot * 1/3
-            # if returns straight > 2/ royals > 2/ straight flush > 1 / pair > 1
-                # raise = current_pot * 1/5
-            # if none
-                # random: 50/50% chance btwn match or raise current_pot * 1/10
 
         return choice, bet_value
