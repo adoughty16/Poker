@@ -895,13 +895,21 @@ class GameView(arcade.View):
         self.dealer = self.game_state.get_dealer_ad() 
         if self.dealer == 0:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (SCREEN_WIDTH/2)-(MAT_WIDTH) - 30, MAT_HEIGHT + 20, arcade.color.RED, 11)
         elif self.dealer == 1:
             arcade.draw_circle_filled((MIDDLE_X_2)+ (MAT_WIDTH) + 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((MIDDLE_X_2)+ (MAT_WIDTH) + 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (MIDDLE_X_2)+ (MAT_WIDTH) + 20, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 30, arcade.color.RED, 11)
         elif self.dealer == 2:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, SCREEN_HEIGHT - MAT_HEIGHT -  25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, SCREEN_HEIGHT - MAT_HEIGHT -  25, 12, arcade.color.WHITE)
+            arcade.draw_text('D',(SCREEN_WIDTH/2)-(MAT_WIDTH) - 30, SCREEN_HEIGHT - MAT_HEIGHT -  30, arcade.color.RED, 11)
+
         else:
             arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
-
+            arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (MIDDLE_X_4)-(MAT_WIDTH) - 30, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 30, arcade.color.RED, 11)
         # arrow for whose_turn and minimum_call
         arrow_to = (self.game_state.get_whose_turn_ad() - 1) % 4
         arrow_amount = self.game_state.get_minimum_call_ad() 
@@ -946,7 +954,7 @@ class GameView(arcade.View):
               (end_x + 0.03*rise, end_y - 0.03*run),
               (end_x - 0.03*rise, end_y + 0.03*run))
         arcade.draw_polygon_filled(point_list, arcade.color.WHITE)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2) + 0.5*rise, arcade.color.WHITE, 15) 
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
