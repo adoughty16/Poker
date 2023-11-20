@@ -1,5 +1,5 @@
 import random
-from enum import Enum
+from enum import IntEnum
 from cards import Card
 from Game_state import Game_state
 
