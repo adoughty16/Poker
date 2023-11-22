@@ -753,10 +753,11 @@ class GameView(arcade.View):
                     self.pot = 0
                     self.dealer = (self.dealer + 1) % 4
                     self.current = (self.dealer + 3) % 4
-                    self.game_state.set_whose_turn(self.current, self.db)
+                    self.game_state.set_whose_turn(self.current + 1, self.db)
                     self.total_call = 10
                     self.round_bets = [0, 0, 0, 0]
                     self.actives = [0, 1, 2, 3]
+                    self.setup()
         
                 #num_busts = 0
                 #for stack in self.stacks:
@@ -765,6 +766,7 @@ class GameView(arcade.View):
                 #if num_busts == 3:
                     #Display some kind of winner screen
                 print("current player: ",self.current)
+                print("whose turn in db: ", self.game_state.get_whose_turn_ad())
                 print("acvites:",self.actives)
                 print('-------------------')
                 if not self.players[self.current].get_player_type():
