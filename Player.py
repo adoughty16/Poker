@@ -342,4 +342,4 @@ class Player:
                 decision = "call"
                 return decision, game_state.get_minimum_call(db)
 
-        return "call"
+        return "call", game_state.get_minimum_call(db)
