@@ -592,7 +592,7 @@ class GameView(arcade.View):
 
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
-                        choice, value = self.players[self.current].turn(self.community_cards,self.db)
+                        choice, value = self.players[self.current].turn(self.community_cards, self.game_state, self.db)
                         print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
@@ -1024,7 +1024,7 @@ class GameView(arcade.View):
               (end_x + 0.03*rise, end_y - 0.03*run),
               (end_x - 0.03*rise, end_y + 0.03*run))
         arcade.draw_polygon_filled(point_list, arcade.color.WHITE)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + 1.5*((end_y - start_y)/2), arcade.color.WHITE, 15) 
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """

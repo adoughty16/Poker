@@ -56,9 +56,9 @@ class Player:
     def set_computer_player(self, boolean_value):
         self.is_computer_player = boolean_value
 
-    def turn(self, community_cards, db):
+    def turn(self, community_cards, game_state, db):
         # return decision (bet, check, fold)
-        decision = self.make_decision(community_cards, db)
+        decision = self.make_decision(community_cards, game_state, db)
         return decision
 
     def showdown(self, hand_list):
@@ -230,8 +230,8 @@ class Player:
 
         return [highest_card.value, HandStrength.HIGH_CARD]
 
-    def make_decision(self, community_cards, db):
-        pot = Game_state.get_total_pot(db)
+    def make_decision(self, community_cards, game_state, db):
+        pot = game_state.get_total_pot(db)
         stack = self.get_stack()
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand + community_cards
@@ -244,8 +244,8 @@ class Player:
             return decision, bet_value
         if len(community_cards) < 3:
             decision = "call"
-            return decision
-        if len(community_cards) < 5:
+            return decision, game_state.get_minimum_call(db)
+        elif len(community_cards) < 5 and len(community_cards) > 3:
             if decided[3]:
                 if len(decided[3][-1]) > 2:
                     decision = "bet"
@@ -328,9 +328,9 @@ class Player:
             val = decided[4].get_value()
             if len(community_cards) > 4:
                 decision = "fold"
-                return decision
+                return decision, 0
             if len(community_cards) < 4:
                 decision = "call"
-                return decision
+                return decision, game_state.get_minimum_call(db)
 
         return "call"
