@@ -56,11 +56,10 @@ class Player:
     def set_computer_player(self, boolean_value):
         self.is_computer_player = boolean_value
 
-    def turn(self, community_cards):
+    def turn(self, community_cards, game_state, db):
         # return decision (bet, check, fold)
-        decision = self.make_decision(community_cards)
-        return 'call', 0
-        #return decision
+        decision = self.make_decision(community_cards, game_state, db)
+        return decision
 
     def showdown(self, hand_list):
         best_hand = hand_list[0]
@@ -162,6 +161,14 @@ class Player:
                 maxed.append(max(lst, key=len))
             return maxed
 
+        def higher_rank(lst):
+            val = lst[0][0].value
+            if lst[1][0].value > val:
+                lst = lst[1]
+            else:
+                lst = lst[0]
+            return lst
+
         def denest(lst):
             if len(lst) == 1 and isinstance(lst, list):
                 return lst[0]
@@ -225,13 +232,15 @@ class Player:
             if len(max_pair) == 3:
                 return [max_pair[0].value, HandStrength.THREE_OF_A_KIND]
             if len(pair_values) == 2:
-                return [pair_values[-1][0].value, HandStrength.TWO_PAIR]
+                higher_pair = higher_rank(pair_values)
+                return [higher_pair[0].value, HandStrength.TWO_PAIR]
             if len(pair_values) == 1:
                 return [pair_values[-1][0].value, HandStrength.ONE_PAIR]
 
         return [highest_card.value, HandStrength.HIGH_CARD]
 
-    def make_decision(self, community_cards):
+    def make_decision(self, community_cards, game_state, db):
+        pot = game_state.get_total_pot(db)
         stack = self.get_stack()
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand + community_cards
@@ -244,6 +253,8 @@ class Player:
             return decision, bet_value
         if len(community_cards) < 3:
             decision = "call"
+            return decision, game_state.get_minimum_call(db)
+        elif len(community_cards) < 5 and len(community_cards) > 3:
             return decision, 0
         if len(community_cards) < 5:
             if decided[3]:
@@ -331,6 +342,6 @@ class Player:
                 return decision, 0
             if len(community_cards) < 4:
                 decision = "call"
-                return decision, 0
+                return decision, game_state.get_minimum_call(db)
 
-        return "call"
+        return "call", game_state.get_minimum_call(db)

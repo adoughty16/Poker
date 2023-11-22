@@ -592,7 +592,7 @@ class GameView(arcade.View):
 
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
-                        choice, value = self.players[self.current].turn(self.community_cards)
+                        choice, value = self.players[self.current].turn(self.community_cards, self.game_state, self.db)
                         print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
@@ -959,37 +959,37 @@ class GameView(arcade.View):
             self.total_coins.remove(coin)
         if total > 700:
             coin_8 = Coin_t()
-            coin_8.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 40, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_8.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 40, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_8)
         if total > 600:
             coin_7 = Coin_t()
-            coin_7.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 35, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_7.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 35, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_7)
         if total > 500:
             coin_6 = Coin_t()
-            coin_6.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 30, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_6.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 30, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_6)
         if total > 400:
             coin_5 = Coin_t()
-            coin_5.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 25, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_5.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 25, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_5)
         if total > 300:
             coin_4 = Coin_t()
-            coin_4.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 20, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_4.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 20, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_4)
         if total > 200:
             coin_3 = Coin_t()
-            coin_3.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 15, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_3.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 15, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_3)
         if total > 100:
             # draw two coins
             coin_2 = Coin_t()
-            coin_2.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 5, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_2.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH + 5, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_2)
         if total > 0:
             # draw one coin 
             coin_1 = Coin_t()
-            coin_1.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            coin_1.position = MIDDLE_X_COMMUNITYCARDS + 4*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_1)
         else:
             pass
@@ -1024,7 +1024,7 @@ class GameView(arcade.View):
               (end_x + 0.03*rise, end_y - 0.03*run),
               (end_x - 0.03*rise, end_y + 0.03*run))
         arcade.draw_polygon_filled(point_list, arcade.color.WHITE)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + 1.5*((end_y - start_y)/2), arcade.color.WHITE, 15) 
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
