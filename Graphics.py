@@ -733,7 +733,6 @@ class GameView(arcade.View):
                 if self.game_state.get_round(self.db) == 'showdown':
 
                     print(f'Round: {self.game_state.get_round_ad()}')
-                    print(self.community_cards)
 
                     final_hands = [self.players[idx].possible_hands(self.community_cards) for idx in self.actives]
 
@@ -754,6 +753,7 @@ class GameView(arcade.View):
                     self.pot = 0
                     self.dealer = (self.dealer + 1) % 4
                     self.current = (self.dealer + 3) % 4
+                    self.game_state.set_whose_turn(self.current, self.db)
                     self.total_call = 10
                     self.round_bets = [0, 0, 0, 0]
                     self.actives = [0, 1, 2, 3]
