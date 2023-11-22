@@ -61,6 +61,16 @@ class Player:
         decision = self.make_decision(community_cards, db)
         return decision
 
+    def showdown(self, hand_list):
+        best_hand = hand_list[0]
+        for hand in hand_list[1:]:
+            if hand[1].value > best_hand[1].value:
+                best_hand = hand
+            elif hand[1].value == best_hand[1].value and hand[0] > best_hand[0]:
+                best_hand = hand
+        return best_hand
+
+
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
 
