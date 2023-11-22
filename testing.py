@@ -186,7 +186,10 @@ def test_game_state():
        print('PASSED PLAYER HANDS')
     else:
         print('FAILED PLAYER HANDS')
+    game_state_1.clear_player_hands(db)
+    print(game_state_1.get_player_hands(db))
     # community cards 
+    game_state_1.clear_community_cards(db)
     if game_state_1.get_total_pot(db) != 0:
         print('FAILED TOTAL POT')
     else:
@@ -269,10 +272,10 @@ def test_deck():
         print(card.get_filename())
 
 def main():
-    #test_game_state()
+    test_game_state()
     # test_deck()
     #test_game_state()
     # test_deck()
-    test_possible_hands()
+    #test_possible_hands()
 
 main()

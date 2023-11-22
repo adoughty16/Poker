@@ -225,7 +225,7 @@ class Player:
         return [highest_card.value, HandStrength.HIGH_CARD]
 
     def make_decision(self, community_cards, db):
-        pot = Game_state.get_total_pot()
+        pot = Game_state.get_total_pot(db)
         stack = self.get_stack()
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand + community_cards

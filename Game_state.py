@@ -101,9 +101,8 @@ class Game_state:
 
     def clear_community_cards(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
-        for card in self.community_cards:
-            game_state_ref.update({"community_cards": firestore.ArrayRemove(Card.to_dict(card))})
-            self.community_cards.remove(card)
+        game_state_ref.update({"community_cards": firestore.DELETE_FIELD})
+        game_state_ref.update({"community_cards": []})
         
     # function add a singular community card in turn and river 
     def add_community_card(self, card, db):
@@ -126,10 +125,8 @@ class Game_state:
 
     def clear_player_hands(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
-        for i in range(len(self.player_hands)):
-            for j in range(len(self.player_hands[i])):
-                game_state_ref.update({"player_hands": firestore.ArrayRemove(Card.to_dict(self.player_hands[i][j]))})
-                self.community_cards.remove(self.player_hands[i][j])
+        game_state_ref.update({"player_hands": firestore.DELETE_FIELD})
+        game_state_ref.update({"player_hands": []})
 
     def set_player_hand(self, player_index, hand, db):
         game_state_ref = db.collection("states").document(self.doc_name)
@@ -329,15 +326,16 @@ class Game_state:
         # for every player's hand stored in the database
         # the to_dict() gives it as one array of length 8 (not of length 4 of length 2 nested)
         doc_player_hands = doc.to_dict()["player_hands"]
-        for i in range(4):
-            # for every card in that hand
-            current_hand = [] 
-            for j in range(2):
-                # add the card to the curent hand (an array to store the hand) 
-                # by converting the card to a Card object using the from_dict (similar to get_community_cards)
-                current_hand.append(Card(doc_player_hands[(2*i) + j]['suit'], doc_player_hands[(2*i) + j]['value']))
-            # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
-            player_hands.append(current_hand)
+        if len(doc_player_hands) > 0: 
+            for i in range(4):
+                # for every card in that hand
+                current_hand = [] 
+                for j in range(2):
+                    # add the card to the curent hand (an array to store the hand) 
+                    # by converting the card to a Card object using the from_dict (similar to get_community_cards)
+                    current_hand.append(Card(doc_player_hands[(2*i) + j]['suit'], doc_player_hands[(2*i) + j]['value']))
+                # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
+                player_hands.append(current_hand)
         return player_hands 
 
     # def download - to get updated version of game_state from database 
