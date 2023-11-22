@@ -15,6 +15,16 @@ from Player import Player, HandStrength
 - '''
 def test_make_decision():
     db = database.init()
+    player = Player()
+
+    # 4 straight flush
+    community_cards = [Card(0,1),Card(0,2),Card(2,11)]
+    player.set_hand([Card(0,3),Card(0,4)])
+    decision = player.make_decision(community_cards,db)
+    if decision != ["bet", 700]:
+        print('FAILED 4-STRAIGHT FLUSH!')
+    else:
+        print('PASSED 4-STRAIGHT FLUSH!')
 
 
 def test_possible_hands():

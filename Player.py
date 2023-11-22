@@ -251,9 +251,8 @@ class Player:
                     bet_value = stack * .2
                     return decision, bet_value
 
-
         if decided[1]:
-            #if straight flush > 4
+            # if straight flush > 4
             if len(decided[1][-1]) > 4:
                 decision = "bet"
                 # all in
