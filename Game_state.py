@@ -124,8 +124,6 @@ class Game_state:
                 player_hands_dict[i].append(Card.to_dict(player_hands[i][j]))
             game_state_ref.update({"player_hands": firestore.ArrayUnion(player_hands_dict[i])})
 
-        #game_state_ref.update({"player_hands": player_hands_dict})
-
     def clear_player_hands(self, db):
         game_state_ref = db.collection("states").document(self.doc_name)
         for i in range(len(self.player_hands)):
@@ -244,7 +242,6 @@ class Game_state:
         game_state_ref = db.collection("states").document(self.doc_name)
         doc = game_state_ref.get()
         comm_cards = []
-        # TODO: how to access community cards array from the database ?
         # for card in the document's community cards
         doc_cc = doc.to_dict()["community_cards"]
         for comm_card in doc_cc:
@@ -399,7 +396,6 @@ class Game_state:
         
     def get_total_pot_ad(self):
         return self.total_pot
-
 
     def get_minimum_call_ad(self):
         return self.minimum_call 

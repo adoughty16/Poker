@@ -292,12 +292,6 @@ class GameView(arcade.View):
         for i in range(self.num_players):
             #This means that the real players will be the first in the list
             self.players[i].set_computer_player(False)
-        # deal the cards
-        # TODO: find a better place for this since this happens every round (or delete if handled in game logic)
-        # self.hands = self.deck.deal()
-        # self.flop = self.deck.flop()
-        # self.turn = self.deck.turn()
-        # self.river = self.deck.river()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -329,6 +323,7 @@ class GameView(arcade.View):
         self.bet_value_chosen = False
         #keeps on_update from overlapping itself
         self.working = False
+        #keeps draw from trying to draw an empty list of cards
         self.dealt = False
 
 
@@ -440,6 +435,7 @@ class GameView(arcade.View):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
+        # default names for computer/real players
         self.names = [f'Player {num}' for num in range(1, self.num_players+1)]
         for num in range(1, 5-self.num_players):
             self.names.append(f'Computer Player {num}')
@@ -482,6 +478,8 @@ class GameView(arcade.View):
 
         # Sprite list with all the cards, no matter what pile they are in.
         self.card_list = arcade.SpriteList()
+        self.coins = arcade.SpriteList()
+        self.total_coins = arcade.SpriteList()
 
 
     def on_update(self, delta_time):
@@ -489,9 +487,6 @@ class GameView(arcade.View):
         if not self.working:
             self.working = True
             self.game_state.download(self.db)
-
-            print("\n-----\nWaiting: ",self.game_state.get_waiting_ad())
-            print("Current: ", self.current)
             
             # if I am not the host:
             if not self.host:
@@ -592,11 +587,16 @@ class GameView(arcade.View):
 
                 # if we are betting
                 elif self.game_state.get_round_ad() == 'pre-flop' or 'flop' or 'turn' or 'river':
+
+                    print(f"Player {self.current}'s turn")
+
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
                         choice, value = self.players[self.current].turn(self.community_cards,self.db)
+                        print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
+                        print(f'Human player {self.current} decides: {choice}, {value}')
                     #if bet
                     if choice == 'bet':
                         #compute the amount of money this player is putting into the pot:
@@ -634,6 +634,7 @@ class GameView(arcade.View):
 
                     # if call
                     elif choice == 'call':
+                        print(f'Player {self.current} calls')
                         # add to the pot the call amount (based on the amount below the total_call the current player
                         # has already bet in round_bets)
                         self.pot += (self.total_call - self.round_bets[self.current])
@@ -741,7 +742,8 @@ class GameView(arcade.View):
 
                     #reset values and change the round
                     self.community_cards = []
-                    self.game_state.set_community_cards(self.community_cards, self.db)
+                    self.game_state.clear_community_cards(self.db)
+                    self.game_state.clear_player_hands(self.db)
                     self.game_state.set_player_stacks(self.stacks, self.db)
                     self.game_state.set_round('dealing', self.db)
                     self.game_state.set_total_pot(0, self.db)
@@ -761,6 +763,7 @@ class GameView(arcade.View):
                     #Display some kind of winner screen
                 print("current player: ",self.current)
                 print("acvites:",self.actives)
+                print('-------------------')
                 if not self.players[self.current].get_player_type():
                         self.game_state.set_waiting(True, self.db)
                 else:
@@ -793,7 +796,6 @@ class GameView(arcade.View):
         for i in range(len(flop)):
             card_arc = Card_arcade(flop[i], True)
             card_arc.position = position_x + (i)*(X_SPACING), position_y
-            #MIDDLE_X_COMMUNITYCARDS + i * X_SPACING
             self.card_list.append(card_arc)
 
     def draw_turn_round(self, card):
@@ -830,13 +832,13 @@ class GameView(arcade.View):
         # Clear the screen
         self.clear()
         self.manager2.draw()
-        # TODO: dependning on game logic and where game_state updates, download may need to be called before drawing 
-        # self.game_state.download_wph()
+        # dependning on game logic and where game_state updates, download may need to be called before drawing 
+        # self.game_state.download_wph(self.db)
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
 
-        # Draw the cards - certain things like hands will not need to be accessed every time 
+        # draw the cards - certain things like hands will not need to be accessed every time 
         if self.dealt:
             self.draw_deal(self.hands)
         # technically after flop the three ccs should be stored locally and can be accessed that way 
@@ -860,9 +862,7 @@ class GameView(arcade.View):
         arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names (and gray for those that are inactive) 
-        # names = self.game_state.get_player_names_ad()
         self.actives = self.game_state.get_actives_ad()
-        # the player name at the index of the value of the actives array is active 
         # short cut: draw them all in gray, then draw over them in white! 
 
         # player "2" is actually index 1 since indexing starts at 0 
@@ -895,13 +895,22 @@ class GameView(arcade.View):
         self.dealer = self.game_state.get_dealer_ad() 
         if self.dealer == 0:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, MAT_HEIGHT + 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (SCREEN_WIDTH/2)-(MAT_WIDTH) - 30, MAT_HEIGHT + 20, arcade.color.RED, 11)
         elif self.dealer == 1:
             arcade.draw_circle_filled((MIDDLE_X_2)+ (MAT_WIDTH) + 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((MIDDLE_X_2)+ (MAT_WIDTH) + 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (MIDDLE_X_2)+ (MAT_WIDTH) + 20, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 30, arcade.color.RED, 11)
         elif self.dealer == 2:
             arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, SCREEN_HEIGHT - MAT_HEIGHT -  25, 15, arcade.color.RED)
+            arcade.draw_circle_filled((SCREEN_WIDTH/2)-(MAT_WIDTH) - 25, SCREEN_HEIGHT - MAT_HEIGHT -  25, 12, arcade.color.WHITE)
+            arcade.draw_text('D',(SCREEN_WIDTH/2)-(MAT_WIDTH) - 30, SCREEN_HEIGHT - MAT_HEIGHT -  30, arcade.color.RED, 11)
+
         else:
             arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 15, arcade.color.RED)
-
+            arcade.draw_circle_filled((MIDDLE_X_4)-(MAT_WIDTH) - 25, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 25, 12, arcade.color.WHITE)
+            arcade.draw_text('D', (MIDDLE_X_4)-(MAT_WIDTH) - 30, (SCREEN_HEIGHT/2) - (MAT_HEIGHT/2) - 30, arcade.color.RED, 11)
+        
         # arrow for whose_turn and minimum_call
         arrow_to = (self.game_state.get_whose_turn_ad() - 1) % 4
         arrow_amount = self.game_state.get_minimum_call_ad() 
@@ -911,12 +920,81 @@ class GameView(arcade.View):
         self.pot = self.game_state.get_round_pot_ad() 
         arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + MAT_WIDTH/2, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
+        self.round_coins()
         # total pot 
         total_pot = self.game_state.get_total_pot_ad()
         arcade.draw_text(f'Total pot: {total_pot}', MIDDLE_X_COMMUNITYCARDS + 3*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
                     arcade.color.WHITE, font_size=15, anchor_x="center")
+        self.total_pot_coins(total_pot)
+        self.coins.draw()
+        self.total_coins.draw()
+    
+    # function to draw coin objects depending on how much the round pot is 
+    def round_coins(self):
+        for coin in self.coins:
+            self.coins.remove(coin)
+        if self.pot > 0:
+            # draw one coin 
+            coin_1 = Coin()
+            coin_1.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.coins.append(coin_1)
+        if self.pot > 100:
+            # draw two coins
+            coin_2 = Coin()
+            coin_2.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH + 14, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.coins.append(coin_1)
+            self.coins.append(coin_2)
+        if self.pot > 500:
+            coin_3 = Coin()
+            coin_3.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH + 14, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.coins.append(coin_1)
+            self.coins.append(coin_2)
+            self.coins.append(coin_3)
+        else:
+            pass
 
+    # function to draw coins next to total pot amount display depending on amount 
+    def total_pot_coins(self, total):
+        for coin in self.total_coins:
+            self.total_coins.remove(coin)
+        if total > 700:
+            coin_8 = Coin_t()
+            coin_8.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 40, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_8)
+        if total > 600:
+            coin_7 = Coin_t()
+            coin_7.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 35, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_7)
+        if total > 500:
+            coin_6 = Coin_t()
+            coin_6.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 30, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_6)
+        if total > 400:
+            coin_5 = Coin_t()
+            coin_5.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 25, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_5)
+        if total > 300:
+            coin_4 = Coin_t()
+            coin_4.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 20, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_4)
+        if total > 200:
+            coin_3 = Coin_t()
+            coin_3.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 15, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_3)
+        if total > 100:
+            # draw two coins
+            coin_2 = Coin_t()
+            coin_2.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 5, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_2)
+        if total > 0:
+            # draw one coin 
+            coin_1 = Coin_t()
+            coin_1.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
+            self.total_coins.append(coin_1)
+        else:
+            pass
 
+    # draws turn arrow for graphics 
     def draw_turn_arrow(self, to, amount):
         if to == 0:
             start_x = MIDDLE_X_4 - MAT_WIDTH - 65
@@ -946,7 +1024,7 @@ class GameView(arcade.View):
               (end_x + 0.03*rise, end_y - 0.03*run),
               (end_x - 0.03*rise, end_y + 0.03*run))
         arcade.draw_polygon_filled(point_list, arcade.color.WHITE)
-        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2) + 0.5*rise, arcade.color.WHITE, 15) 
+        arcade.draw_text(f'{amount}', start_x + ((end_x - start_x) /2), start_y + ((end_y - start_y)/2), arcade.color.WHITE, 15) 
 
     def on_key_press(self, symbol: int, modifiers: int):
         """ User presses key """
@@ -972,6 +1050,15 @@ class Card_arcade(arcade.Sprite):
 
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
+
+# classes of coins and total coins to display on graphics 
+class Coin(arcade.Sprite):
+    def __init__(self):
+        super().__init__(":resources:images/items/gold_2.png", 0.5, hit_box_algorithm="None")
+
+class Coin_t(arcade.Sprite):
+    def __init__(self):
+        super().__init__(":resources:images/items/gold_3.png", 0.5, hit_box_algorithm="None")
 
 # add parameters to main: num_players, host, game_state, ready, lock
 def main():
