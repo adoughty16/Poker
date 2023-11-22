@@ -161,6 +161,14 @@ class Player:
                 maxed.append(max(lst, key=len))
             return maxed
 
+        def higher_rank(lst):
+            val = lst[0][0].value
+            if lst[1][0].value > val:
+                lst = lst[1]
+            else:
+                lst = lst[0]
+            return lst
+
         def denest(lst):
             if len(lst) == 1 and isinstance(lst, list):
                 return lst[0]
@@ -224,7 +232,8 @@ class Player:
             if len(max_pair) == 3:
                 return [max_pair[0].value, HandStrength.THREE_OF_A_KIND]
             if len(pair_values) == 2:
-                return [pair_values[-1][0].value, HandStrength.TWO_PAIR]
+                higher_pair = higher_rank(pair_values)
+                return [higher_pair[0].value, HandStrength.TWO_PAIR]
             if len(pair_values) == 1:
                 return [pair_values[-1][0].value, HandStrength.ONE_PAIR]
 

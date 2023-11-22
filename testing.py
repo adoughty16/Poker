@@ -142,6 +142,13 @@ def test_possible_hands():
         print('FAILED TWO PAIR')
     else:
         print('PASSED TWO PAIR')
+    # one pair
+    set_fourteen = [Card(1, 6), Card(2, 6), Card(0, 4), Card(2, 10), Card(1, 8), Card(3, 1), Card(2, 9)]
+    result = (player.evaluate_hand(set_fourteen))
+    if result != [6, HandStrength.ONE_PAIR]:
+        print('FAILED ONE PAIR')
+    else:
+        print('PASSED ONE PAIR')
     # high card
     set_seven = [Card(1, 1), Card(2, 11), Card(0, 3), Card(2, 10), Card(1, 4), Card(3, 5), Card(2, 12)]
     result = (player.evaluate_hand(set_seven))
@@ -153,9 +160,9 @@ def test_possible_hands():
     set_eight = [Card(1, 1), Card(2, 1), Card(0, 3), Card(2, 10)]
     result = (player.evaluate_hand(set_eight))
     if result != [1, HandStrength.ONE_PAIR]:
-        print('FAILED 4-CARD PAIR')
+        print('FAILED 4-CARD ONE PAIR')
     else:
-        print('PASSED 4-CARD PAIR')
+        print('PASSED 4-CARD ONE PAIR')
     # 3 cards- high card
     set_nine = [Card(1, 1), Card(2, 12), Card(0, 3)]
     result = (player.evaluate_hand(set_nine))
@@ -163,12 +170,36 @@ def test_possible_hands():
         print('FAILED 3-CARD HIGH CARD')
     else:
         print('PASSED 3-CARD HIGH CARD')
+    #random cards
     set_ten = [Card(2,11), Card(0,0), Card(1, 12), Card(3, 0), Card(3, 11), Card(1, 0), Card(3, 6)]
     result = player.evaluate_hand(set_ten)
     if result != [0, HandStrength.FULL_HOUSE]:
         print('FAILED RANDOM FULL HOUSE!')
     else:
         print('PASSED RANDOM FULL HOUSE!')
+
+    set_eleven = [Card(0,11 ), Card(3, 7), Card(2, 1), Card(0, 1), Card(0, 4), Card(2, 6), Card(3, 1)]
+    result = player.evaluate_hand(set_eleven)
+    if result != [1, HandStrength.THREE_OF_A_KIND]:
+        print('FAILED RANDOM THREE OF A KIND!')
+    else:
+        print('PASSED RANDOM THREE OF A KIND!')
+
+    set_twelve = [Card(0, 3), Card(2, 0), Card(2, 0), Card(0, 8), Card(3, 5), Card(2, 10), Card(2, 8)]
+    result = player.evaluate_hand(set_twelve)
+    if result != [8, HandStrength.TWO_PAIR]:
+        print('FAILED RANDOM TWO PAIR!')
+    else:
+        print('PASSED RANDOM TWO PAIR!')
+
+    set_thirteen = [Card(3,10 ), Card(0, 3), Card(3, 4), Card(3, 11), Card(3, 11), Card(1, 1), Card(3,12 )]
+    result = player.evaluate_hand(set_thirteen)
+    if result != [12, HandStrength.FLUSH]:
+        print('FAILED RANDOM FLUSH!')
+    else:
+        print('PASSED RANDOM FLUSH!')
+
+
 
 def test_game_state():
     db = database.init()
