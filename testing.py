@@ -199,6 +199,13 @@ def test_possible_hands():
     else:
         print('PASSED RANDOM FLUSH!')
 
+    set_fifteen = [Card(2, 4), Card(2, 0), Card(3, 3), Card(3, 0), Card(3, 11), Card(1, 0), Card(3, 8)]
+    result = player.evaluate_hand(set_fifteen)
+    if result != [0, HandStrength.THREE_OF_A_KIND]:
+        print('FAILED 5PM THREE OF A KIND!')
+    else:
+        print('PASSED 5PM THREE OF A KIND!')
+
 
 
 def test_game_state():
@@ -309,10 +316,10 @@ def test_deck():
         print(card.get_filename())
 
 def main():
-    test_game_state()
+    # test_game_state()
     # test_deck()
     #test_game_state()
     # test_deck()
-    #test_possible_hands()
+    test_possible_hands()
 
 main()
