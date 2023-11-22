@@ -859,6 +859,7 @@ class GameView(arcade.View):
         self.card_list.draw()
 
         #self.bet_value = self.game_state.get_minimum_call_ad()
+        bet_to_draw = self.game_state.get_minimum_call_ad() + self.bet_value
         # draw bet value word
         arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
@@ -945,13 +946,10 @@ class GameView(arcade.View):
             # draw two coins
             coin_2 = Coin()
             coin_2.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH + 14, MIDDLE_Y - (MAT_HEIGHT/2) - 25
-            self.coins.append(coin_1)
             self.coins.append(coin_2)
         if self.pot > 500:
             coin_3 = Coin()
             coin_3.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH + 14, MIDDLE_Y - (MAT_HEIGHT/2) - 25
-            self.coins.append(coin_1)
-            self.coins.append(coin_2)
             self.coins.append(coin_3)
         else:
             pass
