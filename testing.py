@@ -163,6 +163,12 @@ def test_possible_hands():
         print('FAILED 3-CARD HIGH CARD')
     else:
         print('PASSED 3-CARD HIGH CARD')
+    set_ten = [Card(2,11), Card(0,0), Card(1, 12), Card(3, 0), Card(3, 11), Card(1, 0), Card(3, 6)]
+    result = player.evaluate_hand(set_ten)
+    if result != [0, HandStrength.FULL_HOUSE]:
+        print('FAILED RANDOM FULL HOUSE!')
+    else:
+        print('PASSED RANDOM FULL HOUSE!')
 
 def test_game_state():
     db = database.init()

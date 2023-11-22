@@ -180,7 +180,13 @@ class Player:
                     # If the length of the list is 3, increment the len_3_counter
                     elif len(item) == 3:
                         len_3.append(item)
-
+            if len(len_2) > 1:
+                max = len_2[0][0].value
+                if len_2[1][0].value > max:
+                    len_2 = len_2[1]
+                else:
+                    len_2 = len_2[0]
+            len_3 = denest(len_3)
             # Return True if there is at least one list of length 2 and one list of length 3
             return [len_2, len_3]
 
