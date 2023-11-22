@@ -589,10 +589,12 @@ class GameView(arcade.View):
                 elif self.game_state.get_round_ad() == 'pre-flop' or 'flop' or 'turn' or 'river':
 
                     print(f"Player {self.current}'s turn")
+                    print(f'Round: {self.game_state.get_round_ad()}')
 
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
-                        choice, value = self.players[self.current].turn(self.community_cards, self.game_state, self.db)
+                        choice, value = "call", 0
+                        #choice, value = self.players[self.current].turn(self.community_cards, self.game_state, self.db)
                         print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
@@ -730,6 +732,7 @@ class GameView(arcade.View):
                 
                 if self.game_state.get_round(self.db) == 'showdown':
 
+                    print(f'Round: {self.game_state.get_round_ad()}')
                     print(self.community_cards)
 
                     final_hands = [self.players[idx].possible_hands(self.community_cards) for idx in self.actives]
