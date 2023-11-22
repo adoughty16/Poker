@@ -197,7 +197,7 @@ class Player:
     def make_decision(self, community_cards, db):
 
         # # for now
-        # return "call", 0
+        return "call", 0
         #
         # # could use evaluate_strength and evaluate_hand as part of decision
         # # random decision for now

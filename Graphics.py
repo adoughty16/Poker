@@ -292,12 +292,6 @@ class GameView(arcade.View):
         for i in range(self.num_players):
             #This means that the real players will be the first in the list
             self.players[i].set_computer_player(False)
-        # deal the cards
-        # TODO: find a better place for this since this happens every round (or delete if handled in game logic)
-        # self.hands = self.deck.deal()
-        # self.flop = self.deck.flop()
-        # self.turn = self.deck.turn()
-        # self.river = self.deck.river()
 		#the current betting pot
         self.pot = 0
 		#players[] index to track current dealer
@@ -329,6 +323,7 @@ class GameView(arcade.View):
         self.bet_value_chosen = False
         #keeps on_update from overlapping itself
         self.working = False
+        #keeps draw from trying to draw an empty list of cards
         self.dealt = False
 
 
@@ -440,6 +435,7 @@ class GameView(arcade.View):
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
+        # default names for computer/real players
         self.names = [f'Player {num}' for num in range(1, self.num_players+1)]
         for num in range(1, 5-self.num_players):
             self.names.append(f'Computer Player {num}')
@@ -491,9 +487,6 @@ class GameView(arcade.View):
         if not self.working:
             self.working = True
             self.game_state.download(self.db)
-
-            print("\n-----\nWaiting: ",self.game_state.get_waiting_ad())
-            print("Current: ", self.current)
             
             # if I am not the host:
             if not self.host:
@@ -594,11 +587,16 @@ class GameView(arcade.View):
 
                 # if we are betting
                 elif self.game_state.get_round_ad() == 'pre-flop' or 'flop' or 'turn' or 'river':
+
+                    print(f"Player {self.current}'s turn")
+
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
                         choice, value = self.players[self.current].turn(self.community_cards,self.db)
+                        print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
+                        print(f'Human player {self.current} decides: {choice}, {value}')
                     #if bet
                     if choice == 'bet':
                         #compute the amount of money this player is putting into the pot:
@@ -636,6 +634,7 @@ class GameView(arcade.View):
 
                     # if call
                     elif choice == 'call':
+                        print(f'Player {self.current} calls')
                         # add to the pot the call amount (based on the amount below the total_call the current player
                         # has already bet in round_bets)
                         self.pot += (self.total_call - self.round_bets[self.current])
@@ -763,6 +762,7 @@ class GameView(arcade.View):
                     #Display some kind of winner screen
                 print("current player: ",self.current)
                 print("acvites:",self.actives)
+                print('-------------------')
                 if not self.players[self.current].get_player_type():
                         self.game_state.set_waiting(True, self.db)
                 else:
