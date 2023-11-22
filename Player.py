@@ -195,93 +195,177 @@ class Player:
         return [highest_card.value, HandStrength.HIGH_CARD]
 
     def make_decision(self, community_cards, db):
-
-        # # for now
-        # return "call", 0
-        #
-        # # could use evaluate_strength and evaluate_hand as part of decision
-        # # random decision for now
-        # # EDIT needs to return a bet value if decision is bet. This can just be zero if the decision is not bet
-        # decisions = ["bet", "check", "fold"]
-        # choice = random.choice(decisions)
-        # if choice == "bet":
-        #     bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
-        # else:
-        #     bet_value = 0
-        #
-        # # ------------------------------------------ AI PSEUDOCODE
-
+        pot = Game_state.get_total_pot()
+        stack = self.get_stack()
         # lst_cards = self.hand + community_cards
         lst_cards = self.hand + community_cards
         # [pair_values, player_straight_flushes, player_straights, flushes, highest_card]
         decided = self.possible_hands(lst_cards)
 
+        if stack < 20:
+            bet_value = 0
+            decision = "fold"
+            return decision, bet_value
+        if len(community_cards) < 3:
+            decision = "call"
+            return decision
+        if len(community_cards) < 5:
+            if decided[3]:
+                if len(decided[3][-1]) > 2:
+                    decision = "bet"
+                    bet_value = stack * .4
+                    return decision, bet_value
+            if decided[1]:
+                if len(decided[1][-1]) > 2:
+                    decision = "bet"
+                    bet_value = stack * .2
+                    return decision, bet_value
+            if decided[2]:
+                if len(decided[2][-1]) > 2:
+                    decision = "bet"
+                    bet_value = stack * .2
+                    return decision, bet_value
+            if decided[0]:
+                if len(decided[0][-1]) > 1:
+                    decision = "bet"
+                    bet_value = stack * .2
+                    return decision, bet_value
+
+
+        if decided[1]:
+            #if straight flush > 4
+            if len(decided[1][-1]) > 4:
+                decision = "bet"
+                # all in
+                bet_value = stack
+                return decision, bet_value
+            if len(decided[1][-1]) > 3:
+                decision = "bet"
+                bet_value = stack * 0.7
+                return decision, bet_value
+            if len(decided[1][-1]) > 2:
+                decision = "bet"
+                bet_value = stack * 0.2
+                return decision, bet_value
+
+        if decided[2]:
+            if len(decided[2][-1]) > 4:
+                decision = "bet"
+                bet_value = stack * 90
+                return decision, bet_value
+            if len(decided[2][-1]) > 3:
+                decision = "bet"
+                bet_value = stack * 0.6
+                return decision, bet_value
+            if len(decided[2][-1]) > 2:
+                decision = "bet"
+                bet_value = stack * 0.15
+                return decision, bet_value
+
+        if decided[3]:
+            if len(decided[3][-1]) > 4:
+                decision = "bet"
+                bet_value = stack * 0.85
+                return decision, bet_value
+            if len(decided[3][-1]) > 3:
+                decision = "bet"
+                bet_value = stack * 0.4
+                return decision, bet_value
+            if len(decided[3][-1]) > 2:
+                decision = "bet"
+                bet_value = stack * 0.1
+                return decision, bet_value
+
+        if decided[0]:
+            if len(decided[-1]) > 3:
+                decision = "bet"
+                bet_value = stack * .85
+                return decision, bet_value
+            if len(decided[0][-1]) > 2:
+                decision = "bet"
+                bet_value = stack * .75
+                return decision, bet_value
+            if len(decided[0][-1]) > 1:
+                decision = "bet"
+                bet_value = stack * 0.2
+                return decision, bet_value
+        if decided[4]:
+            val = decided[4].get_value()
+            if len(community_cards) > 4:
+                decision = "fold"
+                return decision
+            if len(community_cards) < 4:
+                decision = "call"
+                return decision
+
+
         # if len(community_cards)
         # if second round
-        if len(lst_cards) == 7:
-            if decided[1] > 6:
-                if decided[0] > 9:
-                    decision = "bet"
-                    # ALL IN!
-                    bet_value = Game_state.get_total_pot(db)
-                    return decision, bet_value
-                decision = "bet"
-                bet_value = Game_state.get_total_pot(db) * (1 + random.randint(5, 10))
-                return decision, bet_value
-            if decided[1] > 3:
-                decision = "bet"
-                bet_value = decided[0] * (1 + random.randint(5, 10))
-                return decision, bet_value
-            if decided[1] > 1:
-                decision = "bet"
-                bet_value = decided[0] * (1 + random.randint(1, 5))
-                return decision, bet_value
+        # if len(lst_cards) == 7:
+        #     # decied[0] is the rank, decided[1] is the handstrength enum value
+        #     if decided[1] > 6:
+        #         if decided[0] > 9:
+        #             decision = "bet"
+        #             # ALL IN!
+        #             bet_value = Game_state.get_total_pot(db)
+        #             return decision, bet_value
+        #         decision = "bet"
+        #         bet_value = Game_state.get_total_pot(db) * (1 + random.randint(5, 10))
+        #         return decision, bet_value
+        #     if decided[1] > 3:
+        #         decision = "bet"
+        #         bet_value = decided[0] * (1 + random.randint(5, 10))
+        #         return decision, bet_value
+        #     if decided[1] > 1:
+        #         decision = "bet"
+        #         bet_value = decided[0] * (1 + random.randint(1, 5))
+        #         return decision, bet_value
+        #
+        # if len(lst_cards) == 4:
+        #
+        #     if decided[1] == HandStrength.HIGH_CARD:
+        #         if decided[0] > 9:
+        #             decision = "bet"
+        #             bet_value = decided[0] * random.randint(0, 5)
+        #             return decision, bet_value
+        #         else:
+        #             decision = "bet"
+        #             bet_value = decided[0] * random.randint(1, 5)
+        #             return decision, bet_value
+        # if len(lst_cards) < 4:
+        #
+        #     # if rank is two pair or greater
+        #     if decided[1] > 6:
+        #         # if straight flush has a high card
+        #         if decided[0] > 7:
+        #             # raise = current_pot * 2/3
+        #             decision = "bet"
+        #             #              vvvvvvvvvvvvvvvvvvvvvvvv  how get total pot?
+        #             bet_value = Game_state.get_total_pot(db) * (1 + random.randint(1, 4) / 3)
+        #             return decision, bet_value
+        #         # raise = current_ pot * 1/2
+        #         decision = "bet"
+        #         bet_value = Game_state.get_total_pot(db) * 1.5
+        #         return decision, bet_value
+        #     # if returns flush > 2
+        #     if decided[1] == HandStrength.ONE_PAIR:
+        #         decision = "bet"
+        #     # raise = current_pot * 1/3
+        #         bet_value = Game_state.get_total_pot(db) * (1 + 1/3)
+        #         return decision, bet_value
+        #     if decided[1] < 2:
+        #         decisions = ["bet", "check", "fold"]
+        #         choice = random.choice(decisions)
+        #         return choice, 0
+        #     # if first round, check
+        # if len(lst_cards) == 2:
+        #     decision = "check"
+        #     choice = random.choice(decision)
+        #     if choice == "bet":
+        #         bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
+        #         return choice, bet_value
+        #     else:
+        #         bet_value = 0
+        #         return choice, bet_value
 
-        if len(lst_cards) == 4:
-
-            if decided[1] == HandStrength.HIGH_CARD:
-                if decided[0] > 9:
-                    decision = "bet"
-                    bet_value = decided[0] * random.randint(0, 5)
-                    return decision, bet_value
-                else:
-                    decision = "bet"
-                    bet_value = decided[0] * random.randint(1, 5)
-                    return decision, bet_value
-        if len(lst_cards) < 4:
-
-            # if rank is two pair or greater
-            if decided[1] > 6:
-                # if straight flush has a high card
-                if decided[0] > 7:
-                    # raise = current_pot * 2/3
-                    decision = "bet"
-                    #              vvvvvvvvvvvvvvvvvvvvvvvv  how get total pot?
-                    bet_value = Game_state.get_total_pot(db) * (1 + random.randint(1, 4) / 3)
-                    return decision, bet_value
-                # raise = current_ pot * 1/2
-                decision = "bet"
-                bet_value = Game_state.get_total_pot(db) * 1.5
-                return decision, bet_value
-            # if returns flush > 2
-            if decided[1] == HandStrength.ONE_PAIR:
-                decision = "bet"
-            # raise = current_pot * 1/3
-                bet_value = Game_state.get_total_pot(db) * (1 + 1/3)
-                return decision, bet_value
-            if decided[1] < 2:
-                decisions = ["bet", "check", "fold"]
-                choice = random.choice(decisions)
-                return choice, 0
-            # if first round, check
-        if len(lst_cards) == 2:
-            decision = "check"
-            choice = random.choice(decision)
-            if choice == "bet":
-                bet_value = 5 * random.randint(1, 10)  # THIS IS A PLACEHOLDER
-                return choice, bet_value
-            else:
-                bet_value = 0
-                return choice, bet_value
-
-
+        return "call", 0
