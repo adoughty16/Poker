@@ -253,7 +253,7 @@ class Player:
             return decision, bet_value
         if len(community_cards) < 3:
             decision = "call"
-            return decision, game_state.get_minimum_call(db)
+            return decision, 0
         elif len(community_cards) < 5 and len(community_cards) > 3:
             if decided[3]:
                 if len(decided[3][-1]) > 2:
@@ -340,6 +340,6 @@ class Player:
                 return decision, 0
             if len(community_cards) < 4:
                 decision = "call"
-                return decision, game_state.get_minimum_call(db)
+                return decision, 0
 
-        return "call", game_state.get_minimum_call(db)
+        return "call", 0
