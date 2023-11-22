@@ -592,7 +592,7 @@ class GameView(arcade.View):
 
                     if self.players[self.current].get_player_type():
                         #give the player's turn() function the community cards and it will return a decision
-                        choice, value = self.players[self.current].turn(self.community_cards,self.db)
+                        choice, value = self.players[self.current].turn(self.community_cards)
                         print(f'Computer player {self.current} decides: {choice}, {value}')
                     else:
                         choice, value = self.game_state.get_player_decision(self.db)
