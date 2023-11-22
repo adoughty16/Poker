@@ -13,12 +13,40 @@ from Player import Player, HandStrength
 - get bet
 - decision 
 - '''
-def test_ai():
+def test_showdown():
     db = database.init()
+    game_state_1 = Game_state(db, 'test_doc')
+
+    # test for tiebreaking two similar hands
+    hand_one = [[2,HandStrength.TWO_PAIR], [5, HandStrength.TWO_PAIR], [11, HandStrength.HIGH_CARD], [3, HandStrength.ONE_PAIR]]
+    result = game_state_1.showdown(hand_one)
+    if result != [5, HandStrength.TWO_PAIR]:
+        print('RANK TEST FAILED!')
+    else:
+        print('RANK TEST PASSED!')
+
+    # test for high card
+    hand_two = [[2, HandStrength.HIGH_CARD], [5, HandStrength.HIGH_CARD], [11, HandStrength.HIGH_CARD],
+                [3, HandStrength.HIGH_CARD]]
+    result = game_state_1.showdown(hand_two)
+    if result != [11, HandStrength.HIGH_CARD]:
+        print('HIGH CARD TEST FAILED!')
+    else:
+        print('HIGH CARD TEST PASSED!')
+
+    # test for straight flush
+    hand_three = [[2, HandStrength.HIGH_CARD], [5, HandStrength.HIGH_CARD], [11, HandStrength.HIGH_CARD],
+                [3, HandStrength.STRAIGHT_FLUSH]]
+    result = game_state_1.showdown(hand_three)
+    if result != [3, HandStrength.STRAIGHT_FLUSH]:
+        print('STRAIGHT FLUSH TEST FAILED!')
+    else:
+        print('STRAIGHT FLUSH TEST PASSED!')
 
 def test_possible_hands():
 
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
+    # used for debugging and testing possible_hands without launching graphics every time
     def possible_hands_to_string(lst):
         # lst[0] is pair_values[ [] ], i is [], a list of cards of the same value
         for j, i in enumerate(lst):
@@ -231,6 +259,7 @@ def main():
     # test_deck()
     #test_game_state()
     # test_deck()
-    test_possible_hands()
+    # test_possible_hands()
+    test_showdown()
 
 main()

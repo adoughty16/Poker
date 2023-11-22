@@ -341,7 +341,16 @@ class Game_state:
                 current_hand.append(Card(doc_player_hands[(2*i) + j]['suit'], doc_player_hands[(2*i) + j]['value']))
             # now, add the array of cards that is one player's hand to the array of player_hands to get nested array 
             player_hands.append(current_hand)
-        return player_hands 
+        return player_hands
+
+    def showdown(self, hand_list):
+        best_hand = hand_list[0]
+        for hand in hand_list[1:]:
+            if hand[1].value > best_hand[1].value:
+                best_hand = hand
+            elif hand[1].value == best_hand[1].value and hand[0] > best_hand[0]:
+                best_hand = hand
+        return best_hand
 
     # def download - to get updated version of game_state from database 
     # takes in self and returns nothing because it is updating all of the values 
