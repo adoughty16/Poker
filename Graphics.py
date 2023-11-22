@@ -831,13 +831,13 @@ class GameView(arcade.View):
         # Clear the screen
         self.clear()
         self.manager2.draw()
-        # TODO: dependning on game logic and where game_state updates, download may need to be called before drawing 
-        # self.game_state.download_wph()
+        # dependning on game logic and where game_state updates, download may need to be called before drawing 
+        # self.game_state.download_wph(self.db)
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
 
-        # Draw the cards - certain things like hands will not need to be accessed every time 
+        # draw the cards - certain things like hands will not need to be accessed every time 
         if self.dealt:
             self.draw_deal(self.hands)
         # technically after flop the three ccs should be stored locally and can be accessed that way 
@@ -861,9 +861,7 @@ class GameView(arcade.View):
         arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names (and gray for those that are inactive) 
-        # names = self.game_state.get_player_names_ad()
         self.actives = self.game_state.get_actives_ad()
-        # the player name at the index of the value of the actives array is active 
         # short cut: draw them all in gray, then draw over them in white! 
 
         # player "2" is actually index 1 since indexing starts at 0 
@@ -930,11 +928,12 @@ class GameView(arcade.View):
         self.coins.draw()
         self.total_coins.draw()
     
+    # function to draw coin objects depending on how much the round pot is 
     def round_coins(self):
         for coin in self.coins:
             self.coins.remove(coin)
         if self.pot > 0:
-            # DRAW ONE COIN
+            # draw one coin 
             coin_1 = Coin()
             coin_1.position = MIDDLE_X_COMMUNITYCARDS + 1.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.coins.append(coin_1)
@@ -953,6 +952,7 @@ class GameView(arcade.View):
         else:
             pass
 
+    # function to draw coins next to total pot amount display depending on amount 
     def total_pot_coins(self, total):
         for coin in self.total_coins:
             self.total_coins.remove(coin)
@@ -986,13 +986,14 @@ class GameView(arcade.View):
             coin_2.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH + 5, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_2)
         if total > 0:
-            # DRAW ONE COIN
+            # draw one coin 
             coin_1 = Coin_t()
             coin_1.position = MIDDLE_X_COMMUNITYCARDS + 3.5*MAT_WIDTH, MIDDLE_Y - (MAT_HEIGHT/2) - 25
             self.total_coins.append(coin_1)
         else:
             pass
 
+    # draws turn arrow for graphics 
     def draw_turn_arrow(self, to, amount):
         if to == 0:
             start_x = MIDDLE_X_4 - MAT_WIDTH - 65
@@ -1049,6 +1050,7 @@ class Card_arcade(arcade.Sprite):
         # Call the parent
         super().__init__(self.image_file_name, scale, hit_box_algorithm="None")
 
+# classes of coins and total coins to display on graphics 
 class Coin(arcade.Sprite):
     def __init__(self):
         super().__init__(":resources:images/items/gold_2.png", 0.5, hit_box_algorithm="None")
