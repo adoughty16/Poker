@@ -855,7 +855,7 @@ class GameView(arcade.View):
 
         self.card_list.draw()
 
-        self.bet_value = self.game_state.get_minimum_call_ad()
+        #self.bet_value = self.game_state.get_minimum_call_ad()
         # draw bet value word
         arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
