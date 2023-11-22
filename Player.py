@@ -155,6 +155,25 @@ class Player:
             if len(lst) == 1 and isinstance(lst, list):
                 return lst[0]
 
+        def full_house(input_list):
+            # Initialize counters
+            len_2 = []
+            len_3 = []
+
+            # Iterate over the input list
+            for item in input_list:
+                # Check if the item is a list
+                if isinstance(item, list):
+                    # If the length of the list is 2, increment the len_2_counter
+                    if len(item) == 2:
+                        len_2.append(item)
+                    # If the length of the list is 3, increment the len_3_counter
+                    elif len(item) == 3:
+                        len_3.append(item)
+
+            # Return True if there is at least one list of length 2 and one list of length 3
+            return [len_2, len_3]
+
         pair_values = prune(1, pair_values)
         pruned_player_straight_flushes = prune(3, player_straight_flushes)
         pruned_player_straights = prune(3, player_straights)
@@ -174,8 +193,9 @@ class Player:
             max_pair = max(pair_values, key=len)
             if len(max_pair) == 4:
                 return [max_pair[0].value, HandStrength.FOUR_OF_A_KIND]
-            if len(pair_values) > 1 and len(pair_values[-1]) == 3 and len(pair_values[-2]) == 2:
-                return [pair_values[-1][0].value, HandStrength.FULL_HOUSE]
+            is_full_house = full_house(pair_values)
+            if is_full_house[0] and is_full_house[1]:
+                return [pair_values[1][0].value, HandStrength.FULL_HOUSE]
         if flush:
             if len(flush) == 5:
                 flush_rank = max(flush, key=lambda card: card.value)

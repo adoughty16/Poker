@@ -13,8 +13,9 @@ from Player import Player, HandStrength
 - get bet
 - decision 
 - '''
-def test_ai():
+def test_make_decision():
     db = database.init()
+
 
 def test_possible_hands():
 
@@ -51,7 +52,7 @@ def test_possible_hands():
 
     #four of a kind
     set_one = [Card(0,1),Card(1,1), Card(2,1), Card(3,1),Card(0,2),Card(1,2),Card(2,2)]
-    result = (player.possible_hands(set_one))
+    result = (player.evaluate_hand(set_one))
     if result != [1, HandStrength.FOUR_OF_A_KIND]:
         print('FAILED FOUR OF A KIND')
     else:
@@ -59,7 +60,7 @@ def test_possible_hands():
 
     # straight flush
     set_two = [Card(0,1),Card(0,2),Card(0,3), Card(0,4), Card(0,5), Card(0,6), Card(0,7), ]
-    result = (player.possible_hands(set_two))
+    result = (player.evaluate_hand(set_two))
     if result != [3, HandStrength.STRAIGHT_FLUSH]:
         print('FAILED STRAIGHT FLUSH')
     else:
@@ -67,56 +68,56 @@ def test_possible_hands():
 
     #full house
     set_three= [Card(0,1),Card(1,1), Card(2,11), Card(3,11),Card(0,11),Card(1,0),Card(2,0)]
-    result = (player.possible_hands(set_three))
+    result = (player.evaluate_hand(set_three))
     if result != [11, HandStrength.FULL_HOUSE]:
         print('FAILED FULL HOUSE')
     else:
         print('PASSED FULL HOUSE')
     # flush
     set_four = [Card(2, 1), Card(2, 3), Card(2, 11), Card(2, 11), Card(2, 6), Card(2, 0), Card(2, 8)]
-    result = (player.possible_hands(set_four))
+    result = (player.evaluate_hand(set_four))
     if result != [11, HandStrength.FLUSH]:
         print('FAILED FLUSH')
     else:
         print('PASSED FLUSH')
     # straight
     set_five = [Card(1, 1), Card(2, 3), Card(0, 4), Card(2, 2), Card(1, 6), Card(3, 5), Card(0, 8)]
-    result = (player.possible_hands(set_five))
+    result = (player.evaluate_hand(set_five))
     if result != [2, HandStrength.STRAIGHT]:
         print('FAILED STRAIGHT')
     else:
         print('PASSED STRAIGHT')
     # three of a kind
     set_six = [Card(1, 1), Card(2, 3), Card(0, 4), Card(2, 2), Card(1, 4), Card(3, 5), Card(2, 4)]
-    result = (player.possible_hands(set_six))
+    result = (player.evaluate_hand(set_six))
     if result != [4, HandStrength.THREE_OF_A_KIND]:
         print('FAILED THREE OF A KIND')
     else:
         print('PASSED THREE OF A KIND')
     # two pair
     set_seven = [Card(1, 1), Card(2, 1), Card(0, 4), Card(2, 10), Card(1, 4), Card(3, 5), Card(2, 12)]
-    result = (player.possible_hands(set_seven))
+    result = (player.evaluate_hand(set_seven))
     if result != [4, HandStrength.TWO_PAIR]:
         print('FAILED TWO PAIR')
     else:
         print('PASSED TWO PAIR')
     # high card
     set_seven = [Card(1, 1), Card(2, 11), Card(0, 3), Card(2, 10), Card(1, 4), Card(3, 5), Card(2, 12)]
-    result = (player.possible_hands(set_seven))
+    result = (player.evaluate_hand(set_seven))
     if result != [12, HandStrength.HIGH_CARD]:
         print('FAILED HIGH CARD')
     else:
         print('PASSED HIGH CARD')
     # 4 cards- pair
     set_eight = [Card(1, 1), Card(2, 1), Card(0, 3), Card(2, 10)]
-    result = (player.possible_hands(set_eight))
+    result = (player.evaluate_hand(set_eight))
     if result != [1, HandStrength.ONE_PAIR]:
         print('FAILED 4-CARD PAIR')
     else:
         print('PASSED 4-CARD PAIR')
     # 3 cards- high card
     set_nine = [Card(1, 1), Card(2, 12), Card(0, 3)]
-    result = (player.possible_hands(set_nine))
+    result = (player.evaluate_hand(set_nine))
     if result != [12, HandStrength.HIGH_CARD]:
         print('FAILED 3-CARD HIGH CARD')
     else:
