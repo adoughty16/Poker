@@ -742,7 +742,8 @@ class GameView(arcade.View):
 
                     #reset values and change the round
                     self.community_cards = []
-                    self.game_state.set_community_cards(self.community_cards, self.db)
+                    self.game_state.clear_community_cards(self.db)
+                    self.game_state.clear_player_hands(self.db)
                     self.game_state.set_player_stacks(self.stacks, self.db)
                     self.game_state.set_round('dealing', self.db)
                     self.game_state.set_total_pot(0, self.db)
