@@ -255,6 +255,8 @@ class Player:
             decision = "call"
             return decision, 0
         elif len(community_cards) < 5 and len(community_cards) > 3:
+            return decision, 0
+        if len(community_cards) < 5:
             if decided[3]:
                 if len(decided[3][-1]) > 2:
                     decision = "bet"
