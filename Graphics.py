@@ -741,6 +741,10 @@ class GameView(arcade.View):
                     print("---------------------------------------------------------------------------")
 
                     #award winner stack from pot
+                    best_index = max(range(len(final_hands)), key=lambda i: final_hands[i][1])
+                    self.players[best_index].set_stack(self.players[best_index].get_stack() + self.pot)
+                    self.stacks[best_index] = self.players[best_index].get_stack()
+                    self.game_state.set_player_stacks(self.stacks, self.db)
 
                     #reset values and change the round
                     self.community_cards = []
