@@ -418,3 +418,6 @@ class Game_state:
 
     def get_waiting_ad(self):
         return self.waiting
+    
+    def get_bet_ad(self):
+        return self.bet 
