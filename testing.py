@@ -15,7 +15,6 @@ from Player import Player, HandStrength
 - '''
 
 def test_showdown():
-    print('TESTING SHOWDOWN-------------------')
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
 
@@ -46,7 +45,6 @@ def test_showdown():
         print('STRAIGHT FLUSH TEST PASSED!')
 
 def test_make_decision():
-    print('TESTING MAKE DECISION----------------------------------------')
     db = database.init()
     player = Player()
 
@@ -61,7 +59,6 @@ def test_make_decision():
 
 
 def test_possible_hands():
-    print('TESTING POSSIBLE HANDS-----------------------------')
 
     # [pair_values[[]],player_straight_flushes[[]],player_straights[[]], flushes[[],[],[],[]]
     def possible_hands_to_string(lst):
@@ -202,7 +199,6 @@ def test_possible_hands():
     else:
         print('PASSED RANDOM FLUSH!')
 
-
     set_fifteen = [Card(2, 4), Card(2, 0), Card(3, 3), Card(3, 0), Card(3, 11), Card(1, 0), Card(3, 8)]
     result = player.evaluate_hand(set_fifteen)
     if result != [0, HandStrength.THREE_OF_A_KIND]:
@@ -213,7 +209,6 @@ def test_possible_hands():
 
 
 def test_game_state():
-    print('TESTING GAME STATE-----------------------------------')
     db = database.init()
     game_state_1 = Game_state(db, 'test_doc')
     if game_state_1.get_players(db) != []:
@@ -302,7 +297,6 @@ def test_game_state():
         print('PASSED DECISION')
 
 def test_deck():
-    print('TESTING DECK-----------------------------------')
     deck = Deck()
     #print(deck.deal())
     if len(deck.get_deck()) != 52:
@@ -324,7 +318,7 @@ def test_deck():
 def main():
     # test_game_state()
     # test_deck()
-    # test_game_state()
+    #test_game_state()
     # test_deck()
     test_possible_hands()
 
