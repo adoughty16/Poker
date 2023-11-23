@@ -324,8 +324,6 @@ def test_deck():
 def main():
     # test_game_state()
     # test_deck()
-    # test_game_state()
-    # test_deck()
     test_possible_hands()
 
 main()
