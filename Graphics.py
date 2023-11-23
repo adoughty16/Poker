@@ -772,7 +772,7 @@ class GameView(arcade.View):
                     #Display some kind of winner screen
                 print("current player: ",self.current)
                 print("whose turn in db: ", self.game_state.get_whose_turn_ad())
-                print("acvites:",self.actives)
+                print("actives:",self.actives)
                 print('-------------------')
                 if not self.players[self.current].get_player_type():
                         self.game_state.set_waiting(True, self.db)
