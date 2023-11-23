@@ -750,6 +750,7 @@ class GameView(arcade.View):
                     self.community_cards = []
                     self.game_state.clear_community_cards(self.db)
                     self.game_state.clear_player_hands(self.db)
+                    self.hands = []
                     self.game_state.set_player_stacks(self.stacks, self.db)
                     self.game_state.set_round('dealing', self.db)
                     self.game_state.set_total_pot(0, self.db)
@@ -863,7 +864,8 @@ class GameView(arcade.View):
         if self.dealt:
             self.draw_deal(self.hands)
         # technically after flop the three ccs should be stored locally and can be accessed that way 
-        comm_cards = self.game_state.get_community_cards_ad()
+        comm_cards = self.community_cards 
+        #comm_cards = self.game_state.get_community_cards_ad()
         if len(comm_cards) == 3:
             self.draw_community(comm_cards)
         elif len(comm_cards) == 4:
@@ -873,8 +875,6 @@ class GameView(arcade.View):
             self.draw_community([comm_cards[0], comm_cards[1], comm_cards[2]])
             self.draw_turn_round(comm_cards[3])
             self.draw_river_round(comm_cards[4])
-        
-        if self.game_state.get_round(self.db) == "showdown":
             self.draw_showdown(self.hands)
         
         self.card_list.draw()
@@ -942,12 +942,12 @@ class GameView(arcade.View):
         
         # arrow for whose_turn and minimum_call
         arrow_to = (self.game_state.get_whose_turn_ad() - 1) % 4
-        arrow_amount = self.game_state.get_bet_ad()
+        arrow_amount = self.game_state.get_minimum_call_ad()
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
         # round_pot
-        self.pot = self.game_state.get_round_pot_ad() 
-        arcade.draw_text(f'Round pot: {self.pot}', MIDDLE_X_COMMUNITYCARDS + MAT_WIDTH/2, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
+        round_pot = self.game_state.get_round_pot_ad() 
+        arcade.draw_text(f'Round pot: {round_pot}', MIDDLE_X_COMMUNITYCARDS + MAT_WIDTH/2, MIDDLE_Y - (MAT_HEIGHT / 2) - 30,
                          arcade.color.WHITE, font_size=15, anchor_x="center")
         self.round_coins()
         # total pot 
