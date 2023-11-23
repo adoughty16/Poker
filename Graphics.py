@@ -739,7 +739,6 @@ class GameView(arcade.View):
                     print("---------------------------------------------------------------------------")
                     print("Final hands! ", final_hands)
                     print("---------------------------------------------------------------------------")
-                    time.sleep(10)
 
                     #award winner stack from pot
                     best_index = max(range(len(final_hands)), key=lambda i: final_hands[i][1])
@@ -748,6 +747,7 @@ class GameView(arcade.View):
                     self.game_state.set_player_stacks(self.stacks, self.db)
 
                     #reset values and change the round
+                    self.setup()
                     self.community_cards = []
                     self.game_state.clear_community_cards(self.db)
                     self.game_state.clear_player_hands(self.db)
@@ -759,11 +759,11 @@ class GameView(arcade.View):
                     self.pot = 0
                     self.dealer = (self.dealer + 1) % 4
                     self.current = (self.dealer + 3) % 4
+                    self.game_state.set_dealer(self.dealer, self.db)
                     self.game_state.set_whose_turn(self.current + 1, self.db)
                     self.total_call = 10
                     self.round_bets = [0, 0, 0, 0]
                     self.actives = [0, 1, 2, 3]
-                    self.setup()
         
                 #num_busts = 0
                 #for stack in self.stacks:
@@ -775,10 +775,11 @@ class GameView(arcade.View):
                 print("whose turn in db: ", self.game_state.get_whose_turn_ad())
                 print("actives:",self.actives)
                 print('-------------------')
-                if not self.players[self.current].get_player_type():
-                        self.game_state.set_waiting(True, self.db)
-                else:
-                    self.game_state.set_waiting(False, self.db)
+                if self.game_state.get_round_ad != "dealing":
+                    if not self.players[self.current].get_player_type():
+                            self.game_state.set_waiting(True, self.db)
+                    else:
+                        self.game_state.set_waiting(False, self.db)
             self.working = False
                 
 
