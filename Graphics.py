@@ -281,7 +281,6 @@ class GameView(arcade.View):
 
     def __init__(self, selected_players, selected_host):
         self.db = db_connect.init()
-        # TODO: is there a way to generate this based on time or something? Cannot have more than one game going on if there use the same doc 
         self.game_state = Game_state(self.db, 'doc1')
 
         self.num_players = selected_players
@@ -289,6 +288,7 @@ class GameView(arcade.View):
         self.community_cards = []
 		#list of local player objects
         self.players = [Player.Player() for _ in range(4)]
+        self.hands = []
         for i in range(self.num_players):
             #This means that the real players will be the first in the list
             self.players[i].set_computer_player(False)
@@ -822,7 +822,6 @@ class GameView(arcade.View):
         # should this somehow connect to our list of cards ? 
         position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
         position_y = [BOTTOM_Y, MIDDLE_Y, TOP_Y, MIDDLE_Y]
-        # TODO: comment this out when we confirm self.me is working correctly 
         self.me = 0
         up = True
         for i in range(len(hands)):
@@ -836,13 +835,26 @@ class GameView(arcade.View):
                 # the way the superconstructor is called after the filename makes this difficult to change 
                 self.card_list.append(card_arc)
 
+    def draw_showdown(self, hands):
+        position_x = [START_X, MIDDLE_X_2, START_X, MIDDLE_X_4]
+        position_y = [BOTTOM_Y, MIDDLE_Y, TOP_Y, MIDDLE_Y]
+        up = True
+        for i in range(len(hands)):
+            # for every card 
+            for j in range(len(hands[i])):
+                # hands[i][j] is a Card object
+                card_arc = Card_arcade(hands[i][j], up)
+                card_arc.position = position_x[i] + j*X_SPACING, position_y[i]
+                # the way the superconstructor is called after the filename makes this difficult to change 
+                self.card_list.append(card_arc)
+
     def on_draw(self):
         """ Render the screen. """
         # Clear the screen
         self.clear()
         self.manager2.draw()
         # dependning on game logic and where game_state updates, download may need to be called before drawing 
-        # self.game_state.download_wph(self.db)
+        self.game_state.download_wph(self.db)
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
@@ -861,11 +873,15 @@ class GameView(arcade.View):
             self.draw_community([comm_cards[0], comm_cards[1], comm_cards[2]])
             self.draw_turn_round(comm_cards[3])
             self.draw_river_round(comm_cards[4])
-
+        
+        what_round = self.game_state.get_round(self.db) 
+        if what_round == "showdown":
+            self.draw_showdown(self.hands)
+        
         self.card_list.draw()
 
         #self.bet_value = self.game_state.get_minimum_call_ad()
-        bet_to_draw = self.game_state.get_minimum_call_ad() + self.bet_value
+        bet_to_draw = self.game_state.get_bet(self.db) + self.bet_value
         # draw bet value word
         arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
