@@ -854,7 +854,7 @@ class GameView(arcade.View):
         self.clear()
         self.manager2.draw()
         # dependning on game logic and where game_state updates, download may need to be called before drawing 
-        self.game_state.download_wph(self.db)
+        #self.game_state.download_wph(self.db)
 
         # Draw the mats the cards go on to
         self.pile_mat_list.draw()
