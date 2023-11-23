@@ -739,6 +739,7 @@ class GameView(arcade.View):
                     print("---------------------------------------------------------------------------")
                     print("Final hands! ", final_hands)
                     print("---------------------------------------------------------------------------")
+                    time.sleep(10)
 
                     #award winner stack from pot
                     best_index = max(range(len(final_hands)), key=lambda i: final_hands[i][1])
