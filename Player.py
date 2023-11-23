@@ -251,10 +251,8 @@ class Player:
             bet_value = 0
             decision = "fold"
             return decision, bet_value
-        if len(community_cards) < 3:
+        if len(community_cards) < 4:
             decision = "call"
-            return decision, 0
-        elif len(community_cards) < 5 and len(community_cards) > 3:
             return decision, 0
         if len(community_cards) < 5:
             if decided[3]:
@@ -337,10 +335,10 @@ class Player:
                 return decision, bet_value
         if decided[4]:
             val = decided[4].get_value()
-            if len(community_cards) > 4:
+            if len(community_cards) > 4 and val < 8:
                 decision = "fold"
                 return decision, 0
-            if len(community_cards) < 4:
+            else:
                 decision = "call"
                 return decision, 0
 
