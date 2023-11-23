@@ -1,7 +1,5 @@
-import random
 from enum import IntEnum
 from cards import Card
-from Game_state import Game_state
 
 
 # for reference- https://en.wikipedia.org/wiki/List_of_poker_hands#Full_house
@@ -61,6 +59,7 @@ class Player:
         decision = self.make_decision(community_cards, game_state, db)
         return decision
 
+    # for deciding what hand is the best out of a list of hands - unused
     def showdown(self, hand_list):
         best_hand = hand_list[0]
         for hand in hand_list[1:]:
@@ -70,7 +69,7 @@ class Player:
                 best_hand = hand
         return best_hand
 
-
+    # combines players cards and community cards to send off to possible_hands- unused
     def evaluate_hand(self, community_cards):
         #  takes in community_cards, combines them with self.hand, and returns the ENUM for the player's hand.
 
@@ -90,6 +89,7 @@ class Player:
         # memory to sort lst_cards by value
         memory = [[], [], [], [], [], [], [], [], [], [], [], [], []]
 
+        # more mem
         flushes = [[], [], [], []]
         player_straights = []
         player_straight_flushes = []
@@ -118,6 +118,7 @@ class Player:
         # mem for straight
         current_straight_subset = [lst_cards[0]]
 
+        #
         # iterate through given list of cards
         for i in range(1, len(lst_cards)):
             # if this cards value equals the last card value plus one
@@ -145,22 +146,25 @@ class Player:
                 highest_card = i
 
         # pruning ------------------------------------------------
+        # used for shortening hands, so they are only 5 cards long by taking the 5 highest cards
         def prune(by, to_prune):
             prune = []
-            for e, i in enumerate(to_prune):
-                if len(i) > 5:
-                    i = i[-5:]
-                if len(i) > by:
-                    prune.append(i)
+            for lst in to_prune:
+                if len(lst) > 5:
+                    lst = lst[-5:]
+                if len(lst) > by:
+                    prune.append(lst)
 
             return prune
 
+        # find the longest list in a list, used for finding the best possible hand combination
         def maxed(lst):
             maxed = []
             if len(lst) > 0:
                 maxed.append(max(lst, key=len))
             return maxed
 
+        # finds the list with the cards of the highest rank and returns that list, used for optimizing hands
         def higher_rank(lst):
             val = lst[0][0].value
             if lst[1][0].value > val:
@@ -169,10 +173,12 @@ class Player:
                 lst = lst[0]
             return lst
 
+        # used for lists in a 1-list, removes any second pair of brackets
         def denest(lst):
             if len(lst) == 1 and isinstance(lst, list):
                 return lst[0]
 
+        # used for finding a full house in a list of pairs
         def full_house(input_list):
             # Initialize counters
             len_2 = []
@@ -198,6 +204,7 @@ class Player:
             # Return True if there is at least one list of length 2 and one list of length 3
             return [len_2, len_3]
 
+        # find the best hands out of all the possible hand combinations by pruning and de-nesting
         pair_values = prune(1, pair_values)
         pruned_player_straight_flushes = prune(3, player_straight_flushes)
         pruned_player_straights = prune(3, player_straights)
@@ -211,71 +218,99 @@ class Player:
 
         # deciding -----------------------------------------
 
+        # if there is a straight flush, and it is of length 5, return its starting value and hand strength
         if straight_flush and len(straight_flush) == 5:
             return [straight_flush[0].value, HandStrength.STRAIGHT_FLUSH]
+        # if there are pair values
         if pair_values:
+            # if there is a 4-pair, return rank and hand strength
+            # since pairs are stored by index of rank, the longest a pair_value[] can be is 4 since there are only 4
+            # of each rank in a deck
             max_pair = max(pair_values, key=len)
             if len(max_pair) == 4:
                 return [max_pair[0].value, HandStrength.FOUR_OF_A_KIND]
+            # use full house function to find full house, return rank and hand strength
             is_full_house = full_house(pair_values)
             if is_full_house[0] and is_full_house[1]:
                 return [pair_values[1][0].value, HandStrength.FULL_HOUSE]
         if flush:
+            # if there is a flush of length 5, return rank and hand strength
             if len(flush) == 5:
                 flush_rank = max(flush, key=lambda card: card.value)
                 return [flush_rank.value, HandStrength.FLUSH]
         if straight:
+            # if there is a flush of length 5, return rank and hand strength
             if len(straight) == 5:
                 return [straight[0].value, HandStrength.STRAIGHT]
         if pair_values:
+            # find the longest pair value
+            # 4 of a kind is checked above, so this code is unreachable if there is a 4 of a kind
             max_pair = max(pair_values, key=len)
+            # three of a kind, rank and hand strength
             if len(max_pair) == 3:
                 return [max_pair[0].value, HandStrength.THREE_OF_A_KIND]
+            # two pair
             if len(pair_values) == 2:
                 higher_pair = higher_rank(pair_values)
                 return [higher_pair[0].value, HandStrength.TWO_PAIR]
+            # one pair
             if len(pair_values) == 1:
                 return [pair_values[-1][0].value, HandStrength.ONE_PAIR]
-
+        # if this code is reached, then there are no other hands than high card
         return [highest_card.value, HandStrength.HIGH_CARD]
 
+    # AI code
     def make_decision(self, community_cards, game_state, db):
-        pot = game_state.get_total_pot(db)
+        # amount of current round bet
+        amt = game_state.get_round_pot()
+        # player balance
         stack = self.get_stack()
-        # lst_cards = self.hand + community_cards
+        # combine self hand and community cards
         lst_cards = self.hand + community_cards
-        # [pair_values, player_straight_flushes, player_straights, flushes, highest_card]
+        # find all possible cards given the set of cards
+        # decided = [pair_values, player_straight_flushes, player_straights, flushes, highest_card]
         decided = self.possible_hands(lst_cards)
 
+        # if the AI is broke, fold
         if stack < 20:
             bet_value = 0
             decision = "fold"
             return decision, bet_value
+        # if the community cards is on the first turn, just call
         if len(community_cards) < 4:
             decision = "call"
             return decision, 0
-        if len(community_cards) < 5:
+        # if the community cards is on the 4th or 5th turn
+        if len(community_cards) < 6:
+            # if there is a flush,
             if decided[3]:
+                # if a flush is longer than 2, raise the current bet by 40%
                 if len(decided[3][-1]) > 2:
                     decision = "bet"
-                    bet_value = stack * .4
+                    bet_value = amt * 1.4
                     return decision, bet_value
+            # if there is a straight flush
             if decided[1]:
+                # if a straight flush is longer than 2, raise the current bet by 20%
                 if len(decided[1][-1]) > 2:
                     decision = "bet"
-                    bet_value = stack * .2
+                    bet_value = amt * 1.2
                     return decision, bet_value
+            # if there is a straight
             if decided[2]:
+                # longer than 2, raise by 20%
                 if len(decided[2][-1]) > 2:
                     decision = "bet"
-                    bet_value = stack * .2
+                    bet_value = amt * 1.2
                     return decision, bet_value
+            # if there is a pair value longer than 1, raise by 20%
             if decided[0]:
                 if len(decided[0][-1]) > 1:
                     decision = "bet"
-                    bet_value = stack * .2
+                    bet_value = amt * 1.2
                     return decision, bet_value
 
+        # straight flush
         if decided[1]:
             # if straight flush > 4
             if len(decided[1][-1]) > 4:
@@ -285,53 +320,58 @@ class Player:
                 return decision, bet_value
             if len(decided[1][-1]) > 3:
                 decision = "bet"
-                bet_value = stack * 0.7
+                bet_value = amt * 1.7
                 return decision, bet_value
             if len(decided[1][-1]) > 2:
                 decision = "bet"
-                bet_value = stack * 0.2
+                bet_value = amt * 1.2
                 return decision, bet_value
 
+        # straights
         if decided[2]:
+            # if there is a 5-straight, raise by 90%
             if len(decided[2][-1]) > 4:
                 decision = "bet"
-                bet_value = stack * 90
+                bet_value = stack * 1.9
                 return decision, bet_value
-            if len(decided[2][-1]) > 3:
+            # if there is a 4-straight, raise by 60%
+            if len(community_cards) < 4 and (decided[2][-1]) > 3:
                 decision = "bet"
-                bet_value = stack * 0.6
+                bet_value = amt * 1.6
                 return decision, bet_value
-            if len(decided[2][-1]) > 2:
+            # if there is a 3, raise by 20%
+            if len(community_cards) < 4 and (decided[2][-1]) > 2:
                 decision = "bet"
-                bet_value = stack * 0.15
+                bet_value = amt * 1.2
                 return decision, bet_value
 
+        #
         if decided[3]:
             if len(decided[3][-1]) > 4:
                 decision = "bet"
-                bet_value = stack * 0.85
+                bet_value = amt * 1.85
                 return decision, bet_value
             if len(decided[3][-1]) > 3:
                 decision = "bet"
-                bet_value = stack * 0.4
+                bet_value = amt * 1.4
                 return decision, bet_value
             if len(decided[3][-1]) > 2:
                 decision = "bet"
-                bet_value = stack * 0.1
+                bet_value = amt * 1.1
                 return decision, bet_value
 
         if decided[0]:
             if len(decided[-1]) > 3:
                 decision = "bet"
-                bet_value = stack * .85
+                bet_value = amt * 1.85
                 return decision, bet_value
             if len(decided[0][-1]) > 2:
                 decision = "bet"
-                bet_value = stack * .75
+                bet_value = amt * 1.75
                 return decision, bet_value
             if len(decided[0][-1]) > 1:
                 decision = "bet"
-                bet_value = stack * 0.2
+                bet_value = amt * 1.2
                 return decision, bet_value
         if decided[4]:
             val = decided[4].get_value()
