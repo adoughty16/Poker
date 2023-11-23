@@ -8,7 +8,7 @@ every getter and setter interfaces with the database (to avoid conflicting infor
 '''
 
 
-round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown'])
+round = Enum('round', ['dealing','pre-flop','flop','turn','river','showdown', 'sleeping'])
 play = Enum('play', ['bet', 'check', 'fold', 'call'])
 
 class Game_state:

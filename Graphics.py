@@ -325,6 +325,7 @@ class GameView(arcade.View):
         self.working = False
         #keeps draw from trying to draw an empty list of cards
         self.dealt = False
+        self.draw_sd = False
 
 
         
@@ -740,13 +741,19 @@ class GameView(arcade.View):
                     print("Final hands! ", final_hands)
                     print("---------------------------------------------------------------------------")
 
+                    self.draw_sd = True
+
                     #award winner stack from pot
                     best_index = max(range(len(final_hands)), key=lambda i: final_hands[i][1])
                     self.players[best_index].set_stack(self.players[best_index].get_stack() + self.pot)
                     self.stacks[best_index] = self.players[best_index].get_stack()
                     self.game_state.set_player_stacks(self.stacks, self.db)
 
+                if self.game_state.get_round(self.db) == 'sleeping':
+                    time.sleep(10)
+
                     #reset values and change the round
+                    self.draw_sd = False
                     self.setup()
                     self.community_cards = []
                     self.game_state.clear_community_cards(self.db)
@@ -764,6 +771,9 @@ class GameView(arcade.View):
                     self.total_call = 10
                     self.round_bets = [0, 0, 0, 0]
                     self.actives = [0, 1, 2, 3]
+                
+                if self.game_state.get_round_ad() == "showdown":
+                    self.game_state.set_round("sleeping", self.db)
         
                 #num_busts = 0
                 #for stack in self.stacks:
@@ -775,11 +785,13 @@ class GameView(arcade.View):
                 print("whose turn in db: ", self.game_state.get_whose_turn_ad())
                 print("actives:",self.actives)
                 print('-------------------')
-                if self.game_state.get_round_ad != "dealing":
-                    if not self.players[self.current].get_player_type():
-                            self.game_state.set_waiting(True, self.db)
-                    else:
-                        self.game_state.set_waiting(False, self.db)
+                if not self.players[self.current].get_player_type():
+                        self.game_state.set_waiting(True, self.db)
+                else:
+                    self.game_state.set_waiting(False, self.db)
+                
+                if self.game_state.get_round_ad() == 'dealing':
+                    self.game_state.set_waiting(False, self.db)
             self.working = False
                 
 
@@ -878,7 +890,8 @@ class GameView(arcade.View):
             self.draw_turn_round(comm_cards[3])
             self.draw_river_round(comm_cards[4])
 
-        if self.game_state.get_round_ad() == "showdown":
+        #if self.game_state.get_round_ad() == "showdown":
+        if self.draw_sd:
             self.draw_showdown(self.hands)
         
         self.card_list.draw()
