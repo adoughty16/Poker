@@ -875,6 +875,8 @@ class GameView(arcade.View):
             self.draw_community([comm_cards[0], comm_cards[1], comm_cards[2]])
             self.draw_turn_round(comm_cards[3])
             self.draw_river_round(comm_cards[4])
+
+        if self.game_state.get_round_ad() == "showdown":
             self.draw_showdown(self.hands)
         
         self.card_list.draw()
