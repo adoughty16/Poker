@@ -874,18 +874,16 @@ class GameView(arcade.View):
             self.draw_turn_round(comm_cards[3])
             self.draw_river_round(comm_cards[4])
         
-        what_round = self.game_state.get_round(self.db) 
-        if what_round == "showdown":
+        if self.game_state.get_round(self.db) == "showdown":
             self.draw_showdown(self.hands)
         
         self.card_list.draw()
 
-        #self.bet_value = self.game_state.get_minimum_call_ad()
-        bet_to_draw = self.game_state.get_bet(self.db) + self.bet_value
+        bet_to_draw = self.game_state.get_bet_ad() + self.bet_value
         # draw bet value word
         arcade.draw_text("Bet Value:", MIDDLE_X_2 + 175, BOTTOM_Y + 10, arcade.color.WHITE, font_size=14, anchor_x="center", anchor_y="center")
         # draw bet value
-        arcade.draw_text(str(self.bet_value), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
+        arcade.draw_text(str(bet_to_draw), MIDDLE_X_2 + 175, BOTTOM_Y - 22, arcade.color.WHITE, font_size=24, anchor_x="center", anchor_y="center")
 
         # draw player names (and gray for those that are inactive) 
         self.actives = self.game_state.get_actives_ad()
@@ -944,7 +942,7 @@ class GameView(arcade.View):
         
         # arrow for whose_turn and minimum_call
         arrow_to = (self.game_state.get_whose_turn_ad() - 1) % 4
-        arrow_amount = self.game_state.get_minimum_call_ad() 
+        arrow_amount = self.game_state.get_bet_ad()
         self.draw_turn_arrow(arrow_to, arrow_amount) 
 
         # round_pot
