@@ -872,29 +872,24 @@ class GameView(arcade.View):
         # short cut: draw them all in gray, then draw over them in white! 
 
         # player "2" is actually index 1 since indexing starts at 0 
-        arcade.draw_text(f'{"Round bet"} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[2-1]} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "4" is actually index 3 
-        arcade.draw_text(f'{"Round bet"} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[4-1]} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "1" is 0 - whatever is drawn on the bottom should be the current player 
-        arcade.draw_text(f'{"Round bet"} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[1-1]} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.GRAY, font_size=15, anchor_x="center")
         # player "3" is actually index 2 
-        arcade.draw_text(f'{"Round bet"} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  55 , arcade.color.GRAY, font_size=15, anchor_x="center")
+        arcade.draw_text(f'{self.names[3-1]} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.GRAY, font_size=15, anchor_x="center")
 
         for index in self.actives:
             if index == 0:
-                arcade.draw_text(f'{"Round bet"} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[1-1]} : {self.round_bets[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 1:
-                arcade.draw_text(f'{"Round bet"} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[2-1]} : {self.round_bets[1]}', MIDDLE_X_2 + 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 2:
-                arcade.draw_text(f'{"Round bet"} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  55 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[3-1]} : {self.round_bets[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  50 , arcade.color.WHITE, font_size=15, anchor_x="center")
             elif index == 3:
-                arcade.draw_text(f'{"Round bet"} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
+                arcade.draw_text(f'{self.names[4-1]} : {self.round_bets[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 50 , arcade.color.WHITE, font_size=15, anchor_x="center")
 
-
-            arcade.draw_text(f'{self.names[1-1]} : {self.stacks[0]}', SCREEN_WIDTH / 2, MAT_HEIGHT + 70 , arcade.color.BLACK, font_size=20, anchor_x="center")
-            arcade.draw_text(f'{self.names[2-1]} : {self.stacks[1]}', MIDDLE_X_2 + 80, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 70 , arcade.color.BLACK, font_size=20, anchor_x="center")
-            arcade.draw_text(f'{self.names[3-1]} : {self.stacks[2]}', SCREEN_WIDTH / 2, SCREEN_HEIGHT - MAT_HEIGHT -  35 , arcade.color.BLACK, font_size=20, anchor_x="center")
-            arcade.draw_text(f'{self.names[4-1]} : {self.stacks[3]}', MIDDLE_X_4 - 50, SCREEN_HEIGHT / 2 + (MAT_HEIGHT/2) + 70 , arcade.color.BLACK, font_size=20, anchor_x="center")
 
 
         #NOTE! To draw the table from this player's perspective, self.me holds the correct index in the player list.
